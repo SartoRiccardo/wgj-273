@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://util/StunResource.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+trigger = 1
+amount_needed = 3
+stun_seconds = 3
+is_stun_permanent = false
+callback_method = "_on_rock_stun"

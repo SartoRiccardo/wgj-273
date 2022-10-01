@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://util/StunResource.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+trigger = 5
+amount_needed = 5
+stun_seconds = 0
+is_stun_permanent = true
+callback_method = "_on_fish_stun"

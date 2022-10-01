@@ -8,9 +8,19 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Resource",
+"class": "StunResource",
+"language": "GDScript",
+"path": "res://util/StunResource.gd"
+} ]
+_global_script_class_icons={
+"StunResource": ""
+}
+
 [application]
 
-config/name="Unnamed \"SEASONS\" Game (WGJ #273)"
+config/name="Season Survival"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
@@ -77,6 +87,23 @@ move_right={
 , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":68,"unicode":0,"echo":false,"script":null)
  ]
 }
+do_action={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":73,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[layer_names]
+
+2d_render/layer_1="world_collision"
+2d_render/layer_2="world_disabled"
+2d_render/layer_5="action"
+2d_render/layer_6="danger"
+2d_physics/layer_1="world_collision"
+2d_physics/layer_2="world_disabled"
+2d_physics/layer_5="action"
+2d_physics/layer_6="danger"
+2d_physics/layer_7="detection"
 
 [physics]
 

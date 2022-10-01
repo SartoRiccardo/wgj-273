@@ -4,16 +4,51 @@ export (int) var MAX_SPEED = 200
 export (int) var ACCELERATION = 500
 export (int) var DECELERATION = 750
 
+enum State { NORMAL, PICKUP, SWIM, HURT, DEAD }
+
+var state = State.NORMAL
 var pressed_actions = []
 var mov_vector = Vector2.ZERO
 var velocity = mov_vector
-var speed = 0
+var speed = 0.0
+var interacting_with = null
+var lives = 5
 
 func _ready():
-	pass
+	$ActionTimer.connect("timeout", self, "_on_action_timeout")
 
 func _process(delta):
-	handle_inputs()
+	handle_movement_inputs()
+	
+	match state:
+		State.NORMAL:
+			process_normal(delta)
+		State.PICKUP:
+			process_pickup(delta)
+	
+	if $HurtBox.get_overlapping_areas().size() > 0:
+		if $Invulnerability.time_left == 0:
+			lives -= 1
+			$Invulnerability.start()
+	
+func change_state(new_state):
+	state = new_state
+
+func process_pickup(delta):
+	if Input.is_action_just_released("do_action") or interacting_with == null:
+		interacting_with = null
+		$ActionTimer.stop()
+		change_state(State.NORMAL)
+		return
+
+func process_normal(delta):
+	if Input.is_action_pressed("do_action"):
+		handle_actions()
+		if interacting_with != null:
+			speed = 0.0
+			change_state(State.PICKUP)
+			return
+		
 	mov_vector = Vector2.ZERO
 	for i in range(pressed_actions.size()-1, -1, -1):
 		var evt = pressed_actions[i]
@@ -31,20 +66,8 @@ func _process(delta):
 	velocity = velocity.linear_interpolate(mov_vector*speed, 1/3.0)
 	
 	velocity = move_and_slide(velocity)
-	
-	# ------
-	
-#	var console = $"/root/Helpers".get_first_of_group("console")
-#	if console:
-#		console.set_text(String(mov_vector))
-#		console.add_text("\n" + String(mov_vector == Vector2.ZERO))
-#		console.add_text("\n" + String(speed))
-#		console.add_text("\n" + String(velocity))
-	
-	# -----
-	
 
-func handle_inputs():
+func handle_movement_inputs():
 	var movements = ["move_down", "move_up", "move_left", "move_right"]
 	
 	for evt in movements:
@@ -53,6 +76,18 @@ func handle_inputs():
 			pressed_actions.append(evt)
 		if Input.is_action_just_released(evt):
 			pressed_actions.erase(evt)
+
+func handle_actions():
+	var interactables = $ActionRange.get_overlapping_areas()
+	if interactables.size() == 0:
+		return
+	if interacting_with == null:
+		for area in interactables:
+			var interactable = area.get_parent()
+			if interactable.is_pickuppable($Inventory):
+				interacting_with = interactables[0].get_parent()
+				$ActionTimer.start(interacting_with.time)
+				break
 
 func update_sprite():
 	if pressed_actions.size() == 0:
@@ -83,3 +118,9 @@ func update_sprite():
 	else:
 		$AnimatedSprite.play()
 	
+func _on_action_timeout():
+	if interacting_with == null:
+		return
+	interacting_with.consume($Inventory)
+	$Inventory.add(interacting_with.item, interacting_with.pickup())
+	interacting_with = null
