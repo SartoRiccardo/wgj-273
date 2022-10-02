@@ -1,0 +1,13 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://resources/InteractableResource.gd" type="Script" id=1]
+[ext_resource path="res://resources/interactable_bees_req0.tres" type="Resource" id=2]
+
+[resource]
+script = ExtResource( 1 )
+item = 4
+amount_min = 1
+amount_max = 1
+time = 5.0
+die_on_pickup = true
+requirements = [ ExtResource( 2 ) ]

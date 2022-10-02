@@ -1,25 +1,98 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://environ/Terrain.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://environ/PlayerCamera.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Game.gd" type="Script" id=4]
 [ext_resource path="res://entities/enemies/Bear.tscn" type="PackedScene" id=5]
+[ext_resource path="res://entities/LeafPile.tscn" type="PackedScene" id=6]
+[ext_resource path="res://entities/interactables/Bees.tscn" type="PackedScene" id=7]
+[ext_resource path="res://entities/interactables/Flower.tscn" type="PackedScene" id=8]
+[ext_resource path="res://entities/interactables/Sticks.tscn" type="PackedScene" id=9]
+[ext_resource path="res://entities/interactables/Rocks.tscn" type="PackedScene" id=10]
 
 [node name="Game" type="Node"]
 script = ExtResource( 4 )
 
 [node name="Terrain" parent="." instance=ExtResource( 1 )]
 
+[node name="Temp_Test" type="Node" parent="."]
+
+[node name="LeafPile" parent="Temp_Test" instance=ExtResource( 6 )]
+position = Vector2( 41, -10 )
+
+[node name="LeafPile2" parent="Temp_Test" instance=ExtResource( 6 )]
+position = Vector2( -17, -27 )
+
+[node name="LeafPile3" parent="Temp_Test" instance=ExtResource( 6 )]
+position = Vector2( -34, -9 )
+
+[node name="Bees" parent="Temp_Test" instance=ExtResource( 7 )]
+position = Vector2( -100, 0 )
+
+[node name="Flower" parent="Temp_Test" instance=ExtResource( 8 )]
+position = Vector2( -24, -91 )
+
+[node name="Flower2" parent="Temp_Test" instance=ExtResource( 8 )]
+position = Vector2( 15, -87 )
+
+[node name="Flower3" parent="Temp_Test" instance=ExtResource( 8 )]
+position = Vector2( -11, -65 )
+
+[node name="Flower4" parent="Temp_Test" instance=ExtResource( 8 )]
+position = Vector2( -56, -73 )
+
+[node name="Flower5" parent="Temp_Test" instance=ExtResource( 8 )]
+position = Vector2( -62, -107 )
+
+[node name="Rocks" parent="Temp_Test" instance=ExtResource( 10 )]
+position = Vector2( -125, 91 )
+
+[node name="Rocks2" parent="Temp_Test" instance=ExtResource( 10 )]
+position = Vector2( -85, 98 )
+
+[node name="Rocks3" parent="Temp_Test" instance=ExtResource( 10 )]
+position = Vector2( -151, 118 )
+
+[node name="Rocks4" parent="Temp_Test" instance=ExtResource( 10 )]
+position = Vector2( -170, 90 )
+
+[node name="Rocks5" parent="Temp_Test" instance=ExtResource( 10 )]
+position = Vector2( -173, 57 )
+
+[node name="Sticks" parent="Temp_Test" instance=ExtResource( 9 )]
+position = Vector2( 105, -103 )
+
+[node name="Sticks2" parent="Temp_Test" instance=ExtResource( 9 )]
+position = Vector2( 136, -84 )
+
+[node name="Sticks3" parent="Temp_Test" instance=ExtResource( 9 )]
+position = Vector2( 108, -60 )
+
+[node name="Sticks4" parent="Temp_Test" instance=ExtResource( 9 )]
+position = Vector2( 75, -80 )
+
+[node name="Sticks5" parent="Temp_Test" instance=ExtResource( 9 )]
+position = Vector2( 70, -124 )
+
+[node name="Sticks6" parent="Temp_Test" instance=ExtResource( 9 )]
+position = Vector2( 114, -135 )
+
+[node name="Bear" parent="Temp_Test" instance=ExtResource( 5 )]
+position = Vector2( 513, 225 )
+
+[node name="Bear2" parent="Temp_Test" instance=ExtResource( 5 )]
+position = Vector2( 513, 16 )
+
 [node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( -16, 28 )
 
 [node name="PlayerCamera" parent="." instance=ExtResource( 3 )]
 
-[node name="Bear" parent="." instance=ExtResource( 5 )]
-position = Vector2( 94, 32 )
+[node name="Projectiles" type="Node" parent="." groups=["projectile_root"]]
 
 [node name="SeasonTimer" type="Timer" parent="."]
-wait_time = 180.0
+wait_time = 20.0
 
 [node name="Control" type="CanvasLayer" parent="."]
 

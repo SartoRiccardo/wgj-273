@@ -1,0 +1,22 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://assets/interactables.png" type="Texture" id=1]
+[ext_resource path="res://entities/Interactable.tscn" type="PackedScene" id=2]
+[ext_resource path="res://resources/interactable_rocks.tres" type="Resource" id=3]
+
+[sub_resource type="CapsuleShape2D" id=2]
+height = 8.0
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 32, 32, 32 )
+
+[node name="Rocks" instance=ExtResource( 2 )]
+interactable_data = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ActionRange" index="0"]
+rotation = 1.5708
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="." index="1"]
+texture = SubResource( 1 )

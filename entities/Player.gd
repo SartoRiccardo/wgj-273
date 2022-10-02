@@ -3,8 +3,14 @@ extends KinematicBody2D
 export (int) var MAX_SPEED = 200
 export (int) var ACCELERATION = 500
 export (int) var DECELERATION = 750
+export (int) var SHOOT_RANGE = 250
 
-enum State { NORMAL, PICKUP, SWIM, HURT, DEAD }
+const PROJECTILE_SCENE = preload("res://entities/Projectile.tscn")
+var PROJECTILE_RES = {
+	Enums.Item.ROCK: load("res://resources/projectile_rock.tres")
+}
+
+enum State { NORMAL, PICKUP, FLEEING }
 
 var state = State.NORMAL
 var pressed_actions = []
@@ -19,8 +25,12 @@ func _ready():
 
 func _process(delta):
 	handle_movement_inputs()
+	Helpers.writeln_console(State.keys()[state])
+	Helpers.writeln_console(str($Inventory))
 	
 	match state:
+		State.FLEEING:
+			process_fleeing(delta)
 		State.NORMAL:
 			process_normal(delta)
 		State.PICKUP:
@@ -34,7 +44,7 @@ func _process(delta):
 func change_state(new_state):
 	state = new_state
 
-func process_pickup(delta):
+func process_pickup(_delta):
 	if Input.is_action_just_released("do_action") or interacting_with == null:
 		interacting_with = null
 		$ActionTimer.stop()
@@ -46,9 +56,31 @@ func process_normal(delta):
 		handle_actions()
 		if interacting_with != null:
 			speed = 0.0
+			velocity = Vector2.ZERO
 			change_state(State.PICKUP)
 			return
-		
+	
+	handle_movement(delta)
+	update_sprite()
+
+func process_fleeing(delta):
+	handle_movement(delta)
+	update_sprite()
+	
+	Helpers.writeln_console("Targets: %s" % String(get_valid_shoot_targets()))
+	if Input.is_action_just_pressed("do_action"):
+		var targets = get_valid_shoot_targets()
+		if targets.size() > 0:
+			var projectile_root = Helpers.get_first_of_group("projectile_root")
+			if projectile_root:
+				var target = Helpers.get_closest_node_to(targets, global_position)
+				var projectile = PROJECTILE_SCENE.instance()
+				projectile.set_target(target)
+				projectile.projectile_data = PROJECTILE_RES[Enums.Item.ROCK]
+				projectile.global_position = global_position
+				projectile_root.add_child(projectile)
+
+func handle_movement(delta):
 	mov_vector = Vector2.ZERO
 	for i in range(pressed_actions.size()-1, -1, -1):
 		var evt = pressed_actions[i]
@@ -57,7 +89,6 @@ func process_normal(delta):
 		if (evt == "move_left" or evt == "move_right") and mov_vector.x == 0:
 			mov_vector.x = Vector2.LEFT.x if evt == "move_left" else Vector2.RIGHT.x
 	mov_vector = mov_vector.normalized()
-	update_sprite()
 	
 	if mov_vector != Vector2.ZERO:
 		speed = clamp(speed + ACCELERATION * delta, 0, MAX_SPEED)
@@ -86,13 +117,13 @@ func handle_actions():
 			var interactable = area.get_parent()
 			if interactable.is_pickuppable($Inventory):
 				interacting_with = interactables[0].get_parent()
-				$ActionTimer.start(interacting_with.time)
+				$ActionTimer.start(interacting_with.interactable_data.time)
 				break
 
 func update_sprite():
 	if pressed_actions.size() == 0:
 		$AnimatedSprite.stop()
-		$AnimatedSprite.set_frame(0)
+		$AnimatedSprite.set_frame(1)
 		return
 	
 	var direction = pressed_actions[pressed_actions.size()-1]
@@ -114,13 +145,31 @@ func update_sprite():
 	
 	if mov_vector == Vector2.ZERO:
 		$AnimatedSprite.stop()
-		$AnimatedSprite.set_frame(0)
+		$AnimatedSprite.set_frame(1)
 	else:
+		if !$AnimatedSprite.is_playing():
+			$AnimatedSprite.set_frame(0)
 		$AnimatedSprite.play()
-	
+
+func get_valid_shoot_targets():
+	var hazards = get_tree().get_nodes_in_group("angered")
+	var valid = []
+	for hzr in hazards:
+		if hzr.global_position.distance_to(global_position) <= SHOOT_RANGE and \
+				!hzr.is_in_group("targeted"):
+			valid.append(hzr)
+	return valid
+
 func _on_action_timeout():
 	if interacting_with == null:
 		return
 	interacting_with.consume($Inventory)
-	$Inventory.add(interacting_with.item, interacting_with.pickup())
+	$Inventory.add(interacting_with.interactable_data.item, interacting_with.pickup())
 	interacting_with = null
+
+func _on_hazard_angered():
+	change_state(State.FLEEING)
+
+func _on_hazard_unangered():
+	if get_tree().get_nodes_in_group("angered").size() == 0:
+		change_state(State.NORMAL)

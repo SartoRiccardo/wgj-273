@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://resources/InteractableRequirement.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+item = 3
+amount = 5

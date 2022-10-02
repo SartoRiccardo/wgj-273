@@ -1,17 +1,42 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://entities/Hazard.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/enemies/Bear.gd" type="Script" id=2]
+[ext_resource path="res://assets/bear_PNG23456.png" type="Texture" id=3]
+[ext_resource path="res://resources/stun_honey.tres" type="Resource" id=4]
+[ext_resource path="res://resources/stun_rock.tres" type="Resource" id=5]
+[ext_resource path="res://resources/hazard_bear.tres" type="Resource" id=6]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 8, 2.5 )
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 8.0
 height = 12.0
 
-[node name="Bear" instance=ExtResource( 1 )]
-script = ExtResource( 2 )
-distance_to_forget = 300
+[sub_resource type="CapsuleShape2D" id=4]
+radius = 15.0
+height = 12.0
 
-[node name="Hitbox" parent="." index="0"]
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Bear" instance=ExtResource( 1 )]
+collision_layer = 0
+script = ExtResource( 2 )
+stuns = [ ExtResource( 5 ), ExtResource( 4 ) ]
+hazard_properties = ExtResource( 6 )
+
+[node name="WorldShape" type="CollisionShape2D" parent="." index="0"]
+position = Vector2( 0, -2.5 )
+shape = SubResource( 2 )
+
+[node name="Hitbox" parent="." index="1"]
 collision_layer = 32
 collision_mask = 0
 
@@ -20,9 +45,19 @@ position = Vector2( 0, -8 )
 rotation = 1.5708
 shape = SubResource( 1 )
 
-[node name="Sight" type="RayCast2D" parent="." index="1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2( -1, -12 )
+rotation = 1.5708
+shape = SubResource( 4 )
+
+[node name="Sight" type="RayCast2D" parent="." index="3"]
 position = Vector2( 0, -8 )
 enabled = true
 cast_to = Vector2( -150, 0 )
 collision_mask = 65
 collide_with_areas = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="4"]
+position = Vector2( -2, -11 )
+scale = Vector2( 1, 0.602564 )
+frames = SubResource( 3 )
