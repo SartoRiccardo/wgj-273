@@ -1,5 +1,7 @@
 extends Node
 
+signal season_change(new_season)
+
 var current_season = 0
 var season_cycle = [Enums.Season.SPRING, Enums.Season.SUMMER, Enums.Season.AUTUMN, Enums.Season.WINTER]
 

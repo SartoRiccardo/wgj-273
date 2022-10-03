@@ -1,0 +1,12 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://resources/interactable/InteractableResource.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+item = 5
+amount_min = 0
+amount_max = 1
+time = 5.0
+die_on_pickup = false
+requirements = [  ]

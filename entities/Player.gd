@@ -21,9 +21,13 @@ var velocity = mov_vector
 var speed = 0.0
 var interacting_with = null
 var lives = 5
+var in_water = false
 
 func _ready():
 	$ActionTimer.connect("timeout", self, "_on_action_timeout")
+	$WaterDetect.add_child($WorldShape.duplicate())
+	$WaterDetect.connect("area_entered", self, "_on_water_enter")
+	$WaterDetect.connect("area_exited", self, "_on_water_exited")
 
 func _process(delta):
 	handle_movement_inputs()
@@ -101,6 +105,8 @@ func handle_movement(delta):
 	else:
 		speed = lerp(0, speed, pow(2, -5*delta))
 	velocity = velocity.linear_interpolate(mov_vector*speed, 1/3.0)
+	if in_water:
+		velocity *= 0.2
 	
 	velocity = move_and_slide(velocity)
 
@@ -195,3 +201,9 @@ func get_hurt():
 	if $Invulnerability.time_left == 0:
 		lives -= 1
 		$Invulnerability.start()
+
+func _on_water_enter(_a2d):
+	in_water = true
+
+func _on_water_exited(_a2d):
+	in_water = false

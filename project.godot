@@ -170,6 +170,7 @@ prev_inv_item={
 2d_render/layer_6="danger"
 2d_physics/layer_1="world_collision"
 2d_physics/layer_2="world_disabled"
+2d_physics/layer_3="world_water"
 2d_physics/layer_5="action"
 2d_physics/layer_6="player_hurt"
 2d_physics/layer_7="detection"
