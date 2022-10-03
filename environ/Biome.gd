@@ -26,7 +26,6 @@ func get_area():
 
 func random_point():
 	var triangulated = Geometry.triangulate_polygon(polygon)
-	var total_area = 0
 	var tri_areas = []
 	for i in range(0, triangulated.size()/3):
 		var v1 = triangulated[i*3]
@@ -35,7 +34,6 @@ func random_point():
 		var tri_area = Helpers.get_triangle_area(
 			polygon[v1], polygon[v2], polygon[v3]
 		)
-		total_area += tri_area
 		tri_areas.append(tri_area)
 	
 	var tri_idx = Helpers.weighted_random(tri_areas)

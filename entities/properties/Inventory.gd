@@ -1,12 +1,12 @@
 extends Node
 
 var contents = {
-	Enums.Item.LEAF: 0,
-	Enums.Item.ROCK: 20,
-	Enums.Item.STICK: 0,
-	Enums.Item.FLOWER: 0,
+	Enums.Item.LEAF: 10,
+	Enums.Item.ROCK: 10,
+	Enums.Item.STICK: 10,
+	Enums.Item.FLOWER: 10,
 	Enums.Item.HONEY: 10,
-	Enums.Item.FISH: 0,
+	Enums.Item.FISH: 10,
 }
 var equipped = Enums.Item.ROCK
 
@@ -24,6 +24,9 @@ func remove(item, amount=1):
 		contents[item] -= amount
 		if contents[item] < 0:
 			contents[item] = 0
+
+func steal(item, amount=1):
+	return remove(item, amount)
 
 func _to_string():
 	var ret = ""

@@ -30,7 +30,8 @@ func _process(delta):
 	handle_inventory_inputs()
 	Helpers.writeln_console(State.keys()[state])
 	Helpers.writeln_console(str($Inventory))
-	Helpers.writeln_console("equipped: %s - %s" % [Enums.Item.keys()[$Inventory.equipped], $Inventory.get_amount($Inventory.equipped)])
+	Helpers.writeln_console("Equipped: %s - %s" % [Enums.Item.keys()[$Inventory.equipped], $Inventory.get_amount($Inventory.equipped)])
+	Helpers.writeln_console("Lives: %s - Invuln: %s" % [lives, $Invulnerability.time_left])
 	
 	match state:
 		State.FLEEING:
@@ -41,9 +42,7 @@ func _process(delta):
 			process_pickup(delta)
 	
 	if $HurtBox.get_overlapping_areas().size() > 0:
-		if $Invulnerability.time_left == 0:
-			lives -= 1
-			$Invulnerability.start()
+		get_hurt()
 
 func change_state(new_state):
 	state = new_state
@@ -175,6 +174,9 @@ func get_valid_shoot_targets():
 			valid.append(hzr)
 	return valid
 
+func get_inventory():
+	return $Inventory
+
 func _on_action_timeout():
 	if interacting_with == null:
 		return
@@ -188,3 +190,8 @@ func _on_hazard_angered():
 func _on_hazard_unangered():
 	if get_tree().get_nodes_in_group("angered").size() == 0:
 		change_state(State.NORMAL)
+
+func get_hurt():
+	if $Invulnerability.time_left == 0:
+		lives -= 1
+		$Invulnerability.start()

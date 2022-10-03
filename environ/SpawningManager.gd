@@ -1,5 +1,6 @@
 extends Node
 
+export (bool) var enabled = true
 export (Resource) var spawns_spring
 export (Resource) var spawns_summer
 export (Resource) var spawns_autumn
@@ -10,7 +11,8 @@ var rng = RandomNumberGenerator.new()
 var entity_count = {}
 
 func _ready():
-	$Timer.connect("timeout", self, "_on_spawn_attempt")
+	if enabled:
+		$Timer.connect("timeout", self, "_on_spawn_attempt")
 	rng.randomize()
 
 func _on_spawn_attempt():

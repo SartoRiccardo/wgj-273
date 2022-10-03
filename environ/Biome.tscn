@@ -3,5 +3,6 @@
 [ext_resource path="res://environ/Biome.gd" type="Script" id=1]
 
 [node name="Biome" type="Polygon2D"]
+visible = false
 color = Color( 0.0784314, 1, 0, 0.576471 )
 script = ExtResource( 1 )

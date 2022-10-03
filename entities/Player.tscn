@@ -4,14 +4,6 @@
 [ext_resource path="res://entities/Player.gd" type="Script" id=2]
 [ext_resource path="res://entities/properties/Inventory.tscn" type="PackedScene" id=3]
 
-[sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 1 )
-region = Rect2( 12, 15, 12, 15 )
-
-[sub_resource type="AtlasTexture" id=4]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 15, 12, 15 )
-
 [sub_resource type="AtlasTexture" id=8]
 atlas = ExtResource( 1 )
 region = Rect2( 24, 0, 12, 15 )
@@ -36,13 +28,16 @@ region = Rect2( 0, 30, 12, 15 )
 atlas = ExtResource( 1 )
 region = Rect2( 12, 30, 12, 15 )
 
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 12, 15, 12, 15 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 15, 12, 15 )
+
 [sub_resource type="SpriteFrames" id=9]
 animations = [ {
-"frames": [ SubResource( 5 ), SubResource( 4 ) ],
-"loop": true,
-"name": "walk_right",
-"speed": 7.0
-}, {
 "frames": [ SubResource( 8 ), SubResource( 6 ), SubResource( 7 ), SubResource( 6 ) ],
 "loop": true,
 "name": "walk_down",
@@ -51,6 +46,11 @@ animations = [ {
 "frames": [ SubResource( 3 ), SubResource( 1 ), SubResource( 2 ), SubResource( 1 ) ],
 "loop": true,
 "name": "walk_up",
+"speed": 7.0
+}, {
+"frames": [ SubResource( 5 ), SubResource( 4 ) ],
+"loop": true,
+"name": "walk_right",
 "speed": 7.0
 } ]
 
@@ -68,7 +68,7 @@ radius = 4.0
 height = 6.0
 
 [node name="Player" type="KinematicBody2D" groups=["playable"]]
-collision_layer = 0
+collision_mask = 0
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
@@ -97,7 +97,7 @@ position = Vector2( 0, -7 )
 shape = SubResource( 12 )
 
 [node name="HurtBox" type="Area2D" parent="."]
-collision_layer = 0
+collision_layer = 32
 collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]

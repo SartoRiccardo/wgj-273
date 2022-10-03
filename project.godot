@@ -10,9 +10,19 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Resource",
+"class": "BearBehavior",
+"language": "GDScript",
+"path": "res://resources/hazards/BearBehavior.gd"
+}, {
+"base": "Resource",
 "class": "EntitySpawnData",
 "language": "GDScript",
 "path": "res://resources/season_spawns/EntitySpawnData.gd"
+}, {
+"base": "Resource",
+"class": "FoxBehavior",
+"language": "GDScript",
+"path": "res://resources/hazards/FoxBehavior.gd"
 }, {
 "base": "Resource",
 "class": "HazardResource",
@@ -50,7 +60,9 @@ _global_script_classes=[ {
 "path": "res://resources/stuns/StunResource.gd"
 } ]
 _global_script_class_icons={
+"BearBehavior": "",
 "EntitySpawnData": "",
+"FoxBehavior": "",
 "HazardResource": "",
 "InteractableRequirement": "",
 "InteractableResource": "",
@@ -141,12 +153,12 @@ do_action={
 }
 next_inv_item={
 "deadzone": 0.5,
-"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":76,"unicode":0,"echo":false,"script":null)
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":16777218,"unicode":0,"echo":false,"script":null)
  ]
 }
 prev_inv_item={
 "deadzone": 0.5,
-"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":74,"unicode":0,"echo":false,"script":null)
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":true,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":16777218,"unicode":0,"echo":false,"script":null)
  ]
 }
 

@@ -1,34 +1,44 @@
 extends "res://entities/Hazard.gd"
 
 export (int) var speed = 75
+export (Resource) var behavior
 
-func _process(delta):
-	var cur_state = state
-	match state:
-		Enums.HazardState.IDLE:
-			process_idle(delta)
-		Enums.HazardState.ANGERED:
-			process_angered(delta)
-		Enums.HazardState.STUNNED:
-			process_stunned(delta)
-	
-	if cur_state == state:
-		state_is_new = false
+func _ready():
+	behavior.connect("docile_change", self, "_on_docile_change")
 
-func process_idle(delta):
-	wander(delta)
-	update_sight(delta)
-	check_sight()
+func _process_idle(_delta):
+	pass
 
-func process_angered(delta):
-	if following == null:
-		change_state(Enums.HazardState.IDLE)
+func _process_angered(delta):
+	if following:
+		global_position += global_position.direction_to(following.global_position) * speed * delta
+
+func _process_stunned(_delta):
+	pass
+
+# Override
+func update_sight(delta):
+	if !behavior.docile:
+		.update_sight(delta)
+
+# Override
+func change_state(new_state):
+	if new_state == Enums.HazardState.ANGERED and \
+			state != Enums.HazardState.IDLE and \
+			behavior.docile:
+		new_state = Enums.HazardState.IDLE
+	.change_state(new_state)
+
+func _on_docile_change(docile):
+	if docile:
+		if state == Enums.HazardState.ANGERED:
+			change_state(Enums.HazardState.IDLE)
 		lose_sight_player()
-		return
-	
-	if check_player_distance():
-		return
-	global_position += global_position.direction_to(following.global_position) * speed * delta
+		$Hurtbox.set_monitorable(false)
+		$Sight.set_enabled(false)
+	else:
+		$Hurtbox.set_monitorable(true)
 
-func process_stunned(_delta):
-	check_player_distance()
+func _on_hit(item):
+	if item == Enums.Item.HONEY:
+		behavior.set_docile(true)
