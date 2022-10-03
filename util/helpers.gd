@@ -12,6 +12,9 @@ func get_first_of_group(group_name):
 func get_game_node():
 	return get_first_of_group("game_root")
 
+func get_player():
+	return get_first_of_group("playable")
+
 func array_to_string(array):
 	var ret = ""
 	for el in array:

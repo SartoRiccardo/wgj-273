@@ -51,14 +51,14 @@ __meta__ = {
 [node name="Plains" parent="SpawningManager" instance=ExtResource( 6 )]
 position = Vector2( -103, -84 )
 color = Color( 0.0784314, 1, 0, 0.301961 )
-polygon = PoolVector2Array( -335, -161, -323, 1, -307, 89, -48, 83, 25, 8, -51, -92 )
+polygon = PoolVector2Array( -184, -102, -100, 6, -30, 3, -202, 147, -48, 83, 25, 8, -51, -92 )
 
 [node name="Forest" parent="SpawningManager" instance=ExtResource( 6 )]
 color = Color( 0.0156863, 0.2, 0, 0.278431 )
-polygon = PoolVector2Array( 177, -170, 84, -90, 179, 67, 257, -87 )
+polygon = PoolVector2Array( 177, -170, 84, -90, 127, 128, 333, 110, 299, -158 )
 type = 1
 
 [node name="Mountain" parent="SpawningManager" instance=ExtResource( 6 )]
 color = Color( 1, 0, 0, 0.156863 )
-polygon = PoolVector2Array( -169, 71, -109, 201, -64, 74, 40, 128, -21, 251, -204, 252, -259, 119 )
+polygon = PoolVector2Array( -169, 71, -107, 158, -64, 74, 40, 128, -21, 251, -147, 207, -259, 261, -301, 123 )
 type = 3

@@ -66,6 +66,9 @@ func get_hit(projectile):
 				call_deferred("_on_hit", [item])
 
 func wander(delta):
+	if state_is_new:
+		wander_target = global_position
+	
 	if global_position == wander_target:
 		if $IdleTimer.time_left == 0:
 			var variance = rng.randf_range(-hazard_properties.idle_rand, hazard_properties.idle_rand)

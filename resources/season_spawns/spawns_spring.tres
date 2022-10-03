@@ -27,7 +27,9 @@ biome = 3
 [sub_resource type="Resource" id=1]
 script = ExtResource( 2 )
 scene = ExtResource( 4 )
+node_type = "collectible"
 cap = 10
+min_distance_from_player = 0.0
 spawn_chances = [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ]
 
 [sub_resource type="Resource" id=9]
@@ -43,7 +45,9 @@ biome = 1
 [sub_resource type="Resource" id=2]
 script = ExtResource( 2 )
 scene = ExtResource( 5 )
+node_type = "animal"
 cap = 3
+min_distance_from_player = 0.0
 spawn_chances = [ SubResource( 9 ), SubResource( 10 ) ]
 
 [sub_resource type="Resource" id=11]
@@ -64,7 +68,9 @@ biome = 3
 [sub_resource type="Resource" id=4]
 script = ExtResource( 2 )
 scene = ExtResource( 6 )
+node_type = "collectible"
 cap = 15
+min_distance_from_player = 0.0
 spawn_chances = [ SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ]
 
 [sub_resource type="Resource" id=14]
@@ -80,7 +86,9 @@ biome = 1
 [sub_resource type="Resource" id=5]
 script = ExtResource( 2 )
 scene = ExtResource( 7 )
+node_type = "collectible"
 cap = 15
+min_distance_from_player = 0.0
 spawn_chances = [ SubResource( 14 ), SubResource( 15 ) ]
 
 [sub_resource type="Resource" id=16]
@@ -96,7 +104,9 @@ biome = 1
 [sub_resource type="Resource" id=18]
 script = ExtResource( 2 )
 scene = ExtResource( 8 )
+node_type = "animal"
 cap = 5
+min_distance_from_player = 150.0
 spawn_chances = [ SubResource( 16 ), SubResource( 17 ) ]
 
 [resource]
