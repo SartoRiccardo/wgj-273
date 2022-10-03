@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=3 format=2]
 
-[ext_resource path="res://resources/InteractableResource.gd" type="Script" id=1]
-[ext_resource path="res://resources/interactable_bees_req0.tres" type="Resource" id=2]
+[ext_resource path="res://resources/interactable/InteractableResource.gd" type="Script" id=1]
+[ext_resource path="res://resources/interactable/interactable_bees_req0.tres" type="Resource" id=2]
 
 [resource]
 script = ExtResource( 1 )

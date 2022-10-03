@@ -23,6 +23,7 @@ func _on_projectile_hit(_a2d):
 	if hit:
 		return
 	hit = true
+	$Hurtbox.queue_free()
 	
 	if target.is_in_group("targeted"):
 		target.remove_from_group("targeted")

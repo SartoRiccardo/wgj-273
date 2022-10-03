@@ -7,7 +7,9 @@ export (int) var SHOOT_RANGE = 250
 
 const PROJECTILE_SCENE = preload("res://entities/Projectile.tscn")
 var PROJECTILE_RES = {
-	Enums.Item.ROCK: load("res://resources/projectile_rock.tres")
+	Enums.Item.ROCK: load("res://resources/projectiles/projectile_rock.tres"),
+	Enums.Item.HONEY: load("res://resources/projectiles/projectile_honey.tres"),
+	Enums.Item.FISH: load("res://resources/projectiles/projectile_fish.tres")
 }
 
 enum State { NORMAL, PICKUP, FLEEING }
@@ -25,8 +27,10 @@ func _ready():
 
 func _process(delta):
 	handle_movement_inputs()
+	handle_inventory_inputs()
 	Helpers.writeln_console(State.keys()[state])
 	Helpers.writeln_console(str($Inventory))
+	Helpers.writeln_console("equipped: %s - %s" % [Enums.Item.keys()[$Inventory.equipped], $Inventory.get_amount($Inventory.equipped)])
 	
 	match state:
 		State.FLEEING:
@@ -40,7 +44,7 @@ func _process(delta):
 		if $Invulnerability.time_left == 0:
 			lives -= 1
 			$Invulnerability.start()
-	
+
 func change_state(new_state):
 	state = new_state
 
@@ -72,12 +76,15 @@ func process_fleeing(delta):
 		var targets = get_valid_shoot_targets()
 		if targets.size() > 0:
 			var projectile_root = Helpers.get_first_of_group("projectile_root")
-			if projectile_root:
+			if projectile_root and $Inventory.equipped in PROJECTILE_RES.keys():
 				var target = Helpers.get_closest_node_to(targets, global_position)
 				var projectile = PROJECTILE_SCENE.instance()
 				projectile.set_target(target)
-				projectile.projectile_data = PROJECTILE_RES[Enums.Item.ROCK]
+				projectile.projectile_data = PROJECTILE_RES[$Inventory.equipped]
 				projectile.global_position = global_position
+				var stun_data = target.get_stun_for($Inventory.equipped)
+				if stun_data:
+					$Inventory.remove($Inventory.equipped, stun_data.amount_needed)
 				projectile_root.add_child(projectile)
 
 func handle_movement(delta):
@@ -107,6 +114,12 @@ func handle_movement_inputs():
 			pressed_actions.append(evt)
 		if Input.is_action_just_released(evt):
 			pressed_actions.erase(evt)
+
+func handle_inventory_inputs():
+	if Input.is_action_just_pressed("next_inv_item"):
+		$Inventory.equip_next()
+	if Input.is_action_just_pressed("prev_inv_item"):
+		$Inventory.equip_prev()
 
 func handle_actions():
 	var interactables = $ActionRange.get_overlapping_areas()
@@ -151,12 +164,14 @@ func update_sprite():
 			$AnimatedSprite.set_frame(0)
 		$AnimatedSprite.play()
 
+# TODO optimize, don't do every frame, update only when necessary
 func get_valid_shoot_targets():
 	var hazards = get_tree().get_nodes_in_group("angered")
 	var valid = []
 	for hzr in hazards:
 		if hzr.global_position.distance_to(global_position) <= SHOOT_RANGE and \
-				!hzr.is_in_group("targeted"):
+				!hzr.is_in_group("targeted") and \
+				hzr.can_be_hit_by($Inventory.equipped, $Inventory.get_amount($Inventory.equipped)):
 			valid.append(hzr)
 	return valid
 

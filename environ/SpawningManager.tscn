@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://environ/SpawningManager.gd" type="Script" id=1]
+[ext_resource path="res://resources/season_spawns/spawns_spring.tres" type="Resource" id=2]
+
+[node name="SpawningManager" type="Node"]
+script = ExtResource( 1 )
+spawns_spring = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true

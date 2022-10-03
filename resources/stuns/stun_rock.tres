@@ -1,10 +1,10 @@
 [gd_resource type="Resource" load_steps=2 format=2]
 
-[ext_resource path="res://resources/StunResource.gd" type="Script" id=1]
+[ext_resource path="res://resources/stuns/StunResource.gd" type="Script" id=1]
 
 [resource]
 script = ExtResource( 1 )
 trigger = 1
-amount_needed = 3
-stun_seconds = 3.0
+amount_needed = 2
+stun_seconds = 0.3
 is_stun_permanent = false

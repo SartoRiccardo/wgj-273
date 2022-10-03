@@ -2,7 +2,7 @@
 
 [ext_resource path="res://assets/interactables.png" type="Texture" id=1]
 [ext_resource path="res://entities/Interactable.tscn" type="PackedScene" id=2]
-[ext_resource path="res://resources/interactable_sticks.tres" type="Resource" id=3]
+[ext_resource path="res://resources/interactable/interactable_sticks.tres" type="Resource" id=3]
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 13, 10.5 )

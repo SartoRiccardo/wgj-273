@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=5 format=2]
+
+[ext_resource path="res://resources/season_spawns/EntitySpawnData.gd" type="Script" id=1]
+[ext_resource path="res://resources/season_spawns/SpawnChance.gd" type="Script" id=2]
+
+[sub_resource type="Resource" id=16]
+script = ExtResource( 2 )
+chance = 0.017
+biome = 3
+
+[sub_resource type="Resource" id=17]
+script = ExtResource( 2 )
+chance = 0.067
+biome = 1
+
+[resource]
+script = ExtResource( 1 )
+cap = 5
+spawn_chances = [ SubResource( 16 ), SubResource( 17 ) ]

@@ -57,7 +57,7 @@ func get_hit(projectile):
 		if stun.trigger == item:
 			change_state(Enums.HazardState.STUNNED)
 			var sprite : AnimatedSprite = get_node_or_null("AnimatedSprite")
-			var anim_name = ("stun_%s" % Enums.HazardState.keys()[item]).to_lower()
+			var anim_name = ("stun_%s" % Enums.Item.keys()[item]).to_lower()
 			if sprite and sprite.frames.has_animation(anim_name):
 				sprite.play(anim_name)
 				yield (sprite, "animation_finished")
@@ -95,6 +95,25 @@ func check_sight():
 			sight.set_enabled(false)
 			lock_on_player()
 			change_state(Enums.HazardState.ANGERED)
+
+func get_throwable_objects(inventory):
+	var throwable = []
+	for item in inventory.contents.keys():
+		for stun in stuns:
+			if stun.trigger == item and \
+					stun.amount_needed <= inventory.get_amount(item):
+				throwable.append(item)
+	return throwable
+
+func can_be_hit_by(item, amount):
+	var stun = get_stun_for(item)
+	return stun != null and stun.amount_needed <= amount
+
+func get_stun_for(item):
+	for stun in stuns:
+		if stun.trigger == item:
+			return stun
+	return null
 
 func _on_stun_end():
 	change_state(Enums.HazardState.ANGERED)

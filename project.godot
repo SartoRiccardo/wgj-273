@@ -10,35 +10,53 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Resource",
+"class": "EntitySpawnData",
+"language": "GDScript",
+"path": "res://resources/season_spawns/EntitySpawnData.gd"
+}, {
+"base": "Resource",
 "class": "HazardResource",
 "language": "GDScript",
-"path": "res://resources/HazardResource.gd"
+"path": "res://resources/hazards/HazardResource.gd"
 }, {
 "base": "Resource",
 "class": "InteractableRequirement",
 "language": "GDScript",
-"path": "res://resources/InteractableRequirement.gd"
+"path": "res://resources/interactable/InteractableRequirement.gd"
 }, {
 "base": "Resource",
 "class": "InteractableResource",
 "language": "GDScript",
-"path": "res://resources/InteractableResource.gd"
+"path": "res://resources/interactable/InteractableResource.gd"
 }, {
 "base": "Resource",
 "class": "ProjectileResource",
 "language": "GDScript",
-"path": "res://resources/ProjectileResource.gd"
+"path": "res://resources/projectiles/ProjectileResource.gd"
+}, {
+"base": "Resource",
+"class": "SpawnChance",
+"language": "GDScript",
+"path": "res://resources/season_spawns/SpawnChance.gd"
+}, {
+"base": "Resource",
+"class": "SpawnResource",
+"language": "GDScript",
+"path": "res://resources/season_spawns/SpawnResource.gd"
 }, {
 "base": "Resource",
 "class": "StunResource",
 "language": "GDScript",
-"path": "res://resources/StunResource.gd"
+"path": "res://resources/stuns/StunResource.gd"
 } ]
 _global_script_class_icons={
+"EntitySpawnData": "",
 "HazardResource": "",
 "InteractableRequirement": "",
 "InteractableResource": "",
 "ProjectileResource": "",
+"SpawnChance": "",
+"SpawnResource": "",
 "StunResource": ""
 }
 
@@ -119,6 +137,16 @@ move_right={
 do_action={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":32,"unicode":0,"echo":false,"script":null)
+ ]
+}
+next_inv_item={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":76,"unicode":0,"echo":false,"script":null)
+ ]
+}
+prev_inv_item={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":74,"unicode":0,"echo":false,"script":null)
  ]
 }
 
