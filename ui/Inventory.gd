@@ -10,6 +10,8 @@ export (Texture) var bullet_normal
 
 const ATLAS_SIZE = Vector2(16, 16)
 
+var equipped = null
+
 func _ready():
 	var player = Helpers.get_player()
 	if player:
@@ -18,13 +20,15 @@ func _ready():
 
 func init_ui(inventory):
 	inventory.connect("equip", self, "_on_item_equip")
-	update_item(inventory.equipped, inventory.get_amount(inventory.equipped))
+	inventory.connect("amount_change", self, "_on_content_amount_change")
+	equipped = inventory.equipped
+	update_item(equipped, inventory.get_amount(equipped))
 	
 	var page_bullet = pages.get_children()[0]
 	for __ in range(inventory.contents.size()-1):
 		var new_bullet = page_bullet.duplicate()
 		pages.add_child(new_bullet)
-	update_pages(inventory.equipped)
+	update_pages(equipped)
 
 func update_pages(equipped):
 	var bullets = pages.get_children()
@@ -50,5 +54,11 @@ func update_item(item, amount):
 	item_count.set_text(str(amount))
 
 func _on_item_equip(item, amount):
+	equipped = item
 	update_item(item, amount)
 	update_pages(item)
+
+func _on_content_amount_change(item, _old_amount, new_amount):
+	print("EQUIPPED: %s, ITEM: %s" % [equipped, item])
+	if item == equipped:
+		update_item(item, new_amount)

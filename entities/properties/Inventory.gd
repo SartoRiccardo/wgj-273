@@ -2,7 +2,7 @@ extends Node
 
 signal equip(item, amount)
 signal stolen(item, amount)
-signal change(item, old_amount, new_amount)
+signal amount_change(item, old_amount, new_amount)
 
 var contents = {
 	Enums.Item.LEAF: 2,
@@ -29,15 +29,15 @@ func _change_amount(item, amount, is_theft=false):
 		if contents[item] != prev_amount:
 			if is_theft and prev_amount > contents[item]:
 				emit_signal("stolen", item, prev_amount - contents[item])
-			emit_signal("change", item, prev_amount, contents[item])
+			emit_signal("amount_change", item, prev_amount, contents[item])
 
 func add(item, amount=1):
-	if amount > 0:
+	if amount <= 0:
 		return
 	_change_amount(item, amount)
 
 func remove(item, amount=1):
-	if amount < 0:
+	if amount <= 0:
 		return
 	_change_amount(item, -amount)
 
