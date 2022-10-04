@@ -1,12 +1,16 @@
 extends Node
 
+signal equip(item, amount)
+signal stolen(item, amount)
+signal change(item, old_amount, new_amount)
+
 var contents = {
-	Enums.Item.LEAF: 10,
-	Enums.Item.ROCK: 10,
-	Enums.Item.STICK: 10,
-	Enums.Item.FLOWER: 10,
-	Enums.Item.HONEY: 10,
-	Enums.Item.FISH: 10,
+	Enums.Item.LEAF: 2,
+	Enums.Item.ROCK: 0,
+	Enums.Item.STICK: 5,
+	Enums.Item.FLOWER: 9,
+	Enums.Item.HONEY: 0,
+	Enums.Item.FISH: 99,
 }
 var equipped = Enums.Item.ROCK
 
@@ -15,18 +19,30 @@ func get_amount(item):
 		return 0
 	return contents[item]
 
-func add(item, amount=1):
+func _change_amount(item, amount, is_theft=false):
 	if item in contents.keys():
+		var prev_amount = contents[item]
 		contents[item] += amount
-
-func remove(item, amount=1):
-	if item in contents.keys():
-		contents[item] -= amount
 		if contents[item] < 0:
 			contents[item] = 0
+		
+		if contents[item] != prev_amount:
+			if is_theft and prev_amount > contents[item]:
+				emit_signal("stolen", item, prev_amount - contents[item])
+			emit_signal("change", item, prev_amount, contents[item])
+
+func add(item, amount=1):
+	if amount > 0:
+		return
+	_change_amount(item, amount)
+
+func remove(item, amount=1):
+	if amount < 0:
+		return
+	_change_amount(item, -amount)
 
 func steal(item, amount=1):
-	return remove(item, amount)
+	return _change_amount(item, -amount, true)
 
 func _to_string():
 	var ret = ""
@@ -39,6 +55,7 @@ func equip_relative(change=1):
 	var equip_idx = item_keys.find(equipped)
 	equip_idx = (equip_idx+change) % item_keys.size()
 	equipped = item_keys[equip_idx]
+	emit_signal("equip", equipped, contents[equipped])
 
 func equip_next():
 	equip_relative(1)

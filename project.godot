@@ -40,6 +40,11 @@ _global_script_classes=[ {
 "path": "res://resources/interactable/InteractableResource.gd"
 }, {
 "base": "Resource",
+"class": "InventoryUISprite",
+"language": "GDScript",
+"path": "res://resources/ui/InventoryUISprite.gd"
+}, {
+"base": "Resource",
 "class": "ProjectileResource",
 "language": "GDScript",
 "path": "res://resources/projectiles/ProjectileResource.gd"
@@ -66,6 +71,7 @@ _global_script_class_icons={
 "HazardResource": "",
 "InteractableRequirement": "",
 "InteractableResource": "",
+"InventoryUISprite": "",
 "ProjectileResource": "",
 "SpawnChance": "",
 "SpawnResource": "",

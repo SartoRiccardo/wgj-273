@@ -121,7 +121,8 @@ func handle_movement_inputs():
 			pressed_actions.erase(evt)
 
 func handle_inventory_inputs():
-	if Input.is_action_just_pressed("next_inv_item"):
+	if Input.is_action_just_pressed("next_inv_item") and \
+			not Input.is_key_pressed(KEY_SHIFT):
 		$Inventory.equip_next()
 	if Input.is_action_just_pressed("prev_inv_item"):
 		$Inventory.equip_prev()
@@ -183,6 +184,11 @@ func get_valid_shoot_targets():
 func get_inventory():
 	return $Inventory
 
+func get_hurt():
+	if $Invulnerability.time_left == 0:
+		lives -= 1
+		$Invulnerability.start()
+
 func _on_action_timeout():
 	if interacting_with == null:
 		return
@@ -196,11 +202,6 @@ func _on_hazard_angered():
 func _on_hazard_unangered():
 	if get_tree().get_nodes_in_group("angered").size() == 0:
 		change_state(State.NORMAL)
-
-func get_hurt():
-	if $Invulnerability.time_left == 0:
-		lives -= 1
-		$Invulnerability.start()
 
 func _on_water_enter(_a2d):
 	in_water = true

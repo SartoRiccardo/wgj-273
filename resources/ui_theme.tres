@@ -1,10 +1,21 @@
-[gd_resource type="Theme" load_steps=3 format=2]
+[gd_resource type="Theme" load_steps=5 format=2]
 
-[ext_resource path="res://assets/dynastium_kjvy.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://resources/font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://assets/frames.png" type="Texture" id=2]
 
-[sub_resource type="DynamicFont" id=2]
-size = 11
-font_data = ExtResource( 1 )
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 13, 13 )
+
+[sub_resource type="StyleBoxTexture" id=4]
+texture = SubResource( 3 )
+region_rect = Rect2( 0, 0, 13, 13 )
+margin_left = 6.0
+margin_right = 6.0
+margin_top = 6.0
+margin_bottom = 6.0
 
 [resource]
-Label/fonts/font = SubResource( 2 )
+Label/fonts/font = ExtResource( 1 )
+Panel/styles/panel = SubResource( 4 )
+PanelContainer/styles/panel = SubResource( 4 )

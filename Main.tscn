@@ -64,7 +64,7 @@ position = Vector2( -16, 28 )
 position = Vector2( 56, 23 )
 
 [node name="SeasonTimer" type="Timer" parent="."]
-wait_time = 7.0
+wait_time = 15.0
 
 [node name="GameUI" parent="." instance=ExtResource( 9 )]
 
