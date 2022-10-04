@@ -10,9 +10,6 @@ func _ready():
 	$SeasonTimer.connect("timeout", self, "_on_season_timeout")
 	$SeasonTimer.start()
 
-func _process(_d):
-	Helpers.writeln_console("Time left: " + String(round($SeasonTimer.time_left)))
-
 func get_current_season():
 	return season_cycle[current_season]
 

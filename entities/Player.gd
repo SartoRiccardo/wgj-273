@@ -1,9 +1,13 @@
 extends KinematicBody2D
 
+signal hurt(lives)
+signal hunger(hunger)
+
 export (int) var MAX_SPEED = 200
 export (int) var ACCELERATION = 500
 export (int) var DECELERATION = 750
 export (int) var SHOOT_RANGE = 250
+export (Array, Resource) var edible_items
 
 const PROJECTILE_SCENE = preload("res://entities/Projectile.tscn")
 var PROJECTILE_RES = {
@@ -11,6 +15,7 @@ var PROJECTILE_RES = {
 	Enums.Item.HONEY: load("res://resources/projectiles/projectile_honey.tres"),
 	Enums.Item.FISH: load("res://resources/projectiles/projectile_fish.tres")
 }
+const HUNGER_STAGES = 6
 
 enum State { NORMAL, PICKUP, FLEEING }
 
@@ -20,8 +25,11 @@ var mov_vector = Vector2.ZERO
 var velocity = mov_vector
 var speed = 0.0
 var interacting_with = null
-var lives = 5
 var in_water = false
+
+var lives = 5
+onready var hunger_timeout = $Hunger.wait_time
+onready var prev_hunger = HUNGER_STAGES-1
 
 func _ready():
 	$ActionTimer.connect("timeout", self, "_on_action_timeout")
@@ -32,10 +40,7 @@ func _ready():
 func _process(delta):
 	handle_movement_inputs()
 	handle_inventory_inputs()
-	Helpers.writeln_console(State.keys()[state])
-	Helpers.writeln_console(str($Inventory))
-	Helpers.writeln_console("Equipped: %s - %s" % [Enums.Item.keys()[$Inventory.equipped], $Inventory.get_amount($Inventory.equipped)])
-	Helpers.writeln_console("Lives: %s - Invuln: %s" % [lives, $Invulnerability.time_left])
+	handle_hunger()
 	
 	match state:
 		State.FLEEING:
@@ -60,7 +65,7 @@ func process_pickup(_delta):
 
 func process_normal(delta):
 	if Input.is_action_pressed("do_action"):
-		handle_actions()
+		handle_actions(Input.is_action_just_pressed("do_action"))
 		if interacting_with != null:
 			speed = 0.0
 			velocity = Vector2.ZERO
@@ -74,8 +79,8 @@ func process_fleeing(delta):
 	handle_movement(delta)
 	update_sprite()
 	
-	Helpers.writeln_console("Targets: %s" % String(get_valid_shoot_targets()))
 	if Input.is_action_just_pressed("do_action"):
+		var should_eat = true
 		var targets = get_valid_shoot_targets()
 		if targets.size() > 0:
 			var projectile_root = Helpers.get_first_of_group("projectile_root")
@@ -88,7 +93,11 @@ func process_fleeing(delta):
 				var stun_data = target.get_stun_for($Inventory.equipped)
 				if stun_data:
 					$Inventory.remove($Inventory.equipped, stun_data.amount_needed)
+				should_eat = false
 				projectile_root.add_child(projectile)
+			
+			if should_eat:
+				eat()
 
 func handle_movement(delta):
 	mov_vector = Vector2.ZERO
@@ -127,17 +136,30 @@ func handle_inventory_inputs():
 	if Input.is_action_just_pressed("prev_inv_item"):
 		$Inventory.equip_prev()
 
-func handle_actions():
+func handle_actions(is_just_pressed=false):
 	var interactables = $ActionRange.get_overlapping_areas()
-	if interactables.size() == 0:
+	if interactables.size() == 0 and is_just_pressed:
+		eat()
 		return
-	if interacting_with == null:
+	
+	if interacting_with == null and state != State.FLEEING:
 		for area in interactables:
 			var interactable = area.get_parent()
 			if interactable.is_pickuppable($Inventory):
 				interacting_with = interactables[0].get_parent()
 				$ActionTimer.start(interacting_with.interactable_data.time)
 				break
+
+func handle_hunger():
+	Helpers.writeln_console($Hunger.time_left)
+	var time_left = $Hunger.time_left
+	var seconds_per_hunger = hunger_timeout/HUNGER_STAGES
+	var hunger_points = clamp(
+		floor(time_left/seconds_per_hunger), 0, HUNGER_STAGES-1
+	)
+	if prev_hunger != hunger_points:
+		emit_signal("hunger", hunger_points)
+		prev_hunger = hunger_points
 
 func update_sprite():
 	if pressed_actions.size() == 0:
@@ -170,6 +192,16 @@ func update_sprite():
 			$AnimatedSprite.set_frame(0)
 		$AnimatedSprite.play()
 
+func eat():
+	var equipped = $Inventory.equipped
+	for item in edible_items:
+		if item.item == equipped and $Inventory.get_amount(equipped) > 0:
+			var hunger_gained = hunger_timeout/HUNGER_STAGES * item.points_filled
+			if hunger_gained+$Hunger.time_left > hunger_timeout:
+				return
+			$Inventory.remove(item.item, 1)
+			$Hunger.start($Hunger.time_left + hunger_gained)
+
 # TODO optimize, don't do every frame, update only when necessary
 func get_valid_shoot_targets():
 	var hazards = get_tree().get_nodes_in_group("angered")
@@ -185,8 +217,9 @@ func get_inventory():
 	return $Inventory
 
 func get_hurt():
-	if $Invulnerability.time_left == 0:
+	if $Invulnerability.time_left == 0 and lives > 0:
 		lives -= 1
+		emit_signal("hurt", lives)
 		$Invulnerability.start()
 
 func _on_action_timeout():

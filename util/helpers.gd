@@ -24,7 +24,9 @@ func array_to_string(array):
 func writeln_console(line):
 	var console = get_first_of_group("console")
 	if console:
-		console.add_text(String(line) + "\n")
+		if console.text != "":
+			console.text += "\n"
+		console.text += String(line)
 
 func _process(_delta):
 	var console = get_first_of_group("console")

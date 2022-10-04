@@ -1,8 +1,19 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://assets/player.png" type="Texture" id=1]
 [ext_resource path="res://entities/Player.gd" type="Script" id=2]
 [ext_resource path="res://entities/properties/Inventory.tscn" type="PackedScene" id=3]
+[ext_resource path="res://resources/player/EdibleItem.gd" type="Script" id=4]
+
+[sub_resource type="Resource" id=15]
+script = ExtResource( 4 )
+item = 5
+points_filled = 0.2
+
+[sub_resource type="Resource" id=16]
+script = ExtResource( 4 )
+item = 4
+points_filled = 0.5
 
 [sub_resource type="AtlasTexture" id=8]
 atlas = ExtResource( 1 )
@@ -71,6 +82,7 @@ height = 6.0
 collision_layer = 5
 collision_mask = 0
 script = ExtResource( 2 )
+edible_items = [ SubResource( 15 ), SubResource( 16 ) ]
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -7.5 )
@@ -117,5 +129,10 @@ one_shot = true
 
 [node name="Invulnerability" type="Timer" parent="."]
 wait_time = 5.0
+one_shot = true
+autostart = true
+
+[node name="Hunger" type="Timer" parent="."]
+wait_time = 60.0
 one_shot = true
 autostart = true

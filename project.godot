@@ -15,6 +15,11 @@ _global_script_classes=[ {
 "path": "res://resources/hazards/BearBehavior.gd"
 }, {
 "base": "Resource",
+"class": "EdibleItem",
+"language": "GDScript",
+"path": "res://resources/player/EdibleItem.gd"
+}, {
+"base": "Resource",
 "class": "EntitySpawnData",
 "language": "GDScript",
 "path": "res://resources/season_spawns/EntitySpawnData.gd"
@@ -66,6 +71,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "BearBehavior": "",
+"EdibleItem": "",
 "EntitySpawnData": "",
 "FoxBehavior": "",
 "HazardResource": "",

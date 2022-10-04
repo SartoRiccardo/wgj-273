@@ -59,6 +59,5 @@ func _on_item_equip(item, amount):
 	update_pages(item)
 
 func _on_content_amount_change(item, _old_amount, new_amount):
-	print("EQUIPPED: %s, ITEM: %s" % [equipped, item])
 	if item == equipped:
 		update_item(item, new_amount)

@@ -1,0 +1,152 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://assets/frames.png" type="Texture" id=1]
+[ext_resource path="res://ui/Stats.gd" type="Script" id=2]
+[ext_resource path="res://ui/ScalableControl.tscn" type="PackedScene" id=3]
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 1 )
+region = Rect2( 35, 0, 5, 5 )
+
+[sub_resource type="StyleBoxTexture" id=2]
+texture = SubResource( 8 )
+region_rect = Rect2( 0, 0, 5, 5 )
+margin_left = 2.0
+margin_right = 2.0
+margin_top = 2.0
+margin_bottom = 2.0
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 1 )
+region = Rect2( 21, 0, 9, 9 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 1 )
+region = Rect2( 30, 0, 5, 9 )
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 1 )
+region = Rect2( 35, 5, 5, 5 )
+
+[sub_resource type="StyleBoxTexture" id=5]
+texture = SubResource( 1 )
+region_rect = Rect2( 0, 0, 5, 5 )
+margin_left = 2.0
+margin_right = 2.0
+margin_top = 2.0
+margin_bottom = 2.0
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 1 )
+region = Rect2( 21, 9, 9, 9 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 1 )
+region = Rect2( 30, 9, 5, 9 )
+
+[node name="Stats" type="VBoxContainer"]
+margin_top = 19.0
+margin_right = 374.0
+margin_bottom = 67.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Lives" parent="." instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 374.0
+margin_bottom = 22.5
+rect_min_size = Vector2( 73.5, 22.5 )
+
+[node name="PanelContainer" type="PanelContainer" parent="Lives"]
+margin_right = 49.0
+margin_bottom = 15.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_styles/panel = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="Lives/PanelContainer"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 47.0
+margin_bottom = 13.0
+custom_constants/margin_right = 1
+custom_constants/margin_top = 1
+custom_constants/margin_left = 1
+custom_constants/margin_bottom = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Lives/PanelContainer/MarginContainer"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 44.0
+margin_bottom = 10.0
+
+[node name="TextureRect" type="TextureRect" parent="Lives/PanelContainer/MarginContainer/HBoxContainer"]
+margin_right = 9.0
+margin_bottom = 9.0
+texture = SubResource( 3 )
+
+[node name="LifeRoot" type="HBoxContainer" parent="Lives/PanelContainer/MarginContainer/HBoxContainer"]
+margin_left = 13.0
+margin_right = 18.0
+margin_bottom = 9.0
+custom_constants/separation = 1
+
+[node name="LifePoint" type="TextureRect" parent="Lives/PanelContainer/MarginContainer/HBoxContainer/LifeRoot"]
+margin_right = 5.0
+margin_bottom = 9.0
+texture = SubResource( 4 )
+
+[node name="Hunger" parent="." instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 26.0
+margin_right = 374.0
+margin_bottom = 48.5
+rect_min_size = Vector2( 73.5, 22.5 )
+
+[node name="PanelContainer" type="PanelContainer" parent="Hunger"]
+margin_right = 49.0
+margin_bottom = 15.0
+rect_scale = Vector2( 1.5, 1.5 )
+size_flags_horizontal = 0
+custom_styles/panel = SubResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="Hunger/PanelContainer"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 47.0
+margin_bottom = 13.0
+custom_constants/margin_right = 1
+custom_constants/margin_top = 1
+custom_constants/margin_left = 1
+custom_constants/margin_bottom = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Hunger/PanelContainer/MarginContainer"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 44.0
+margin_bottom = 10.0
+
+[node name="TextureRect" type="TextureRect" parent="Hunger/PanelContainer/MarginContainer/HBoxContainer"]
+margin_right = 9.0
+margin_bottom = 9.0
+texture = SubResource( 6 )
+
+[node name="HungerRoot" type="HBoxContainer" parent="Hunger/PanelContainer/MarginContainer/HBoxContainer"]
+margin_left = 13.0
+margin_right = 18.0
+margin_bottom = 9.0
+custom_constants/separation = 1
+
+[node name="HungerPoint" type="TextureRect" parent="Hunger/PanelContainer/MarginContainer/HBoxContainer/HungerRoot"]
+margin_right = 5.0
+margin_bottom = 9.0
+texture = SubResource( 7 )
