@@ -10,6 +10,7 @@ export (int) var DECELERATION = 750
 export (int) var SHOOT_RANGE = 250
 export (Array, Resource) var edible_items
 
+const INVENTORY_CHANGE_SCENE = preload("res://ui/InventoryChangeUI.tscn")
 const PROJECTILE_SCENE = preload("res://entities/Projectile.tscn")
 var PROJECTILE_RES = {
 	Enums.Item.ROCK: load("res://resources/projectiles/projectile_rock.tres"),
@@ -27,8 +28,9 @@ var velocity = mov_vector
 var speed = 0.0
 var interacting_with = null
 var in_water = false
+var inv_changes = {}
 
-var lives = 5
+var lives = 5.0
 onready var hunger_timeout = $Hunger.wait_time
 onready var prev_hunger = HUNGER_STAGES-1
 
@@ -37,10 +39,12 @@ func _ready():
 	$WaterDetect.add_child($WorldShape.duplicate())
 	$WaterDetect.connect("area_entered", self, "_on_water_enter")
 	$WaterDetect.connect("area_exited", self, "_on_water_exited")
+	$Inventory.connect("amount_change", self, "_on_inventory_change")
 
 func _process(delta):
 	handle_movement_inputs()
 	handle_inventory_inputs()
+	handle_ui()
 	handle_hunger()
 	
 	match state:
@@ -164,6 +168,14 @@ func handle_hunger():
 		emit_signal("hunger", hunger_points)
 		prev_hunger = hunger_points
 
+func handle_ui():
+	if inv_changes.size() > 0:
+		var inv_changes_ui = INVENTORY_CHANGE_SCENE.instance()
+		inv_changes_ui.generate_from(inv_changes)
+		$InventoryChangeRoot.add_child(inv_changes_ui)
+		print("added %s for %s" % [inv_changes, inv_changes_ui])
+		inv_changes = {}
+
 func update_sprite():
 	if pressed_actions.size() == 0:
 		$AnimatedSprite.stop()
@@ -228,8 +240,9 @@ func get_hurt():
 func _on_action_timeout():
 	if interacting_with == null:
 		return
-	interacting_with.consume($Inventory)
-	$Inventory.add(interacting_with.interactable_data.item, interacting_with.pickup())
+	$Inventory.add(
+		interacting_with.interactable_data.item, interacting_with.pickup($Inventory)
+	)
 	interacting_with = null
 
 func _on_hazard_angered():
@@ -244,3 +257,9 @@ func _on_water_enter(_a2d):
 
 func _on_water_exited(_a2d):
 	in_water = false
+
+func _on_inventory_change(item, old_amount, new_amount):
+	if item in inv_changes:
+		inv_changes[item] += new_amount-old_amount
+	else:
+		inv_changes[item] = new_amount-old_amount

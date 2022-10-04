@@ -4,6 +4,7 @@ signal equip(item, amount)
 signal stolen(item, amount)
 signal amount_change(item, old_amount, new_amount)
 
+
 var contents = {
 	Enums.Item.LEAF: 2,
 	Enums.Item.ROCK: 0,

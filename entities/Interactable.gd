@@ -51,7 +51,8 @@ func tooltip_retract():
 	$TooltipData/AnimationPlayer.play_backwards("tooltip_appear")
 	$TooltipData/Tween.start()
 
-func pickup():
+func pickup(inventory):
+	inventory.remove(interactable_data.requirement, interactable_data.requirement_amount)
 	var amount_picked = rng.randi_range(interactable_data.amount_min, interactable_data.amount_max)
 	if interactable_data.die_on_pickup:
 		queue_free()
@@ -59,9 +60,6 @@ func pickup():
 
 func is_pickuppable(inventory):
 	return inventory.get_amount(interactable_data.requirement) >= interactable_data.requirement_amount
-
-func consume(inventory):
-	inventory.remove(interactable_data.requirement, interactable_data.requirement_amount)
 
 func _on_player_nearby(_a2d):
 	tooltip_popup()
