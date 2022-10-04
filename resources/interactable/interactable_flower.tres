@@ -9,4 +9,5 @@ amount_min = 2
 amount_max = 3
 time = 3.0
 die_on_pickup = true
-requirements = [  ]
+requirement = 0
+requirement_amount = 0

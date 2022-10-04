@@ -8,7 +8,7 @@ var contents = {
 	Enums.Item.LEAF: 2,
 	Enums.Item.ROCK: 0,
 	Enums.Item.STICK: 5,
-	Enums.Item.FLOWER: 9,
+	Enums.Item.FLOWER: 3,
 	Enums.Item.HONEY: 0,
 	Enums.Item.FISH: 99,
 }

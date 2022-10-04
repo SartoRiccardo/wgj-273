@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 signal hurt(lives)
 signal hunger(hunger)
+signal state_change(state)
 
 export (int) var MAX_SPEED = 200
 export (int) var ACCELERATION = 500
@@ -54,7 +55,9 @@ func _process(delta):
 		get_hurt()
 
 func change_state(new_state):
-	state = new_state
+	if state != new_state:
+		state = new_state
+		emit_signal("state_change", state)
 
 func process_pickup(_delta):
 	if Input.is_action_just_released("do_action") or interacting_with == null:

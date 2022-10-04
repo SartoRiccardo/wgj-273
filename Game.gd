@@ -20,4 +20,5 @@ func _on_season_timeout():
 	current_season = (current_season+1) % season_cycle.size()
 	if get_current_season() == Enums.Season.SPRING:
 		cycles += 1
+	emit_signal("season_change", get_current_season())
 	$Terrain/SeasonTerrain.change_season()

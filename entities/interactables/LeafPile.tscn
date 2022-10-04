@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://entities/Interactable.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/interactables.png" type="Texture" id=2]
 [ext_resource path="res://resources/interactable/interactable_leaf_pile.tres" type="Resource" id=3]
+[ext_resource path="res://ui/TooltipContents.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/ui/inventory.png" type="Texture" id=5]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 2 )
@@ -12,14 +14,33 @@ region = Rect2( 0, 0, 32, 32 )
 radius = 8.0
 height = 14.0
 
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 0, 16, 16 )
+
 [node name="LeafPile" instance=ExtResource( 1 )]
 interactable_data = ExtResource( 3 )
 
 [node name="Sprite" type="Sprite" parent="." index="0"]
-position = Vector2( 0, -9 )
 texture = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ActionRange" index="0"]
-position = Vector2( 0, -8 )
+position = Vector2( 0, 1 )
 rotation = 1.5708
 shape = SubResource( 2 )
+
+[node name="Tooltip" parent="TooltipData" index="1"]
+margin_left = -25.5
+margin_top = -14.0
+margin_right = 25.5
+margin_bottom = 14.0
+rect_scale = Vector2( 1e-05, 1e-05 )
+rect_pivot_offset = Vector2( 25.5, 14 )
+
+[node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 4 )]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 45.0
+margin_bottom = 22.0
+reward_texture = SubResource( 3 )
+interactable_data = ExtResource( 3 )

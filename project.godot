@@ -35,11 +35,6 @@ _global_script_classes=[ {
 "path": "res://resources/hazards/HazardResource.gd"
 }, {
 "base": "Resource",
-"class": "InteractableRequirement",
-"language": "GDScript",
-"path": "res://resources/interactable/InteractableRequirement.gd"
-}, {
-"base": "Resource",
 "class": "InteractableResource",
 "language": "GDScript",
 "path": "res://resources/interactable/InteractableResource.gd"
@@ -75,7 +70,6 @@ _global_script_class_icons={
 "EntitySpawnData": "",
 "FoxBehavior": "",
 "HazardResource": "",
-"InteractableRequirement": "",
 "InteractableResource": "",
 "InventoryUISprite": "",
 "ProjectileResource": "",
