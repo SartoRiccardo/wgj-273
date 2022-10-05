@@ -11,6 +11,7 @@ export (int) var ACCELERATION = 500
 export (int) var DECELERATION = 750
 export (int) var SHOOT_RANGE = 250
 export (Array, Resource) var edible_items
+export (Array, Resource) var buildable_items
 export (bool) var dev_detectable = true
 
 const INVENTORY_CHANGE_SCENE = preload("res://ui/InventoryChangeUI.tscn")
@@ -35,6 +36,7 @@ var interacting_with = null
 var in_water = false
 var inv_changes = {}
 var inside_hut = null
+var buildable_items_idx = 0
 
 var lives = 5.0
 onready var hunger_timeout = $Hunger.wait_time
@@ -46,6 +48,7 @@ func _ready():
 	$WaterDetect.connect("area_entered", self, "_on_water_enter")
 	$WaterDetect.connect("area_exited", self, "_on_water_exited")
 	$Inventory.connect("amount_change", self, "_on_inventory_change")
+	$BuildingMenu/Tooltip/BuildingMenu.init_from(buildable_items, $Inventory)
 	
 	if not dev_detectable:
 		$DetectionRange.get_child(0).set_disabled(true)
@@ -137,19 +140,31 @@ func handle_movement_inputs():
 func handle_inventory_inputs():
 	if Input.is_action_just_pressed("next_inv_item") and \
 			not Input.is_key_pressed(KEY_SHIFT):
-		$Inventory.equip_next()
+		if $BuildingMenu/Tooltip.is_open():
+			buildable_items_idx = (buildable_items_idx+1) % buildable_items.size()
+			$BuildingMenu/Tooltip/BuildingMenu.select(
+				buildable_items[buildable_items_idx], buildable_items_idx, $Inventory
+			)
+		else:
+			$Inventory.equip_next()
 	if Input.is_action_just_pressed("prev_inv_item"):
-		$Inventory.equip_prev()
+		if $BuildingMenu/Tooltip.is_open():
+			buildable_items_idx -= 1
+			while buildable_items_idx < 0:
+				buildable_items_idx += buildable_items.size()
+			$BuildingMenu/Tooltip/BuildingMenu.select(
+				buildable_items[buildable_items_idx], buildable_items_idx, $Inventory
+			)
+		else:
+			$Inventory.equip_prev()
 
 func handle_actions(is_just_pressed=false):
 	var interactables = $ActionRange.get_overlapping_areas()
 	var targets = get_valid_shoot_targets()
-	if interactables.size() == 0 and targets.size() == 0 and is_just_pressed:
-		eat()
-		return
-	
 	if interacting_with == null:
-		var interact_priority = {2: null, 1: null, 0: null}
+		var interact_priority = {}
+		for i in 4:
+			interact_priority[i] = null
 		
 		# [1] Shoot angered enemies
 		var projectile_root = Helpers.get_first_of_group("projectile_root")
@@ -157,6 +172,12 @@ func handle_actions(is_just_pressed=false):
 				projectile_root != null and ($Inventory.equipped in PROJECTILE_RES.keys()):
 			var target = Helpers.get_closest_node_to(targets, global_position)
 			interact_priority[1] = target
+		
+		# [3] Build
+		if $BuildingMenu/Tooltip.is_open() and is_just_pressed and \
+				buildable_items[buildable_items_idx].is_buildable($Inventory) and \
+				in_water == buildable_items[buildable_items_idx].on_water:
+			interact_priority[3] = buildable_items[buildable_items_idx]
 		
 		for area in interactables:
 			var interactable = area.get_parent()
@@ -170,7 +191,16 @@ func handle_actions(is_just_pressed=false):
 			if interactable.is_in_group("hut") and is_just_pressed and interact_priority[2] == null:
 				interact_priority[2] = interactable
 		
-		if interact_priority[2]:
+		if interact_priority[3]:
+			var build = interact_priority[3]
+			var parent = Helpers.get_first_of_group("collectible_root")
+			if parent:
+				var build_node = build.building_scene.instance()
+				build_node.global_position = global_position
+				build.take_materials($Inventory)
+				$BuildingMenu/Tooltip.retract()
+				parent.add_child(build_node)
+		elif interact_priority[2]:
 			enter_hut(interact_priority[2])
 		elif interact_priority[1]:
 			var target = interact_priority[1]
@@ -204,6 +234,12 @@ func handle_ui():
 		inv_changes_ui.generate_from(inv_changes)
 		$InventoryChangeRoot.add_child(inv_changes_ui)
 		inv_changes = {}
+	
+	if Input.is_action_just_pressed("build_menu"):
+		if $BuildingMenu/Tooltip.is_open():
+			$BuildingMenu/Tooltip.retract()
+		else:
+			$BuildingMenu/Tooltip.popup()
 
 func update_sprite():
 	if pressed_actions.size() == 0:
@@ -314,6 +350,9 @@ func _on_action_timeout():
 	interacting_with = null
 
 func _on_hazard_angered():
+	if state != State.FLEEING and $BuildingMenu/Tooltip.is_open():
+		$BuildingMenu/Tooltip.retract()
+		
 	change_state(State.FLEEING)
 
 func _on_hazard_unangered():

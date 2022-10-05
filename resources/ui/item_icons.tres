@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=10 format=2]
+[gd_resource type="Resource" load_steps=13 format=2]
 
 [ext_resource path="res://resources/ui/AtlasIcons.gd" type="Script" id=1]
 [ext_resource path="res://assets/ui/inventory.png" type="Texture" id=2]
@@ -14,10 +14,15 @@ script = ExtResource( 3 )
 item = 5
 grid_placement = Vector2( 0, 1 )
 
-[sub_resource type="Resource" id=4]
+[sub_resource type="Resource" id=11]
 script = ExtResource( 3 )
 item = 1
 grid_placement = Vector2( 1, 1 )
+
+[sub_resource type="Resource" id=12]
+script = ExtResource( 3 )
+item = 2
+grid_placement = Vector2( 1, 0 )
 
 [sub_resource type="Resource" id=5]
 script = ExtResource( 3 )
@@ -34,8 +39,18 @@ script = ExtResource( 3 )
 item = 6
 grid_placement = Vector2( 0, 2 )
 
+[sub_resource type="Resource" id=9]
+script = ExtResource( 3 )
+item = 8
+grid_placement = Vector2( 1, 2 )
+
+[sub_resource type="Resource" id=10]
+script = ExtResource( 3 )
+item = 7
+grid_placement = Vector2( 0, 3 )
+
 [resource]
 script = ExtResource( 1 )
 full_texture = ExtResource( 2 )
 atlas_size = Vector2( 16, 16 )
-offsets = [ SubResource( 1 ), SubResource( 2 ), SubResource( 4 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 8 ) ]
+offsets = [ SubResource( 1 ), SubResource( 2 ), SubResource( 11 ), SubResource( 12 ), SubResource( 5 ), SubResource( 6 ), SubResource( 8 ), SubResource( 9 ), SubResource( 10 ) ]

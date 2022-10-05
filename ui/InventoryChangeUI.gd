@@ -3,7 +3,7 @@ extends HBoxContainer
 export (Resource) var item_icons
 
 func _ready():
-	rect_position.x = -rect_size.x/2 * rect_scale.x
+	rect_position.x = -rect_size.x/2 * 0.75
 	rect_position.y = 0
 	start_fade()
 	
@@ -33,3 +33,5 @@ func start_fade():
 	)
 	$Tween.start()
 	$AnimationPlayer.play("default")
+	yield($AnimationPlayer, "animation_finished")
+	call_deferred("queue_free")

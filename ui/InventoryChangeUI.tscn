@@ -32,15 +32,16 @@ tracks/1/keys = {
 }
 
 [node name="InventoryChangeUI" type="HBoxContainer"]
+modulate = Color( 1, 1, 1, 0 )
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -192.0
 margin_top = -216.0
-margin_right = -170.0
-margin_bottom = -204.0
-rect_scale = Vector2( 1e-05, 1e-05 )
+margin_right = -192.0
+margin_bottom = -216.0
+rect_scale = Vector2( 0.75, 0.75 )
 theme = ExtResource( 2 )
 custom_constants/separation = 1
 script = ExtResource( 3 )

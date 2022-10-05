@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/BuildingMenu.gd" type="Script" id=2]
+[ext_resource path="res://resources/ui/item_icons.tres" type="Resource" id=3]
+
+[node name="BuildingMenu" type="VBoxContainer"]
+margin_right = 108.0
+margin_bottom = 166.0
+rect_min_size = Vector2( 130, 0 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+item_icons = ExtResource( 3 )
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+margin_right = 130.0
+margin_bottom = 14.0
+
+[node name="BuildableList" type="HBoxContainer" parent="PanelContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 123.0
+margin_bottom = 7.0
+alignment = 1
+
+[node name="BuildingDesc" type="PanelContainer" parent="."]
+margin_top = 18.0
+margin_right = 130.0
+margin_bottom = 50.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BuildingDesc"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 123.0
+margin_bottom = 25.0
+
+[node name="MaterialList" type="HBoxContainer" parent="BuildingDesc/VBoxContainer"]
+margin_right = 116.0
+
+[node name="Description" type="Label" parent="BuildingDesc/VBoxContainer"]
+margin_top = 4.0
+margin_right = 116.0
+margin_bottom = 18.0
+autowrap = true

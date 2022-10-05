@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=5 format=2]
+
+[ext_resource path="res://resources/player/BuildingInfo.gd" type="Script" id=1]
+[ext_resource path="res://entities/interactables/buildings/Campfire.tscn" type="PackedScene" id=2]
+[ext_resource path="res://resources/player/ItemAmount.gd" type="Script" id=3]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 3 )
+item = 1
+amount = 1
+
+[resource]
+script = ExtResource( 1 )
+building_scene = ExtResource( 2 )
+item = 1
+materials = [ SubResource( 1 ) ]
+on_water = false
+season_duration = 1.0
+description = "One cooler rock out of 2 lame rocks."

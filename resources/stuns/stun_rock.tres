@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource( 1 )
 trigger = 1
-amount_needed = 2
+amount_needed = 1
 stun_seconds = 0.3
 is_stun_permanent = false

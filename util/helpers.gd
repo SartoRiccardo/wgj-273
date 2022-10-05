@@ -91,3 +91,8 @@ func draw_point(parent, coords, color=Color.black):
 
 func stepify_vec2(vec2, step):
 	return Vector2(stepify(vec2.x, step), stepify(vec2.y, step))
+
+func remove_all_children(node):
+	for child in node.get_children():
+		node.remove_child(child)
+		child.queue_free()

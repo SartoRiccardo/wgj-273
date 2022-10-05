@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=6 format=2]
+
+[ext_resource path="res://resources/player/BuildingInfo.gd" type="Script" id=1]
+[ext_resource path="res://entities/interactables/buildings/Campfire.tscn" type="PackedScene" id=2]
+[ext_resource path="res://resources/player/ItemAmount.gd" type="Script" id=3]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 3 )
+item = 1
+amount = 5
+
+[sub_resource type="Resource" id=2]
+script = ExtResource( 3 )
+item = 2
+amount = 15
+
+[resource]
+script = ExtResource( 1 )
+building_scene = ExtResource( 2 )
+item = 8
+materials = [ SubResource( 1 ), SubResource( 2 ) ]
+on_water = false
+season_duration = 1.0
+description = "Animals are afraid of the campfire, and walk slower near it. Can also cook fish."

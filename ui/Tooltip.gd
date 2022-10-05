@@ -1,5 +1,9 @@
 extends PanelContainer
 
+export (Vector2) var grow_direction = Vector2.UP
+export (float) var grow_amount = 30
+export (Vector2) var anchor = Vector2.ZERO
+
 var base_position = Vector2.ZERO
 
 func _ready():
@@ -28,10 +32,14 @@ func force_size_recalculate():
 	set_visible(false)
 	set_visible(true)
 
+func is_open():
+	return Helpers.stepify_vec2(rect_scale, 0.01) != Vector2.ZERO
+
 func popup():
 	$Tween.stop(self)
 	$Tween.interpolate_property(self, "rect_position", rect_position,
-		base_position + Vector2.UP*30, 0.3, Tween.TRANS_CUBIC, Tween.EASE_OUT
+		base_position + grow_direction*grow_amount, 0.3, Tween.TRANS_CUBIC,
+		Tween.EASE_OUT
 	)
 	$Tween.start()
 	$AnimationPlayer.play("tooltip_appear")
