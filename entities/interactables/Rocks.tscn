@@ -35,17 +35,16 @@ texture = SubResource( 1 )
 anims/appear = SubResource( 4 )
 
 [node name="Tooltip" parent="TooltipData" index="1"]
-margin_left = -25.5
+margin_left = -45.0
 margin_top = -14.0
-margin_right = 25.5
+margin_right = 45.0
 margin_bottom = 14.0
-rect_scale = Vector2( 1e-05, 1e-05 )
-rect_pivot_offset = Vector2( 25.5, 14 )
+rect_pivot_offset = Vector2( 45, 14 )
 
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 5 )]
 margin_left = 6.0
 margin_top = 6.0
-margin_right = 45.0
+margin_right = 84.0
 margin_bottom = 22.0
 reward_texture = SubResource( 5 )
 interactable_data = ExtResource( 3 )

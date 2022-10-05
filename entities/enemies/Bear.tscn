@@ -38,23 +38,19 @@ position = Vector2( 0, -2.5 )
 shape = SubResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" index="0"]
-position = Vector2( 0, -8 )
 rotation = 1.5708
 shape = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" index="0"]
-position = Vector2( -1, -12 )
 rotation = 1.5708
 shape = SubResource( 4 )
 
 [node name="Sight" type="RayCast2D" parent="." index="3"]
-position = Vector2( 0, -8 )
 enabled = true
 cast_to = Vector2( -150, 0 )
 collision_mask = 64
 collide_with_areas = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="4"]
-position = Vector2( -2, -11 )
 scale = Vector2( 1, 0.602564 )
 frames = SubResource( 3 )

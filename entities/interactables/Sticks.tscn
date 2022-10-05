@@ -28,17 +28,16 @@ shape = SubResource( 2 )
 texture = SubResource( 1 )
 
 [node name="Tooltip" parent="TooltipData" index="1"]
-margin_left = -29.0
+margin_left = -45.0
 margin_top = -14.0
-margin_right = 29.0
+margin_right = 45.0
 margin_bottom = 14.0
-rect_scale = Vector2( 1e-05, 1e-05 )
-rect_pivot_offset = Vector2( 29, 14 )
+rect_pivot_offset = Vector2( 45, 14 )
 
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 4 )]
 margin_left = 6.0
 margin_top = 6.0
-margin_right = 52.0
+margin_right = 84.0
 margin_bottom = 22.0
 reward_texture = SubResource( 3 )
 interactable_data = ExtResource( 3 )

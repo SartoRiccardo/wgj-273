@@ -8,19 +8,17 @@ export (bool) var enable_tooltip = true
 
 onready var tooltip = $TooltipData/Tooltip
 
-var tooltip_base_position = Vector2.ZERO
-
 func _ready():
+	if Engine.is_editor_hint():
+		return
+	
 	rng.randomize()
 	if not enable_tooltip:
 		remove_child($TooltipData)
 	else:
-		tooltip.reset_rect()
-		tooltip_base_position = tooltip.rect_position
-		tooltip.rect_scale = Vector2.ZERO
 		$TooltipData/Range.connect("area_entered", self, "_on_player_nearby")
 		$TooltipData/Range.connect("area_exited", self, "_on_player_leave")
-
+		
 func _process(_d):
 	if Engine.is_editor_hint():
 		var tooltip_editor = $TooltipData/Tooltip
@@ -33,24 +31,12 @@ func _process(_d):
 func tooltip_popup():
 	if not enable_tooltip:
 		return
-	
-	$TooltipData/Tween.stop(tooltip)
-	$TooltipData/Tween.interpolate_property(tooltip, "rect_position", tooltip.rect_position,
-		tooltip_base_position + Vector2.UP*30, 0.3, Tween.TRANS_CUBIC, Tween.EASE_OUT
-	)
-	$TooltipData/AnimationPlayer.play("tooltip_appear")
-	$TooltipData/Tween.start()
+	tooltip.popup()
 
 func tooltip_retract(force=false):
 	if not enable_tooltip and not force:
 		return
-	
-	$TooltipData/Tween.stop(tooltip)
-	$TooltipData/Tween.interpolate_property(tooltip, "rect_position", tooltip.rect_position,
-		tooltip_base_position, 0.3, Tween.TRANS_CUBIC, Tween.EASE_IN
-	)
-	$TooltipData/AnimationPlayer.play_backwards("tooltip_appear")
-	$TooltipData/Tween.start()
+	tooltip.retract()
 
 func pickup(inventory):
 	inventory.remove(interactable_data.requirement, interactable_data.requirement_amount)

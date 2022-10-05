@@ -3,6 +3,8 @@ extends KinematicBody2D
 signal hurt(lives)
 signal hunger(hunger)
 signal state_change(state)
+signal enter_hut
+signal exit_hut
 
 export (int) var MAX_SPEED = 200
 export (int) var ACCELERATION = 500
@@ -20,7 +22,9 @@ var PROJECTILE_RES = {
 }
 const HUNGER_STAGES = 6
 
-enum State { NORMAL, PICKUP, FLEEING }
+enum State { NORMAL, PICKUP, FLEEING, HUT }
+
+onready var label_full_anim = $InventoryChangeRoot/LabelFull/AnimationPlayer
 
 var state = State.NORMAL
 var pressed_actions = []
@@ -30,6 +34,7 @@ var speed = 0.0
 var interacting_with = null
 var in_water = false
 var inv_changes = {}
+var inside_hut = null
 
 var lives = 5.0
 onready var hunger_timeout = $Hunger.wait_time
@@ -43,7 +48,7 @@ func _ready():
 	$Inventory.connect("amount_change", self, "_on_inventory_change")
 	
 	if not dev_detectable:
-		$DetectionRange.collision_layer = 0
+		$DetectionRange.get_child(0).set_disabled(true)
 
 func _process(delta):
 	handle_movement_inputs()
@@ -58,8 +63,10 @@ func _process(delta):
 			process_normal(delta)
 		State.PICKUP:
 			process_pickup(delta)
+		State.HUT:
+			process_hut(delta)
 	
-	if $HurtBox.get_overlapping_areas().size() > 0:
+	if $HurtBox.is_monitoring() and $HurtBox.get_overlapping_areas().size() > 0:
 		get_hurt()
 
 func change_state(new_state):
@@ -91,24 +98,11 @@ func process_fleeing(delta):
 	update_sprite()
 	
 	if Input.is_action_just_pressed("do_action"):
-		var should_eat = true
-		var targets = get_valid_shoot_targets()
-		if targets.size() > 0:
-			var projectile_root = Helpers.get_first_of_group("projectile_root")
-			if projectile_root and $Inventory.equipped in PROJECTILE_RES.keys():
-				var target = Helpers.get_closest_node_to(targets, global_position)
-				var projectile = PROJECTILE_SCENE.instance()
-				projectile.set_target(target)
-				projectile.projectile_data = PROJECTILE_RES[$Inventory.equipped]
-				projectile.global_position = global_position
-				var stun_data = target.get_stun_for($Inventory.equipped)
-				if stun_data:
-					$Inventory.remove($Inventory.equipped, stun_data.amount_needed)
-				should_eat = false
-				projectile_root.add_child(projectile)
-			
-			if should_eat:
-				eat()
+		handle_actions(Input.is_action_just_pressed("do_action"))
+
+func process_hut(_delta):
+	if Input.is_action_just_pressed("do_action"):
+		exit_hut()
 
 func handle_movement(delta):
 	mov_vector = Vector2.ZERO
@@ -149,20 +143,52 @@ func handle_inventory_inputs():
 
 func handle_actions(is_just_pressed=false):
 	var interactables = $ActionRange.get_overlapping_areas()
-	if interactables.size() == 0 and is_just_pressed:
+	var targets = get_valid_shoot_targets()
+	if interactables.size() == 0 and targets.size() == 0 and is_just_pressed:
 		eat()
 		return
 	
-	if interacting_with == null and state != State.FLEEING:
+	if interacting_with == null:
+		var interact_priority = {2: null, 1: null, 0: null}
+		
+		# [1] Shoot angered enemies
+		var projectile_root = Helpers.get_first_of_group("projectile_root")
+		if state == State.FLEEING and targets.size() > 0 and interact_priority[1] == null and \
+				projectile_root != null and ($Inventory.equipped in PROJECTILE_RES.keys()):
+			var target = Helpers.get_closest_node_to(targets, global_position)
+			interact_priority[1] = target
+		
 		for area in interactables:
 			var interactable = area.get_parent()
-			if interactable.is_pickuppable($Inventory):
-				interacting_with = interactables[0].get_parent()
-				$ActionTimer.start(interacting_with.interactable_data.time)
-				break
+			
+			# [0] Collectibles
+			if !interactable.is_in_group("non_collectible") and interactable.is_pickuppable($Inventory) and \
+					interact_priority[0] == null and state != State.FLEEING:
+				interact_priority[0] = interactable
+			
+			# [2] Enter the hut
+			if interactable.is_in_group("hut") and is_just_pressed and interact_priority[2] == null:
+				interact_priority[2] = interactable
+		
+		if interact_priority[2]:
+			enter_hut(interact_priority[2])
+		elif interact_priority[1]:
+			var target = interact_priority[1]
+			var projectile = PROJECTILE_SCENE.instance()
+			projectile.set_target(target)
+			projectile.projectile_data = PROJECTILE_RES[$Inventory.equipped]
+			projectile.global_position = global_position
+			var stun_data = target.get_stun_for($Inventory.equipped)
+			if stun_data:
+				$Inventory.remove($Inventory.equipped, stun_data.amount_needed)
+			projectile_root.add_child(projectile)
+		elif interact_priority[0]:
+			interacting_with = interact_priority[0]
+			$ActionTimer.start(interacting_with.interactable_data.time)
+		elif is_just_pressed:
+			eat()
 
 func handle_hunger():
-	Helpers.writeln_console($Hunger.time_left)
 	var time_left = $Hunger.time_left
 	var seconds_per_hunger = hunger_timeout/HUNGER_STAGES
 	var hunger_points = clamp(
@@ -177,7 +203,6 @@ func handle_ui():
 		var inv_changes_ui = INVENTORY_CHANGE_SCENE.instance()
 		inv_changes_ui.generate_from(inv_changes)
 		$InventoryChangeRoot.add_child(inv_changes_ui)
-		print("added %s for %s" % [inv_changes, inv_changes_ui])
 		inv_changes = {}
 
 func update_sprite():
@@ -217,6 +242,8 @@ func eat():
 		if item.item == equipped and $Inventory.get_amount(equipped) > 0:
 			var hunger_gained = hunger_timeout/HUNGER_STAGES * item.points_filled
 			if hunger_gained+$Hunger.time_left > hunger_timeout:
+				label_full_anim.stop(true)
+				label_full_anim.play("popup")
 				return
 			$Inventory.remove(item.item, 1)
 			$Hunger.start($Hunger.time_left + hunger_gained)
@@ -228,6 +255,7 @@ func get_valid_shoot_targets():
 	for hzr in hazards:
 		if hzr.global_position.distance_to(global_position) <= SHOOT_RANGE and \
 				!hzr.is_in_group("targeted") and \
+				hzr.state != Enums.HazardState.STUNNED and \
 				hzr.can_be_hit_by($Inventory.equipped, $Inventory.get_amount($Inventory.equipped)):
 			valid.append(hzr)
 	return valid
@@ -240,6 +268,42 @@ func get_hurt():
 		lives -= 1
 		emit_signal("hurt", lives)
 		$Invulnerability.start()
+
+func enter_hut(hut):
+	inside_hut = hut
+	var to_disable = [$ActionRange, $HurtBox]
+	for area in to_disable:
+		area.set_monitoring(false)
+		area.set_monitorable(false)
+	$DetectionRange.collision_layer = 0
+	$AnimatedSprite.set_visible(false)
+	global_position = inside_hut.global_position
+	speed = 0.0
+	velocity = Vector2.ZERO
+	change_state(State.HUT)
+	inside_hut.connect("decay", self, "exit_hut")
+	var game = Helpers.get_game_node()
+	if game:
+		game.speed_up()
+	emit_signal("enter_hut")
+
+func exit_hut():
+	if inside_hut == null:
+		return
+	inside_hut.disconnect("decay", self, "exit_hut")
+	var to_enable = [$ActionRange, $HurtBox]
+	for area in to_enable:
+		area.set_monitoring(true)
+		area.set_monitorable(true)
+	$DetectionRange.collision_layer = 0b1000000
+	$AnimatedSprite.set_visible(true)
+	$AnimatedSprite.set_animation("walk_down")
+	global_position += Vector2.DOWN*20
+	change_state(State.NORMAL)
+	var game = Helpers.get_game_node()
+	if game:
+		game.slow_down()
+	emit_signal("exit_hut")
 
 func _on_action_timeout():
 	if interacting_with == null:

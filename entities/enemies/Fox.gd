@@ -39,12 +39,14 @@ func _process_angered(delta):
 	
 	if following:
 		global_position = global_position.move_toward(
-			following.global_position, hazard_properties.speed_following*delta*speed_multiplier
+			following.global_position,
+			hazard_properties.speed_following * delta * mov_speed_multiplier * global_speed_multiplier
 		)
 
 func _process_attacking(delta):
 	global_position = global_position.move_toward(
-		following.global_position, hazard_properties.speed_angered*delta*speed_multiplier
+		following.global_position,
+		hazard_properties.speed_angered * delta * mov_speed_multiplier * global_speed_multiplier
 	)
 
 func _process_fleeing(delta):
@@ -59,6 +61,7 @@ func _process_stunned(_delta):
 func _on_hit(item):
 	match item:
 		Enums.Item.ROCK:
+			lose_sight_player()
 			change_state(Enums.HazardState.FLEEING)
 		Enums.Item.FISH:
 			lose_sight_player()

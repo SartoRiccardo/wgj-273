@@ -1,10 +1,12 @@
 extends Node
 
-signal season_change(new_season)
+signal season_change(season)
+signal speed_increase(multiplier)
+signal speed_decrease(multiplier)
 
 export (int) var season_duration = 30
 
-const SPEED_UP_MULTIPLIER = 2.0
+const SPEED_UP_MULTIPLIER = 5.0
 
 var current_season = 0
 var cycles = 0
@@ -25,13 +27,21 @@ func speed_up():
 	if is_sped_up:
 		return
 	is_sped_up = true
+	emit_signal("speed_increase", SPEED_UP_MULTIPLIER)
 	$SeasonTimer.start($SeasonTimer.time_left/SPEED_UP_MULTIPLIER)
 
 func slow_down():
 	if not is_sped_up:
 		return
 	is_sped_up = false
-	$SeasonTimer.start($SeasonTimer.time_left/SPEED_UP_MULTIPLIER)
+	emit_signal("speed_decrease", SPEED_UP_MULTIPLIER)
+	$SeasonTimer.start($SeasonTimer.time_left*SPEED_UP_MULTIPLIER)
+
+func get_season_duration():
+	var ret = season_duration
+	if is_sped_up:
+		return ret / SPEED_UP_MULTIPLIER
+	return ret
 
 func _on_season_timeout():
 	current_season = (current_season+1) % season_cycle.size()
@@ -39,4 +49,7 @@ func _on_season_timeout():
 		cycles += 1
 	emit_signal("season_change", get_current_season())
 	$Terrain/SeasonTerrain.change_season()
-	$SeasonTimer.start(season_duration)
+	var current_season_duration = season_duration
+	if is_sped_up:
+		current_season_duration /= SPEED_UP_MULTIPLIER
+	$SeasonTimer.start(current_season_duration)

@@ -6,7 +6,8 @@ signal unangered
 export (Array, Resource) var stuns
 export (Resource) var hazard_properties
 
-var speed_multiplier = 1.0
+var global_speed_multiplier = 1.0
+var mov_speed_multiplier = 1.0
 var state = Enums.HazardState.IDLE
 var state_is_new = true
 var following = null
@@ -17,14 +18,24 @@ var sight = null
 var sight_base_angle = 0
 
 func _ready():
-	var player = Helpers.get_first_of_group("playable")
+	var player = Helpers.get_player()
 	if player:
 		self.connect("angered", player, "_on_hazard_angered")
 		self.connect("unangered", player, "_on_hazard_unangered")
+		player.connect("enter_hut", self, "_on_player_enter_hut")
+	var camera = Helpers.get_camera()
+	if camera:
+		self.connect("angered", camera, "_on_hazard_angered")
+		self.connect("unangered", camera, "_on_hazard_unangered")
+	var game = Helpers.get_game_node()
+	if game:
+		game.connect("speed_increase", self, "_on_game_speed_increase")
+		game.connect("speed_decrease", self, "_on_game_speed_decrease")
 	$StunTimer.connect("timeout", self, "_on_stun_end")
 	$IdleTimer.connect("timeout", self, "_on_idle_timeout")
 	$Campfire.connect("area_entered", self, "_on_campfire_entered")
 	$Campfire.connect("area_exited", self, "_on_campfire_exited")
+	$ProjectileInfo/Tooltip/CounterList.init(stuns)
 	
 	sight = get_node_or_null("Sight")
 	wander_target = global_position
@@ -61,7 +72,8 @@ func process_angered(delta):
 	else:
 		if following:
 			global_position = global_position.move_toward(
-				following.global_position, hazard_properties.speed_angered*delta * speed_multiplier
+				following.global_position,
+				hazard_properties.speed_angered * delta * mov_speed_multiplier * global_speed_multiplier
 			)
 	
 	if following == null:
@@ -91,12 +103,15 @@ func change_state(new_state):
 	state_is_new = true
 
 func lock_on_player():
+	if !is_in_group("angered"):
+		$ProjectileInfo/Tooltip.popup()
 	add_to_group("angered")
 	emit_signal("angered")
 
 func lose_sight_player():
 	if is_in_group("angered"):
 		remove_from_group("angered")
+		$ProjectileInfo/Tooltip.retract()
 	emit_signal("unangered")
 
 func check_player_distance():
@@ -132,11 +147,12 @@ func wander(delta):
 	if global_position == wander_target:
 		if $IdleTimer.time_left == 0:
 			var variance = rng.randf_range(-hazard_properties.idle_rand, hazard_properties.idle_rand)
-			$IdleTimer.start(hazard_properties.idle_time * (1+variance))
+			$IdleTimer.start(hazard_properties.idle_time * (1+variance) / global_speed_multiplier)
 		return
 	
 	global_position = global_position.move_toward(
-		wander_target, hazard_properties.speed_idle*delta*speed_multiplier
+		wander_target,
+		hazard_properties.speed_idle * delta * mov_speed_multiplier * global_speed_multiplier
 	)
 
 func update_sight(delta):
@@ -196,8 +212,19 @@ func _on_idle_timeout():
 		sight_base_angle = 270 if direction.y >= 0 else 90
 
 func _on_campfire_entered(_a2d):
-	print("Entered campfire")
-	speed_multiplier /= 2.0
+	mov_speed_multiplier /= 2.0
 
 func _on_campfire_exited(_a2d):
-	speed_multiplier *= 2.0
+	mov_speed_multiplier *= 2.0
+
+func _on_game_speed_increase(multiplier):
+	global_speed_multiplier *= multiplier
+	$IdleTimer.start($IdleTimer.time_left/multiplier)
+
+func _on_game_speed_decrease(multiplier):
+	global_speed_multiplier /= multiplier
+	$IdleTimer.start($IdleTimer.time_left*multiplier)
+
+func _on_player_enter_hut():
+	if state in [Enums.HazardState.ATTACKING, Enums.HazardState.ANGERED]:
+		change_state(Enums.HazardState.IDLE)

@@ -12,6 +12,9 @@ func get_first_of_group(group_name):
 func get_game_node():
 	return get_first_of_group("game_root")
 
+func get_camera():
+	return get_first_of_group("camera")
+
 func get_player():
 	return get_first_of_group("playable")
 

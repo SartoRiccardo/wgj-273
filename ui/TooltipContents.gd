@@ -34,9 +34,10 @@ func set_interactable_data(texture, data, require_texture=null):
 	force_size_recalculate()
 	var parent = get_parent()
 	if parent.has_method("reset_rect"):
-		parent.call_deferred("reset_rect", [true])
+		parent.call_deferred("reset_rect", true)
 
 ## feels wrong but works
 func force_size_recalculate():
 	set_visible(false)
 	set_visible(true)
+	

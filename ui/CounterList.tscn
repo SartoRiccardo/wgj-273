@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/CounterList.gd" type="Script" id=2]
+[ext_resource path="res://resources/ui/item_icons.tres" type="Resource" id=3]
+
+[node name="CounterList" type="HBoxContainer"]
+anchor_left = 0.5
+anchor_right = 0.5
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+item_icons = ExtResource( 3 )

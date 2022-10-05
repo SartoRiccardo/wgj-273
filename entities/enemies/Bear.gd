@@ -24,10 +24,10 @@ func _on_docile_change(docile):
 		if state == Enums.HazardState.ANGERED:
 			change_state(Enums.HazardState.IDLE)
 		lose_sight_player()
-		$Hurtbox.set_monitorable(false)
+		$Hitbox.set_monitorable(false)
 		$Sight.set_enabled(false)
 	else:
-		$Hurtbox.set_monitorable(true)
+		$Hitbox.set_monitorable(true)
 
 func _on_hit(item):
 	if item == Enums.Item.HONEY:

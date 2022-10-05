@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://entities/Hazard.gd" type="Script" id=1]
+[ext_resource path="res://ui/Tooltip.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/CounterList.tscn" type="PackedScene" id=3]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 6.0
+
+[sub_resource type="StyleBoxEmpty" id=2]
 
 [node name="Hazard" type="KinematicBody2D"]
 collision_layer = 0
@@ -25,6 +29,22 @@ monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Campfire"]
 shape = SubResource( 1 )
+
+[node name="ProjectileInfo" type="Node2D" parent="."]
+position = Vector2( 0, -10 )
+
+[node name="Tooltip" parent="ProjectileInfo" instance=ExtResource( 2 )]
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 82.0
+margin_bottom = 28.0
+custom_styles/panel = SubResource( 2 )
+
+[node name="CounterList" parent="ProjectileInfo/Tooltip" instance=ExtResource( 3 )]
+anchor_left = 0.0
+anchor_right = 0.0
+margin_right = 82.0
+margin_bottom = 28.0
 
 [node name="StunTimer" type="Timer" parent="."]
 wait_time = 3.0

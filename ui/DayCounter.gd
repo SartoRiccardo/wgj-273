@@ -11,15 +11,15 @@ func _ready():
 func _process(_delta):
 	if game == null:
 		return
-	update_day(game.get_season_timer(), game.get_current_season(), game.cycles)
+	update_day(game.get_season_timer(), game.get_season_duration(), game.get_current_season(), game.cycles)
 
-func update_day(timer: Timer, season, cycles):
+func update_day(timer: Timer, season_duration, season, cycles):
 	var starting_days = 0
 	var elapsed_season_days = 0
+	var season_passed_percent = (1-timer.time_left/season_duration)
 	match season:
 		Enums.Season.WINTER:
-			var season_passed_percent = (1-timer.time_left/timer.wait_time)
-			elapsed_season_days = int(90 * season_passed_percent)
+			elapsed_season_days = int(90*season_passed_percent)
 			if season_passed_percent <= 11.0/90:  # End of year
 				starting_days = 79+92+92+91
 			else:
@@ -27,13 +27,13 @@ func update_day(timer: Timer, season, cycles):
 				cycles += 1
 		Enums.Season.SPRING:
 			starting_days = 79
-			elapsed_season_days = int(92 * (1-timer.time_left/timer.wait_time))
+			elapsed_season_days = int(92*season_passed_percent)
 		Enums.Season.SUMMER:
 			starting_days = 79+92
-			elapsed_season_days = int(92 * (1-timer.time_left/timer.wait_time))
+			elapsed_season_days = int(92*season_passed_percent)
 		Enums.Season.AUTUMN:
 			starting_days = 79+92+92
-			elapsed_season_days = int(91 * (1-timer.time_left/timer.wait_time))
+			elapsed_season_days = int(91*season_passed_percent)
 	
 	var elapsed_days = starting_days+elapsed_season_days
 	var correct_days = get_correct_days(elapsed_days)

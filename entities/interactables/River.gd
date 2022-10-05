@@ -20,7 +20,7 @@ func _ready():
 	player = Helpers.get_player()
 
 func _process(_d):
-	if player != null:
+	if player != null and enable_tooltip:
 		$TooltipData.global_position = player.global_position
 	
 func is_pickuppable(inventory):
@@ -35,7 +35,8 @@ func _on_season_changed(season):
 		Enums.Season.WINTER:
 			disabled = true
 	
-	$TooltipData/Tooltip/TooltipContents.interactable_data = interactable_data
-	$TooltipData/Tooltip/TooltipContents.refresh()
-	$TooltipRange.set_monitoring(not disabled)
+	if enable_tooltip:
+		$TooltipData/Tooltip/TooltipContents.interactable_data = interactable_data
+		$TooltipData/Tooltip/TooltipContents.refresh()
+		$TooltipRange.set_monitoring(not disabled)
 

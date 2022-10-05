@@ -1,9 +1,10 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://assets/entities/player.png" type="Texture" id=1]
 [ext_resource path="res://entities/Player.gd" type="Script" id=2]
 [ext_resource path="res://entities/properties/Inventory.tscn" type="PackedScene" id=3]
 [ext_resource path="res://resources/player/EdibleItem.gd" type="Script" id=4]
+[ext_resource path="res://resources/ui/main_theme.tres" type="Theme" id=5]
 
 [sub_resource type="Resource" id=15]
 script = ExtResource( 4 )
@@ -83,6 +84,45 @@ radius = 13.0
 radius = 4.0
 height = 6.0
 
+[sub_resource type="Animation" id=18]
+resource_name = "popup"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 1 ),
+"transitions": PoolRealArray( 0.353, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0.75, 0.75 ), Vector2( 0.75, 0.75 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 4.28, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:rect_position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1.36604, 1 ),
+"update": 0,
+"values": [ Vector2( -13.5, 0 ), Vector2( -13.5, -30 ) ]
+}
+
 [node name="Player" type="KinematicBody2D" groups=["playable"]]
 collision_layer = 5
 collision_mask = 0
@@ -130,6 +170,25 @@ shape = SubResource( 13 )
 [node name="InventoryChangeRoot" type="Node2D" parent="."]
 position = Vector2( 0, -30 )
 
+[node name="LabelFull" type="Label" parent="InventoryChangeRoot"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -13.5
+margin_right = 13.5
+margin_bottom = 14.0
+rect_scale = Vector2( 1e-05, 1e-05 )
+rect_pivot_offset = Vector2( 13.5, 7 )
+theme = ExtResource( 5 )
+text = "Full!"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="InventoryChangeRoot/LabelFull"]
+anims/popup = SubResource( 18 )
+
 [node name="Inventory" parent="." instance=ExtResource( 3 )]
 
 [node name="ActionTimer" type="Timer" parent="."]
@@ -141,6 +200,6 @@ one_shot = true
 autostart = true
 
 [node name="Hunger" type="Timer" parent="."]
-wait_time = 60.0
+wait_time = 360.0
 one_shot = true
 autostart = true
