@@ -6,6 +6,7 @@ signal unangered
 export (Array, Resource) var stuns
 export (Resource) var hazard_properties
 
+var speed_multiplier = 1.0
 var state = Enums.HazardState.IDLE
 var state_is_new = true
 var following = null
@@ -22,6 +23,8 @@ func _ready():
 		self.connect("unangered", player, "_on_hazard_unangered")
 	$StunTimer.connect("timeout", self, "_on_stun_end")
 	$IdleTimer.connect("timeout", self, "_on_idle_timeout")
+	$Campfire.connect("area_entered", self, "_on_campfire_entered")
+	$Campfire.connect("area_exited", self, "_on_campfire_exited")
 	
 	sight = get_node_or_null("Sight")
 	wander_target = global_position
@@ -58,7 +61,7 @@ func process_angered(delta):
 	else:
 		if following:
 			global_position = global_position.move_toward(
-				following.global_position, hazard_properties.speed_angered*delta
+				following.global_position, hazard_properties.speed_angered*delta * speed_multiplier
 			)
 	
 	if following == null:
@@ -133,7 +136,7 @@ func wander(delta):
 		return
 	
 	global_position = global_position.move_toward(
-		wander_target, hazard_properties.speed_idle*delta
+		wander_target, hazard_properties.speed_idle*delta*speed_multiplier
 	)
 
 func update_sight(delta):
@@ -191,3 +194,10 @@ func _on_idle_timeout():
 		sight_base_angle = 180 if direction.x >= 0 else 0
 	else:
 		sight_base_angle = 270 if direction.y >= 0 else 90
+
+func _on_campfire_entered(_a2d):
+	print("Entered campfire")
+	speed_multiplier /= 2.0
+
+func _on_campfire_exited(_a2d):
+	speed_multiplier *= 2.0

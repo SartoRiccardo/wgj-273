@@ -9,6 +9,7 @@ export (int) var ACCELERATION = 500
 export (int) var DECELERATION = 750
 export (int) var SHOOT_RANGE = 250
 export (Array, Resource) var edible_items
+export (bool) var dev_detectable = true
 
 const INVENTORY_CHANGE_SCENE = preload("res://ui/InventoryChangeUI.tscn")
 const PROJECTILE_SCENE = preload("res://entities/Projectile.tscn")
@@ -40,6 +41,9 @@ func _ready():
 	$WaterDetect.connect("area_entered", self, "_on_water_enter")
 	$WaterDetect.connect("area_exited", self, "_on_water_exited")
 	$Inventory.connect("amount_change", self, "_on_inventory_change")
+	
+	if not dev_detectable:
+		$DetectionRange.collision_layer = 0
 
 func _process(delta):
 	handle_movement_inputs()

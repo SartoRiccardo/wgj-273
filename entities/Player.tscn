@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://assets/entities/player.png" type="Texture" id=1]
 [ext_resource path="res://entities/Player.gd" type="Script" id=2]
@@ -15,17 +15,10 @@ script = ExtResource( 4 )
 item = 4
 points_filled = 0.5
 
-[sub_resource type="AtlasTexture" id=8]
-atlas = ExtResource( 1 )
-region = Rect2( 24, 0, 12, 15 )
-
-[sub_resource type="AtlasTexture" id=6]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 12, 15 )
-
-[sub_resource type="AtlasTexture" id=7]
-atlas = ExtResource( 1 )
-region = Rect2( 12, 0, 12, 15 )
+[sub_resource type="Resource" id=17]
+script = ExtResource( 4 )
+item = 6
+points_filled = 0.5
 
 [sub_resource type="AtlasTexture" id=3]
 atlas = ExtResource( 1 )
@@ -47,13 +40,20 @@ region = Rect2( 12, 15, 12, 15 )
 atlas = ExtResource( 1 )
 region = Rect2( 0, 15, 12, 15 )
 
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 1 )
+region = Rect2( 24, 0, 12, 15 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 12, 15 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 1 )
+region = Rect2( 12, 0, 12, 15 )
+
 [sub_resource type="SpriteFrames" id=9]
 animations = [ {
-"frames": [ SubResource( 8 ), SubResource( 6 ), SubResource( 7 ), SubResource( 6 ) ],
-"loop": true,
-"name": "walk_down",
-"speed": 7.0
-}, {
 "frames": [ SubResource( 3 ), SubResource( 1 ), SubResource( 2 ), SubResource( 1 ) ],
 "loop": true,
 "name": "walk_up",
@@ -62,6 +62,11 @@ animations = [ {
 "frames": [ SubResource( 5 ), SubResource( 4 ) ],
 "loop": true,
 "name": "walk_right",
+"speed": 7.0
+}, {
+"frames": [ SubResource( 8 ), SubResource( 6 ), SubResource( 7 ), SubResource( 6 ) ],
+"loop": true,
+"name": "walk_down",
 "speed": 7.0
 } ]
 
@@ -82,7 +87,7 @@ height = 6.0
 collision_layer = 5
 collision_mask = 0
 script = ExtResource( 2 )
-edible_items = [ SubResource( 15 ), SubResource( 16 ) ]
+edible_items = [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ]
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -7.5 )

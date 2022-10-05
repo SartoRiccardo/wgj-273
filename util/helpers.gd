@@ -78,10 +78,13 @@ func draw_line(parent, p1, p2, color):
 	line.add_point(p2)
 	line.set_default_color(color)
 	parent.add_child(line)
-	
+
 func draw_point(parent, coords, color=Color.black):
 	var point = Polygon2D.new()
 	point.set_polygon(PoolVector2Array([coords + Vector2.LEFT*2,
 		coords + Vector2.UP*2, coords + Vector2.RIGHT*2, coords + Vector2.DOWN*2]))
 	point.set_color(color)
 	parent.add_child(point)
+
+func stepify_vec2(vec2, step):
+	return Vector2(stepify(vec2.x, step), stepify(vec2.y, step))

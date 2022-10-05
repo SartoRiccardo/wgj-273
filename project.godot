@@ -181,6 +181,8 @@ prev_inv_item={
 2d_physics/layer_6="player_hurt"
 2d_physics/layer_7="detection"
 2d_physics/layer_8="hazard_hurt"
+2d_physics/layer_9="aoe_campfire"
+2d_physics/layer_10="aoe_dam"
 
 [physics]
 

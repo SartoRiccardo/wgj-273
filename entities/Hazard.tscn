@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://entities/Hazard.gd" type="Script" id=1]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 6.0
 
 [node name="Hazard" type="KinematicBody2D"]
 collision_layer = 0
@@ -14,6 +17,14 @@ collision_mask = 0
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 128
 collision_mask = 128
+
+[node name="Campfire" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 256
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Campfire"]
+shape = SubResource( 1 )
 
 [node name="StunTimer" type="Timer" parent="."]
 wait_time = 3.0

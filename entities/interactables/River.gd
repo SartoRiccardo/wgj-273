@@ -23,8 +23,6 @@ func _process(_d):
 	if player != null:
 		$TooltipData.global_position = player.global_position
 	
-	Helpers.writeln_console($TooltipData/Tooltip.rect_size)
-
 func is_pickuppable(inventory):
 	return not disabled and .is_pickuppable(inventory)
 

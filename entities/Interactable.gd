@@ -27,7 +27,8 @@ func _process(_d):
 		tooltip_editor.rect_pivot_offset = tooltip_editor.rect_size/2
 		tooltip_editor.rect_position = -tooltip_editor.rect_size/2
 		return
-	$TooltipData/Tooltip.rect_size = Vector2.ZERO
+	if enable_tooltip:
+		$TooltipData/Tooltip.rect_size = Vector2.ZERO
 
 func tooltip_popup():
 	if not enable_tooltip:
@@ -40,8 +41,8 @@ func tooltip_popup():
 	$TooltipData/AnimationPlayer.play("tooltip_appear")
 	$TooltipData/Tween.start()
 
-func tooltip_retract():
-	if not enable_tooltip:
+func tooltip_retract(force=false):
+	if not enable_tooltip and not force:
 		return
 	
 	$TooltipData/Tween.stop(tooltip)
@@ -55,8 +56,19 @@ func pickup(inventory):
 	inventory.remove(interactable_data.requirement, interactable_data.requirement_amount)
 	var amount_picked = rng.randi_range(interactable_data.amount_min, interactable_data.amount_max)
 	if interactable_data.die_on_pickup:
-		queue_free()
+		despawn()
 	return amount_picked
+
+func despawn():
+	queue_free()
+
+func delete_tooltip():
+	enable_tooltip = false
+	$TooltipData/Range.queue_free()
+	if Helpers.stepify_vec2($TooltipData/Tooltip.rect_scale, 0.001) != Vector2.ZERO:
+		tooltip_retract(true)
+		yield ($TooltipData/Tween, "tween_completed")
+	remove_child($TooltipData)
 
 func is_pickuppable(inventory):
 	return inventory.get_amount(interactable_data.requirement) >= interactable_data.requirement_amount

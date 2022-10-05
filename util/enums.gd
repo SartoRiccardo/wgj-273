@@ -1,7 +1,7 @@
 extends Node
 
 enum Season { SPRING, SUMMER, AUTUMN, WINTER }
-enum Item { LEAF, ROCK, STICK, FLOWER, HONEY, FISH }
+enum Item { LEAF, ROCK, STICK, FLOWER, HONEY, FISH, FISH_COOKED }
 enum HazardState { IDLE, ANGERED, STUNNED, FLEEING, ATTACKING }
 enum Entity {
 	# Hazards

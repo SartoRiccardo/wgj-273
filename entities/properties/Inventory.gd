@@ -12,6 +12,7 @@ var contents = {
 	Enums.Item.FLOWER: 3,
 	Enums.Item.HONEY: 0,
 	Enums.Item.FISH: 99,
+	Enums.Item.FISH_COOKED: 0,
 }
 var equipped = Enums.Item.ROCK
 

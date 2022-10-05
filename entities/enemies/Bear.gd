@@ -6,16 +6,6 @@ export (Resource) var behavior
 func _ready():
 	behavior.connect("docile_change", self, "_on_docile_change")
 
-func _process_idle(_delta):
-	pass
-
-func _process_angered(delta):
-	if following:
-		global_position += global_position.direction_to(following.global_position) * speed * delta
-
-func _process_stunned(_delta):
-	pass
-
 # Override
 func update_sight(delta):
 	if !behavior.docile:

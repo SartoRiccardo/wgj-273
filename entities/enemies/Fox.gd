@@ -39,12 +39,12 @@ func _process_angered(delta):
 	
 	if following:
 		global_position = global_position.move_toward(
-			following.global_position, hazard_properties.speed_following*delta
+			following.global_position, hazard_properties.speed_following*delta*speed_multiplier
 		)
 
-func _process_attacking(delta):  # TODO run in a direction that makes sense
+func _process_attacking(delta):
 	global_position = global_position.move_toward(
-		following.global_position, hazard_properties.speed_angered*delta
+		following.global_position, hazard_properties.speed_angered*delta*speed_multiplier
 	)
 
 func _process_fleeing(delta):
