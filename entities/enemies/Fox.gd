@@ -62,6 +62,8 @@ func _on_hit(item):
 			change_state(Enums.HazardState.FLEEING)
 		Enums.Item.FISH:
 			lose_sight_player()
+			$Hitbox.set_monitoring(false)
+			$Hitbox.set_monitorable(false)
 			friendly = true
 
 func _on_stun_end():
