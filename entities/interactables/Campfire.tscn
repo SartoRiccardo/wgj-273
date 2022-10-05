@@ -23,6 +23,7 @@ region = Rect2( 0, 16, 16, 16 )
 
 [node name="Campfire" instance=ExtResource( 2 )]
 script = ExtResource( 6 )
+interactable_data = ExtResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ActionRange" index="0"]
 shape = SubResource( 3 )

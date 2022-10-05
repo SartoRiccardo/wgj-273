@@ -29,7 +29,7 @@ shape = SubResource( 1 )
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 3 )]
 margin_left = 6.0
 margin_top = 6.0
-margin_right = 38.0
+margin_right = 84.0
 margin_bottom = 20.0
 reward_texture = SubResource( 2 )
 requirement_texture = SubResource( 3 )
