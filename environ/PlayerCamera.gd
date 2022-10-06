@@ -2,8 +2,10 @@ extends Camera2D
 
 var player
 var angered_hazards = 0
+export (Color) var bg_color = Color.darkcyan
 
 func _ready():
+	VisualServer.set_default_clear_color(bg_color)
 	player = $"/root/Helpers".get_first_of_group("playable")
 	if player != null:
 		global_position = player.global_position

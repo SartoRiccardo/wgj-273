@@ -40,7 +40,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, 0 ), Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=13]
 resource_name = "appear"
 length = 0.7
 tracks/0/type = "value"
@@ -100,4 +100,4 @@ anims/tooltip_appear = SubResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "appear"
-anims/appear = SubResource( 3 )
+anims/appear = SubResource( 13 )

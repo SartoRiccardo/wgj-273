@@ -48,6 +48,8 @@ func _ready():
 	rng.randomize()
 
 func _process(delta):
+	update_sprite()
+	
 	var cur_state = state
 	match state:
 		Enums.HazardState.IDLE:
@@ -63,6 +65,34 @@ func _process(delta):
 	
 	if cur_state == state:
 		state_is_new = false
+
+# Very sloppy, I'm out of time
+func update_sprite():
+	if !has_node("AnimatedSprite"):
+		return
+	var sprite = get_node("AnimatedSprite")
+	var direction = Vector2.ZERO
+	if following:
+		direction = (following.global_position - global_position).normalized()
+	elif wander_target and wander_target != global_position:
+		direction = Helpers.stepify_vec2(wander_target - global_position, 0.001) \
+			.normalized()
+	if has_method("get_sprite_direction"):
+		direction = call("get_sprite_direction", direction)
+	
+	var flip = direction.x > 0
+	if flip != sprite.is_flipped_h() and direction.x != 0:
+		sprite.set_flip_h(flip)
+	
+	if direction == Vector2.ZERO and sprite.is_playing():
+		if sprite.frames.has_animation("idle"):
+			sprite.play("idle")
+		else:
+			sprite.set_frame(1)
+		sprite.stop()
+	elif direction != Vector2.ZERO and !sprite.is_playing():
+		sprite.play("walk_left")
+		sprite.set_frame(0)
 
 func process_idle(delta):
 	if self.has_method("_process_idle"):
@@ -119,6 +149,8 @@ func lose_sight_player():
 		remove_from_group("angered")
 		$ProjectileInfo/Tooltip.retract()
 	emit_signal("unangered")
+	if following:
+		following = null
 
 func check_player_distance():
 	if following and global_position.distance_to(following.global_position) > hazard_properties.outrun_distance:
@@ -232,11 +264,9 @@ func _on_campfire_exited(_a2d):
 	mov_speed_multiplier *= 2.0
 	
 func _on_water_entered(_a2d):
-	print("enter water")
 	mov_speed_multiplier *= 0.3
 
 func _on_water_exited(_a2d):
-	print("exit water")
 	mov_speed_multiplier /= 0.3
 
 func _on_game_speed_increase(multiplier):
@@ -249,6 +279,7 @@ func _on_game_speed_decrease(multiplier):
 
 func _on_player_enter_hut():
 	if state in [Enums.HazardState.ATTACKING, Enums.HazardState.ANGERED]:
+		lose_sight_player()
 		change_state(Enums.HazardState.IDLE)
 
 func _on_season_change(season):

@@ -63,6 +63,7 @@ func _process(delta):
 	handle_inventory_inputs()
 	handle_ui()
 	handle_hunger()
+	Helpers.writeln_console("%s"%State.keys()[state])
 	if state != State.HUT:
 		handle_weather(delta)
 	
@@ -318,10 +319,13 @@ func get_inventory():
 func get_hurt():
 	if $Invulnerability.time_left == 0 and lives > 0:
 		lives -= 1.0
+		if lives == 0:
+			get_tree().change_scene("res://Main.tscn")
 		emit_signal("hurt", lives)
 		$Invulnerability.start()
 
 func enter_hut(hut):
+	change_state(State.HUT)
 	inside_hut = hut
 	var to_disable = [$ActionRange, $HurtBox]
 	for area in to_disable:
@@ -332,7 +336,6 @@ func enter_hut(hut):
 	global_position = inside_hut.global_position
 	speed = 0.0
 	velocity = Vector2.ZERO
-	change_state(State.HUT)
 	inside_hut.connect("decay", self, "exit_hut")
 	var game = Helpers.get_game_node()
 	if game:
@@ -372,7 +375,8 @@ func _on_hazard_angered():
 	change_state(State.FLEEING)
 
 func _on_hazard_unangered():
-	if get_tree().get_nodes_in_group("angered").size() == 0:
+	if get_tree().get_nodes_in_group("angered").size() == 0 \
+			and state != State.HUT:
 		change_state(State.NORMAL)
 
 func _on_water_enter(_a2d):

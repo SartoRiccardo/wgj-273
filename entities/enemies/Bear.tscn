@@ -1,8 +1,8 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://entities/Hazard.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/enemies/Bear.gd" type="Script" id=2]
-[ext_resource path="res://assets/placeholders/bear_PNG23456.png" type="Texture" id=3]
+[ext_resource path="res://assets/entities/bear.png" type="Texture" id=3]
 [ext_resource path="res://resources/stuns/stun_honey.tres" type="Resource" id=4]
 [ext_resource path="res://resources/stuns/stun_rock.tres" type="Resource" id=5]
 [ext_resource path="res://resources/hazards/hazard_bear.tres" type="Resource" id=6]
@@ -11,12 +11,55 @@
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 8, 2.5 )
 
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 3 )
+region = Rect2( 33, 0, 33, 30 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 33, 30 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 3 )
+region = Rect2( 66, 0, 33, 30 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 3 )
+region = Rect2( 66, 30, 33, 30 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 3 )
+region = Rect2( 33, 30, 33, 30 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 33, 30 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 30, 33, 30 )
+
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
-"frames": [ ExtResource( 3 ) ],
+"frames": [ SubResource( 7 ), SubResource( 6 ), SubResource( 8 ), SubResource( 6 ) ],
 "loop": true,
-"name": "default",
+"name": "walk_left",
 "speed": 5.0
+}, {
+"frames": [ SubResource( 9 ) ],
+"loop": true,
+"name": "stun_rock",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 10 ) ],
+"loop": true,
+"name": "stun_honey",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 12 ), SubResource( 11 ), SubResource( 12 ) ],
+"loop": true,
+"name": "attack",
+"speed": 3.0
 } ]
 
 [sub_resource type="CapsuleShape2D" id=1]
@@ -27,7 +70,7 @@ height = 12.0
 radius = 15.0
 height = 12.0
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=13]
 resource_name = "appear"
 length = 0.7
 tracks/0/type = "value"
@@ -72,8 +115,10 @@ collision_mask = 64
 collide_with_areas = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="4"]
-scale = Vector2( 1, 0.602564 )
+position = Vector2( 0, -6 )
 frames = SubResource( 3 )
+animation = "walk_left"
+frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" index="0"]
 rotation = 1.5708
@@ -85,4 +130,4 @@ shape = SubResource( 4 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="11"]
 autoplay = "appear"
-anims/appear = SubResource( 5 )
+anims/appear = SubResource( 13 )

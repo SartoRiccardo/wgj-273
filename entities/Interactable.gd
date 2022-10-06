@@ -17,7 +17,7 @@ func _ready():
 	else:
 		$TooltipData/Range.connect("area_entered", self, "_on_player_nearby")
 		$TooltipData/Range.connect("area_exited", self, "_on_player_leave")
-		
+	
 func _process(_d):
 	if enable_tooltip:
 		$TooltipData/Tooltip.rect_size = Vector2.ZERO
@@ -60,7 +60,8 @@ func _on_player_leave(_a2d):
 	tooltip_retract()
 
 func _on_season_change(season):
-	if interactable_data.exist_in_seasons.size() > 0 and \
+	if interactable_data and \
+			interactable_data.exist_in_seasons.size() > 0 and \
 			!(season in interactable_data.exist_in_seasons) and \
 			not despawning:
 		despawning = true

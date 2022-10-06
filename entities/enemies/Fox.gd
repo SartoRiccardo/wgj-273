@@ -9,6 +9,11 @@ func _ready():
 	$Hitbox.connect("area_entered", self, "_on_steal")
 	$VisibilityNotifier2D.connect("screen_exited", self, "_on_screen_exited")
 
+func get_sprite_direction(direction):
+	if state != Enums.HazardState.FLEEING:
+		return direction
+	return flee_direction
+
 func check_sight():
 	if friendly:
 		return
@@ -51,8 +56,11 @@ func _process_attacking(delta):
 
 func _process_fleeing(delta):
 	if flee_direction == Vector2.ZERO:
-		var angle_from_player = global_position.angle_to(following.global_position)
-		flee_direction = Vector2(cos(angle_from_player), sin(angle_from_player))
+		if following:
+			var angle_from_player = global_position.angle_to_point(following.global_position)
+			flee_direction = Vector2(cos(angle_from_player), sin(angle_from_player))
+		else:
+			flee_direction = Vector2.LEFT
 	global_position += flee_direction * delta * hazard_properties.speed_angered
 
 func _process_stunned(_delta):
@@ -61,6 +69,9 @@ func _process_stunned(_delta):
 func _on_hit(item):
 	match item:
 		Enums.Item.ROCK:
+			var angle_from_player = global_position.angle_to_point(following.global_position)
+			flee_direction = Vector2(cos(angle_from_player), sin(angle_from_player))
+			$Hitbox.collision_layer = 0
 			lose_sight_player()
 			change_state(Enums.HazardState.FLEEING)
 		Enums.Item.FISH:
@@ -81,6 +92,9 @@ func _on_attack_range_entered(_a2d):
 
 func _on_steal(_a2d):
 	change_state(Enums.HazardState.FLEEING)
+	if following == null:
+		print("ERROR FOLLOWING IS NULL")
+		return
 	var inventory = following.get_inventory()
 	
 	var valid_steal_items = []
@@ -96,6 +110,8 @@ func _on_steal(_a2d):
 		inventory.steal(steal_item, steal_amount)
 	else:
 		following.get_hurt()
+	var angle_from_player = global_position.angle_to_point(following.global_position)
+	$Hitbox.collision_layer = 0
 	lose_sight_player()
 
 func _on_screen_exited():

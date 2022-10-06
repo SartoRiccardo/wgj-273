@@ -1,0 +1,75 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://resources/ui/main_theme.tres" type="Theme" id=1]
+[ext_resource path="res://assets/dynastium_kjvy.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://ui/MainMenu.gd" type="Script" id=3]
+[ext_resource path="res://environ/Terrain.tscn" type="PackedScene" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 6
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 2 )
+
+[node name="MainMenu" type="Node"]
+script = ExtResource( 3 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+margin_right = 384.0
+margin_bottom = 216.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer2"]
+margin_right = 384.0
+margin_bottom = 171.0
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer2/VBoxContainer"]
+margin_top = 65.0
+margin_right = 384.0
+margin_bottom = 77.0
+text = "Season Survival"
+align = 1
+valign = 1
+
+[node name="Button" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer2/VBoxContainer"]
+margin_left = 176.0
+margin_top = 81.0
+margin_right = 208.0
+margin_bottom = 105.0
+size_flags_horizontal = 4
+text = "Play"
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/MarginContainer/VBoxContainer2"]
+margin_top = 175.0
+margin_right = 384.0
+margin_bottom = 216.0
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 4
+
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer2/MarginContainer"]
+margin_left = 4.0
+margin_right = 384.0
+margin_bottom = 37.0
+custom_fonts/font = SubResource( 1 )
+text = "Game made by Sarto for Weekly Game Jam #273 (Theme: seasons)
+Credits on the itch.io page of the game. I was out of time to code
+a proper credits screen.
+Controls and instructions also in the description for the same reason."
+
+[node name="Terrain" parent="." instance=ExtResource( 4 )]
+position = Vector2( 775, -85 )
+
+[node name="BgChange" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true

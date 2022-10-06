@@ -6,13 +6,13 @@ signal amount_change(item, old_amount, new_amount)
 
 
 var contents = {
-	Enums.Item.LEAF: 120,
-	Enums.Item.ROCK: 10,
-	Enums.Item.STICK: 100,
-	Enums.Item.FLOWER: 13,
-	Enums.Item.HONEY: 10,
-	Enums.Item.FISH: 99,
-	Enums.Item.FISH_COOKED: 10,
+	Enums.Item.LEAF: 0,
+	Enums.Item.ROCK: 0,
+	Enums.Item.STICK: 0,
+	Enums.Item.FLOWER: 0,
+	Enums.Item.HONEY: 0,
+	Enums.Item.FISH: 0,
+	Enums.Item.FISH_COOKED: 0,
 }
 var equipped = Enums.Item.ROCK
 

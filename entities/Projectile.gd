@@ -14,7 +14,7 @@ func _process(delta):
 	if target == null or hit:
 		return
 	global_position = global_position.move_toward(target.global_position, speed*delta)
-	$Sprite.rotation = global_position.angle_to(target.global_position) + PI/2
+	$Sprite.rotation = global_position.angle_to_point(target.global_position) + PI/2
 
 func set_target(new_target):
 	target = new_target

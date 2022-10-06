@@ -13,8 +13,14 @@ func _ready():
 	var river_area = get_node_or_null("RiverArea")
 	if river_area:
 		remove_child(river_area)
-		$ActionRange.add_child(river_area)
-		$TooltipRange.add_child(river_area.duplicate())
+		if river_area.get_child_count() > 0:
+			for child in river_area.get_children():
+				river_area.remove_child(child)
+				$ActionRange.add_child(child)
+				$TooltipRange.add_child(child.duplicate())
+		else:
+			$ActionRange.add_child(river_area)
+			$TooltipRange.add_child(river_area.duplicate())
 		$TooltipRange.connect("area_entered", self, "_on_player_nearby")
 		$TooltipRange.connect("area_exited", self, "_on_player_leave")
 	player = Helpers.get_player()
