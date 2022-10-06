@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=6 format=2]
+
+[ext_resource path="res://resources/season_spawns/SpawnChance.gd" type="Script" id=1]
+[ext_resource path="res://entities/interactables/Bees.tscn" type="PackedScene" id=2]
+[ext_resource path="res://resources/season_spawns/EntitySpawnData.gd" type="Script" id=3]
+
+[sub_resource type="Resource" id=9]
+script = ExtResource( 1 )
+chance = 0.04
+biome = 0
+
+[sub_resource type="Resource" id=10]
+script = ExtResource( 1 )
+chance = 0.017
+biome = 1
+
+[resource]
+script = ExtResource( 3 )
+scene = ExtResource( 2 )
+node_type = "animal"
+cap = 4
+min_distance_from_player = 0.0
+spawn_chances = [ SubResource( 9 ), SubResource( 10 ) ]

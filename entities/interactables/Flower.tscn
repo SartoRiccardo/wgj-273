@@ -32,13 +32,12 @@ margin_left = -22.0
 margin_top = -13.0
 margin_right = 22.0
 margin_bottom = 13.0
-rect_scale = Vector2( 1e-05, 1e-05 )
 rect_pivot_offset = Vector2( 22, 13 )
 
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 4 )]
 margin_left = 6.0
 margin_top = 6.0
-margin_right = 38.0
+margin_right = 84.0
 margin_bottom = 20.0
 reward_texture = SubResource( 3 )
 interactable_data = ExtResource( 2 )

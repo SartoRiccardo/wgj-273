@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource( 1 )
 chance = 0.1
-biome = 3
+biome = 0

@@ -1,115 +1,13 @@
-[gd_resource type="Resource" load_steps=26 format=2]
+[gd_resource type="Resource" load_steps=7 format=2]
 
 [ext_resource path="res://resources/season_spawns/SpawnResource.gd" type="Script" id=1]
-[ext_resource path="res://resources/season_spawns/EntitySpawnData.gd" type="Script" id=2]
-[ext_resource path="res://resources/season_spawns/SpawnChance.gd" type="Script" id=3]
-[ext_resource path="res://entities/interactables/Flower.tscn" type="PackedScene" id=4]
-[ext_resource path="res://entities/interactables/Bees.tscn" type="PackedScene" id=5]
-[ext_resource path="res://entities/interactables/Rocks.tscn" type="PackedScene" id=6]
-[ext_resource path="res://entities/interactables/Sticks.tscn" type="PackedScene" id=7]
-[ext_resource path="res://entities/enemies/Bear.tscn" type="PackedScene" id=8]
-
-[sub_resource type="Resource" id=6]
-script = ExtResource( 3 )
-chance = 0.1
-biome = 0
-
-[sub_resource type="Resource" id=7]
-script = ExtResource( 3 )
-chance = 0.033
-biome = 1
-
-[sub_resource type="Resource" id=8]
-script = ExtResource( 3 )
-chance = 0.017
-biome = 3
-
-[sub_resource type="Resource" id=1]
-script = ExtResource( 2 )
-scene = ExtResource( 4 )
-node_type = "collectible"
-cap = 10
-min_distance_from_player = 0.0
-spawn_chances = [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ]
-
-[sub_resource type="Resource" id=9]
-script = ExtResource( 3 )
-chance = 0.022
-biome = 0
-
-[sub_resource type="Resource" id=10]
-script = ExtResource( 3 )
-chance = 0.006
-biome = 1
-
-[sub_resource type="Resource" id=2]
-script = ExtResource( 2 )
-scene = ExtResource( 5 )
-node_type = "animal"
-cap = 3
-min_distance_from_player = 0.0
-spawn_chances = [ SubResource( 9 ), SubResource( 10 ) ]
-
-[sub_resource type="Resource" id=11]
-script = ExtResource( 3 )
-chance = 0.011
-biome = 0
-
-[sub_resource type="Resource" id=12]
-script = ExtResource( 3 )
-chance = 0.017
-biome = 1
-
-[sub_resource type="Resource" id=13]
-script = ExtResource( 3 )
-chance = 0.1
-biome = 3
-
-[sub_resource type="Resource" id=4]
-script = ExtResource( 2 )
-scene = ExtResource( 6 )
-node_type = "collectible"
-cap = 15
-min_distance_from_player = 0.0
-spawn_chances = [ SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ]
-
-[sub_resource type="Resource" id=14]
-script = ExtResource( 3 )
-chance = 0.017
-biome = 3
-
-[sub_resource type="Resource" id=15]
-script = ExtResource( 3 )
-chance = 0.1
-biome = 1
-
-[sub_resource type="Resource" id=5]
-script = ExtResource( 2 )
-scene = ExtResource( 7 )
-node_type = "collectible"
-cap = 15
-min_distance_from_player = 0.0
-spawn_chances = [ SubResource( 14 ), SubResource( 15 ) ]
-
-[sub_resource type="Resource" id=16]
-script = ExtResource( 3 )
-chance = 0.017
-biome = 3
-
-[sub_resource type="Resource" id=17]
-script = ExtResource( 3 )
-chance = 0.067
-biome = 1
-
-[sub_resource type="Resource" id=18]
-script = ExtResource( 2 )
-scene = ExtResource( 8 )
-node_type = "animal"
-cap = 5
-min_distance_from_player = 150.0
-spawn_chances = [ SubResource( 16 ), SubResource( 17 ) ]
+[ext_resource path="res://resources/season_spawns/spdata_flower.tres" type="Resource" id=2]
+[ext_resource path="res://resources/season_spawns/spdata_bees.tres" type="Resource" id=3]
+[ext_resource path="res://resources/season_spawns/spdata_bear.tres" type="Resource" id=6]
+[ext_resource path="res://resources/season_spawns/spdata_rocks.tres" type="Resource" id=7]
+[ext_resource path="res://resources/season_spawns/spdata_sticks.tres" type="Resource" id=8]
 
 [resource]
 script = ExtResource( 1 )
 season = 0
-data = [ SubResource( 1 ), SubResource( 2 ), SubResource( 4 ), SubResource( 5 ), SubResource( 18 ) ]
+data = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 6 ) ]

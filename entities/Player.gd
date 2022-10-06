@@ -65,7 +65,6 @@ func _process(delta):
 	handle_hunger()
 	if state != State.HUT:
 		handle_weather(delta)
-	Helpers.writeln_console(weather_damage)
 	
 	match state:
 		State.FLEEING:

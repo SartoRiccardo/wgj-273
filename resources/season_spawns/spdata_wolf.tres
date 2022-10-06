@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=6 format=2]
+
+[ext_resource path="res://resources/season_spawns/SpawnChance.gd" type="Script" id=1]
+[ext_resource path="res://resources/season_spawns/EntitySpawnData.gd" type="Script" id=2]
+[ext_resource path="res://entities/enemies/Wolf.tscn" type="PackedScene" id=3]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 1 )
+chance = 0.167
+biome = 1
+
+[sub_resource type="Resource" id=2]
+script = ExtResource( 1 )
+chance = 0.1
+biome = 0
+
+[resource]
+script = ExtResource( 2 )
+scene = ExtResource( 3 )
+node_type = "animal"
+cap = 10
+min_distance_from_player = 200.0
+spawn_chances = [ SubResource( 1 ), SubResource( 2 ) ]

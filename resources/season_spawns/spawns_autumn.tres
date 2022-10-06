@@ -1,0 +1,13 @@
+[gd_resource type="Resource" load_steps=7 format=2]
+
+[ext_resource path="res://resources/season_spawns/SpawnResource.gd" type="Script" id=1]
+[ext_resource path="res://resources/season_spawns/spdata_leafpile.tres" type="Resource" id=2]
+[ext_resource path="res://resources/season_spawns/spdata_fox_autumn.tres" type="Resource" id=3]
+[ext_resource path="res://resources/season_spawns/spdata_rocks.tres" type="Resource" id=4]
+[ext_resource path="res://resources/season_spawns/spdata_sticks.tres" type="Resource" id=5]
+[ext_resource path="res://resources/season_spawns/spdata_bear_autumn.tres" type="Resource" id=6]
+
+[resource]
+script = ExtResource( 1 )
+season = 2
+data = [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 2 ), ExtResource( 6 ), ExtResource( 3 ) ]
