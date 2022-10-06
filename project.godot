@@ -60,6 +60,11 @@ _global_script_classes=[ {
 "path": "res://resources/player/ItemAmount.gd"
 }, {
 "base": "Resource",
+"class": "MaterialList",
+"language": "GDScript",
+"path": "res://util/MaterialList.gd"
+}, {
+"base": "Resource",
 "class": "ProjectileResource",
 "language": "GDScript",
 "path": "res://resources/projectiles/ProjectileResource.gd"
@@ -90,6 +95,7 @@ _global_script_class_icons={
 "InteractableResource": "",
 "InventoryUISprite": "",
 "ItemAmount": "",
+"MaterialList": "",
 "ProjectileResource": "",
 "SpawnChance": "",
 "SpawnResource": "",
@@ -106,6 +112,7 @@ config/icon="res://icon.png"
 
 Helpers="*res://util/helpers.gd"
 Enums="*res://util/enums.gd"
+ParticleLoader="*res://util/ParticleLoader.gd"
 
 [debug]
 

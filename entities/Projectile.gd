@@ -1,7 +1,7 @@
 extends Node2D
 
 export (Resource) var projectile_data
-export (int) var speed = 500
+export (int) var speed = 800
 
 var target = null
 var hit = false
@@ -14,6 +14,7 @@ func _process(delta):
 	if target == null or hit:
 		return
 	global_position = global_position.move_toward(target.global_position, speed*delta)
+	$Sprite.rotation = global_position.angle_to(target.global_position) + PI/2
 
 func set_target(new_target):
 	target = new_target

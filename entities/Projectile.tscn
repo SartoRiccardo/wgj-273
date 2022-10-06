@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://entities/Projectile.gd" type="Script" id=1]
 [ext_resource path="res://assets/ui/inventory.png" type="Texture" id=2]
+[ext_resource path="res://assets/entities/trail.png" type="Texture" id=3]
+[ext_resource path="res://resources/particles/projectile_trail.tres" type="Material" id=4]
 
 [sub_resource type="AtlasTexture" id=4]
 atlas = ExtResource( 2 )
@@ -94,10 +96,16 @@ tracks/4/keys = {
 
 [node name="Projectile" type="Node2D" groups=["projectile"]]
 script = ExtResource( 1 )
-speed = 800
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = SubResource( 4 )
+
+[node name="Trail" type="Particles2D" parent="Sprite"]
+show_behind_parent = true
+amount = 500
+local_coords = false
+process_material = ExtResource( 4 )
+texture = ExtResource( 3 )
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 128
