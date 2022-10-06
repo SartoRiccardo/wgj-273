@@ -23,6 +23,9 @@ func get_current_season():
 func get_season_timer():
 	return $SeasonTimer
 
+func is_walkable(point):
+	return $Terrain/SeasonTerrain.is_walkable(point)
+
 func speed_up():
 	if is_sped_up:
 		return

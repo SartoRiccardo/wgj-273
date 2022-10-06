@@ -6,6 +6,8 @@ signal unangered
 export (Array, Resource) var stuns
 export (Resource) var hazard_properties
 
+var game = null
+
 var global_speed_multiplier = 1.0
 var mov_speed_multiplier = 1.0
 var state = Enums.HazardState.IDLE
@@ -16,6 +18,7 @@ var rng = RandomNumberGenerator.new()
 
 var sight = null
 var sight_base_angle = 0
+var despawning = false
 
 func _ready():
 	var player = Helpers.get_player()
@@ -27,14 +30,17 @@ func _ready():
 	if camera:
 		self.connect("angered", camera, "_on_hazard_angered")
 		self.connect("unangered", camera, "_on_hazard_unangered")
-	var game = Helpers.get_game_node()
+	game = Helpers.get_game_node()
 	if game:
+		game.connect("season_change", self, "_on_season_change")
 		game.connect("speed_increase", self, "_on_game_speed_increase")
 		game.connect("speed_decrease", self, "_on_game_speed_decrease")
 	$StunTimer.connect("timeout", self, "_on_stun_end")
 	$IdleTimer.connect("timeout", self, "_on_idle_timeout")
 	$Campfire.connect("area_entered", self, "_on_campfire_entered")
 	$Campfire.connect("area_exited", self, "_on_campfire_exited")
+	$Water.connect("area_entered", self, "_on_water_entered")
+	$Water.connect("area_exited", self, "_on_water_exited")
 	$ProjectileInfo/Tooltip/CounterList.init(stuns)
 	
 	sight = get_node_or_null("Sight")
@@ -200,22 +206,38 @@ func _on_stun_end():
 		change_state(Enums.HazardState.ANGERED)
 
 func _on_idle_timeout():
-	var angle = rng.randf_range(0, 2*PI)
-	var distance = rng.randf_range(hazard_properties.wander_min_radius, hazard_properties.wander_max_radius)
-	var path_to_target = Vector2(cos(angle) * distance, sin(angle) * distance)
-	wander_target = global_position + path_to_target
-	
-	var direction = path_to_target.normalized()
-	if abs(direction.x) > abs(direction.y):
-		sight_base_angle = 180 if direction.x >= 0 else 0
-	else:
-		sight_base_angle = 270 if direction.y >= 0 else 90
+	var attempts = 0
+	var max_attempts = 10
+	var success = false
+	while not success and attempts < max_attempts:
+		var angle = rng.randf_range(0, 2*PI)
+		var distance = rng.randf_range(hazard_properties.wander_min_radius, hazard_properties.wander_max_radius)
+		var path_to_target = Vector2(cos(angle) * distance, sin(angle) * distance)
+		var new_wander_target = global_position + path_to_target
+		success = game.is_walkable(new_wander_target)
+		if success:  # Is in map
+			wander_target = new_wander_target
+			var direction = path_to_target.normalized()
+			if abs(direction.x) > abs(direction.y):
+				sight_base_angle = 180 if direction.x >= 0 else 0
+			else:
+				sight_base_angle = 270 if direction.y >= 0 else 90
+		
+		attempts += 1
 
 func _on_campfire_entered(_a2d):
 	mov_speed_multiplier /= 2.0
 
 func _on_campfire_exited(_a2d):
 	mov_speed_multiplier *= 2.0
+	
+func _on_water_entered(_a2d):
+	print("enter water")
+	mov_speed_multiplier *= 0.3
+
+func _on_water_exited(_a2d):
+	print("exit water")
+	mov_speed_multiplier /= 0.3
 
 func _on_game_speed_increase(multiplier):
 	global_speed_multiplier *= multiplier
@@ -228,3 +250,14 @@ func _on_game_speed_decrease(multiplier):
 func _on_player_enter_hut():
 	if state in [Enums.HazardState.ATTACKING, Enums.HazardState.ANGERED]:
 		change_state(Enums.HazardState.IDLE)
+
+func _on_season_change(season):
+	if hazard_properties.exists_in_seasons.size() > 0 and \
+			!(season in hazard_properties.exists_in_seasons) and \
+			not despawning:
+		despawning = true
+		var despawn_delay = rng.randf_range(10, 15)
+		yield (get_tree().create_timer(despawn_delay), "timeout")
+		if $VisibilityNotifier2D.is_on_screen():
+			yield($VisibilityNotifier2D, "screen_exited")
+		queue_free()

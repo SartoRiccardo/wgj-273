@@ -14,3 +14,4 @@ idle_time = 5.0
 idle_rand = 0.3
 wander_min_radius = 30.0
 wander_max_radius = 60.0
+exists_in_seasons = [ 0, 1, 2 ]

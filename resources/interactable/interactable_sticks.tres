@@ -11,3 +11,4 @@ time = 2.0
 die_on_pickup = true
 requirement = 0
 requirement_amount = 0
+exist_in_seasons = [  ]

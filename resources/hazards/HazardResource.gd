@@ -13,3 +13,5 @@ export (float) var idle_time = 5.0
 export (float) var idle_rand = 0.3
 export (float) var wander_min_radius = 30.0
 export (float) var wander_max_radius = 60.0
+
+export (Array, Enums.Season) var exists_in_seasons

@@ -1,4 +1,3 @@
-tool
 extends Node2D
 
 var rng = RandomNumberGenerator.new()
@@ -7,12 +6,12 @@ export (Resource) var interactable_data
 export (bool) var enable_tooltip = true
 
 onready var tooltip = $TooltipData/Tooltip
+var despawning = false
 
 func _ready():
-	if Engine.is_editor_hint():
-		return
-	
 	rng.randomize()
+	var game = Helpers.get_game_node()
+	game.connect("season_change", self, "_on_season_change")
 	if not enable_tooltip:
 		remove_child($TooltipData)
 	else:
@@ -20,11 +19,6 @@ func _ready():
 		$TooltipData/Range.connect("area_exited", self, "_on_player_leave")
 		
 func _process(_d):
-	if Engine.is_editor_hint():
-		var tooltip_editor = $TooltipData/Tooltip
-		tooltip_editor.rect_pivot_offset = tooltip_editor.rect_size/2
-		tooltip_editor.rect_position = -tooltip_editor.rect_size/2
-		return
 	if enable_tooltip:
 		$TooltipData/Tooltip.rect_size = Vector2.ZERO
 
@@ -61,6 +55,17 @@ func is_pickuppable(inventory):
 
 func _on_player_nearby(_a2d):
 	tooltip_popup()
-	
+
 func _on_player_leave(_a2d):
 	tooltip_retract()
+
+func _on_season_change(season):
+	if interactable_data.exist_in_seasons.size() > 0 and \
+			!(season in interactable_data.exist_in_seasons) and \
+			not despawning:
+		despawning = true
+		var despawn_delay = rng.randf_range(10, 15)
+		yield (get_tree().create_timer(despawn_delay), "timeout")
+		if $VisibilityNotifier2D.is_on_screen():
+			yield($VisibilityNotifier2D, "screen_exited")
+		queue_free()

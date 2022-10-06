@@ -8,4 +8,4 @@ export (float) var time = 1.0
 export (bool) var die_on_pickup = true
 export (Enums.Item) var requirement = null
 export (int) var requirement_amount = 0
-
+export (Array, Enums.Season) var exist_in_seasons = []
