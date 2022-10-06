@@ -1,54 +1,16 @@
 [gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://environ/WeatherManager.gd" type="Script" id=1]
+[ext_resource path="res://resources/particles/weather_blizzard.tres" type="Material" id=2]
 [ext_resource path="res://assets/particles/snow.png" type="Texture" id=3]
+[ext_resource path="res://resources/particles/weather_snow.tres" type="Material" id=4]
+[ext_resource path="res://resources/particles/weather_rain.tres" type="Material" id=5]
 
 [sub_resource type="CanvasItemMaterial" id=2]
 particles_animation = true
 particles_anim_h_frames = 3
 particles_anim_v_frames = 1
 particles_anim_loop = false
-
-[sub_resource type="ParticlesMaterial" id=1]
-emission_shape = 2
-emission_box_extents = Vector3( 320, 180, 1 )
-flag_disable_z = true
-direction = Vector3( -5, 1, 0 )
-spread = 20.0
-gravity = Vector3( 0, 98, 0 )
-initial_velocity = 400.0
-orbit_velocity = 0.0
-orbit_velocity_random = 0.0
-anim_offset = 1.0
-anim_offset_random = 1.0
-
-[sub_resource type="ParticlesMaterial" id=4]
-emission_shape = 2
-emission_box_extents = Vector3( 320, 180, 1 )
-flag_disable_z = true
-direction = Vector3( -1, 5, 0 )
-spread = 20.0
-gravity = Vector3( 0, 98, 0 )
-initial_velocity = 40.0
-orbit_velocity = 0.0
-orbit_velocity_random = 0.0
-anim_offset = 1.0
-anim_offset_random = 1.0
-
-[sub_resource type="ParticlesMaterial" id=3]
-emission_shape = 2
-emission_box_extents = Vector3( 320, 180, 1 )
-flag_disable_z = true
-direction = Vector3( -1, 5, 0 )
-spread = 10.0
-gravity = Vector3( 0, 98, 0 )
-initial_velocity = 200.0
-orbit_velocity = 0.0
-orbit_velocity_random = 0.0
-scale = 3.0
-color = Color( 0.164706, 0.470588, 0.905882, 0.964706 )
-anim_offset = 1.0
-anim_offset_random = 1.0
 
 [node name="WeatherManager" type="Node2D"]
 script = ExtResource( 1 )
@@ -58,7 +20,7 @@ material = SubResource( 2 )
 emitting = false
 amount = 2000
 lifetime = 0.2
-process_material = SubResource( 1 )
+process_material = ExtResource( 2 )
 texture = ExtResource( 3 )
 
 [node name="Snow" type="Particles2D" parent="."]
@@ -66,7 +28,7 @@ material = SubResource( 2 )
 emitting = false
 amount = 1000
 lifetime = 0.2
-process_material = SubResource( 4 )
+process_material = ExtResource( 4 )
 texture = ExtResource( 3 )
 
 [node name="Rain" type="Particles2D" parent="."]
@@ -74,7 +36,7 @@ material = SubResource( 2 )
 emitting = false
 amount = 1000
 lifetime = 0.5
-process_material = SubResource( 3 )
+process_material = ExtResource( 5 )
 
 [node name="SummonWeather" type="Timer" parent="."]
 autostart = true
