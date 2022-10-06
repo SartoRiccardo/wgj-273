@@ -21,4 +21,4 @@ item = 8
 materials = [ SubResource( 1 ), SubResource( 2 ) ]
 on_water = false
 season_duration = 1.0
-description = "Animals are afraid of the campfire, and walk slower near it. Can also cook fish."
+description = "Animals are afraid of the campfire, and walk slower near it. Can also cook fish and keep you warm."

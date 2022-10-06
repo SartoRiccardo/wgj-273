@@ -13,3 +13,4 @@ enum Entity {
 	LEAF_PILE, ROCKS, STICKS, FLOWERS, BEES
 }
 enum Biome { PLAINS, FOREST, RIVER, MOUNTAIN }
+enum Weather { CLEAR, BLIZZARD, RAIN, SNOW }

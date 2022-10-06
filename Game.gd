@@ -43,6 +43,9 @@ func get_season_duration():
 		return ret / SPEED_UP_MULTIPLIER
 	return ret
 
+func get_season_progression():
+	return $SeasonTimer.time_left / get_season_duration()
+
 func _on_season_timeout():
 	current_season = (current_season+1) % season_cycle.size()
 	if get_current_season() == Enums.Season.SPRING:

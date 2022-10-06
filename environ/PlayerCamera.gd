@@ -8,7 +8,6 @@ func _ready():
 	if player != null:
 		global_position = player.global_position
 
-
 func _process(delta):
 	if player == null:
 		player = $"/root/Helpers".get_first_of_group("playable")

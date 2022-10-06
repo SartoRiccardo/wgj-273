@@ -39,6 +39,9 @@ var inside_hut = null
 var buildable_items_idx = 0
 
 var lives = 5.0
+var near_campfire = 0
+var weather = null
+var weather_damage = 0.0
 onready var hunger_timeout = $Hunger.wait_time
 onready var prev_hunger = HUNGER_STAGES-1
 
@@ -48,6 +51,8 @@ func _ready():
 	$WaterDetect.connect("area_entered", self, "_on_water_enter")
 	$WaterDetect.connect("area_exited", self, "_on_water_exited")
 	$Inventory.connect("amount_change", self, "_on_inventory_change")
+	$CampfireDetection.connect("area_entered", self, "_on_campfire_enter")
+	$CampfireDetection.connect("area_exited", self, "_on_campfire_exited")
 	$BuildingMenu/Tooltip/BuildingMenu.init_from(buildable_items, $Inventory)
 	
 	if not dev_detectable:
@@ -58,6 +63,9 @@ func _process(delta):
 	handle_inventory_inputs()
 	handle_ui()
 	handle_hunger()
+	if state != State.HUT:
+		handle_weather(delta)
+	Helpers.writeln_console(weather_damage)
 	
 	match state:
 		State.FLEEING:
@@ -124,6 +132,8 @@ func handle_movement(delta):
 	velocity = velocity.linear_interpolate(mov_vector*speed, 1/3.0)
 	if in_water:
 		velocity *= 0.2
+	elif weather in [Enums.Weather.RAIN, Enums.Weather.BLIZZARD]:
+		velocity *= 0.8
 	
 	velocity = move_and_slide(velocity)
 
@@ -228,6 +238,13 @@ func handle_hunger():
 		emit_signal("hunger", hunger_points)
 		prev_hunger = hunger_points
 
+func handle_weather(delta):
+	if weather == Enums.Weather.BLIZZARD and near_campfire <= 0:
+		weather_damage += delta * 1/30.0
+		if weather_damage >= 1:
+			get_hurt()
+			weather_damage = 0
+
 func handle_ui():
 	if inv_changes.size() > 0:
 		var inv_changes_ui = INVENTORY_CHANGE_SCENE.instance()
@@ -301,7 +318,7 @@ func get_inventory():
 
 func get_hurt():
 	if $Invulnerability.time_left == 0 and lives > 0:
-		lives -= 1
+		lives -= 1.0
 		emit_signal("hurt", lives)
 		$Invulnerability.start()
 
@@ -370,3 +387,12 @@ func _on_inventory_change(item, old_amount, new_amount):
 		inv_changes[item] += new_amount-old_amount
 	else:
 		inv_changes[item] = new_amount-old_amount
+
+func _on_weather_change(new_weather):
+	weather = new_weather
+
+func _on_campfire_enter(_a2d):
+	near_campfire += 1
+
+func _on_campfire_exited(_a2d):
+	near_campfire -= 1
