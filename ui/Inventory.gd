@@ -30,10 +30,10 @@ func init_ui(inventory):
 		pages.add_child(new_bullet)
 	update_pages(equipped)
 
-func update_pages(equipped):
+func update_pages(equipped_item):
 	var bullets = pages.get_children()
 	for i in range(bullets.size()):
-		if i == equipped:
+		if i == equipped_item:
 			bullets[i].texture = bullet_focused
 		else:
 			bullets[i].texture = bullet_normal

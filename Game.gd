@@ -16,6 +16,7 @@ var is_sped_up = false
 func _ready():
 	$SeasonTimer.connect("timeout", self, "_on_season_timeout")
 	$SeasonTimer.start(season_duration)
+	$Player.connect("died", self, "_on_player_die")
 
 func get_current_season():
 	return season_cycle[current_season]
@@ -59,3 +60,6 @@ func _on_season_timeout():
 	if is_sped_up:
 		current_season_duration /= SPEED_UP_MULTIPLIER
 	$SeasonTimer.start(current_season_duration)
+
+func _on_player_die():
+	$SeasonTimer.set_paused(true)

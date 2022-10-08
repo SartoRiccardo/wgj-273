@@ -48,6 +48,9 @@ func _ready():
 	rng.randomize()
 
 func _process(delta):
+	if following and !is_instance_valid(following):
+		following = null
+	
 	var cur_state = state
 	match state:
 		Enums.HazardState.IDLE:

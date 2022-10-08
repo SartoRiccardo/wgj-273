@@ -5,6 +5,7 @@ signal hunger(hunger)
 signal state_change(state)
 signal enter_hut
 signal exit_hut
+signal died
 
 export (int) var MAX_SPEED = 200
 export (int) var ACCELERATION = 500
@@ -13,6 +14,7 @@ export (int) var SHOOT_RANGE = 250
 export (Array, Resource) var edible_items
 export (Array, Resource) var buildable_items
 export (bool) var dev_detectable = true
+export (PackedScene) var death_scene
 
 const INVENTORY_CHANGE_SCENE = preload("res://ui/InventoryChangeUI.tscn")
 const PROJECTILE_SCENE = preload("res://entities/Projectile.tscn")
@@ -38,7 +40,7 @@ var inv_changes = {}
 var inside_hut = null
 var buildable_items_idx = 0
 
-var lives = 5.0
+var lives = 5.0 - 4
 var near_campfire = 0
 var weather = null
 var weather_damage = 0.0
@@ -54,6 +56,7 @@ func _ready():
 	$CampfireDetection.connect("area_entered", self, "_on_campfire_enter")
 	$CampfireDetection.connect("area_exited", self, "_on_campfire_exited")
 	$BuildingMenu/Tooltip/BuildingMenu.init_from(buildable_items, $Inventory)
+	$Hunger.connect("timeout", self, "_on_hunger_expire")
 	
 	if not dev_detectable:
 		$DetectionRange.get_child(0).set_disabled(true)
@@ -77,7 +80,7 @@ func _process(delta):
 			process_hut(delta)
 	
 	if $HurtBox.is_monitoring() and $HurtBox.get_overlapping_areas().size() > 0:
-		get_hurt()
+		get_hurt(Enums.DeathCause.HEALTH)
 
 func change_state(new_state):
 	if state != new_state:
@@ -241,7 +244,7 @@ func handle_weather(delta):
 	if weather == Enums.Weather.BLIZZARD and near_campfire <= 0:
 		weather_damage += delta * 1/30.0
 		if weather_damage >= 1:
-			get_hurt()
+			get_hurt(Enums.DeathCause.WEATHER)
 			weather_damage = 0
 
 func handle_ui():
@@ -315,11 +318,23 @@ func get_valid_shoot_targets():
 func get_inventory():
 	return $Inventory
 
-func get_hurt():
-	if $Invulnerability.time_left == 0 and lives > 0:
+func get_hurt(cause):
+	if $Invulnerability.is_stopped() and lives > 0:
 		lives -= 1.0
 		emit_signal("hurt", lives)
 		$Invulnerability.start()
+		if lives <= 0:
+			die(cause)
+
+func die(death_cause):
+	var dead_player = death_scene.instance()
+	dead_player.cause = death_cause
+#	dead_player.speed = speed
+#	dead_player.direction = velocity.normalized()
+	dead_player.global_position = global_position
+	get_parent().add_child_below_node(self, dead_player)
+	queue_free()
+	emit_signal("died")
 
 func enter_hut(hut):
 	inside_hut = hut
@@ -395,3 +410,6 @@ func _on_campfire_enter(_a2d):
 
 func _on_campfire_exited(_a2d):
 	near_campfire -= 1
+
+func _on_hunger_expire():
+	die(Enums.DeathCause.HUNGER)

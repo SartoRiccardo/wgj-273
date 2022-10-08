@@ -14,3 +14,4 @@ enum Entity {
 }
 enum Biome { PLAINS, FOREST, RIVER, MOUNTAIN }
 enum Weather { CLEAR, BLIZZARD, RAIN, SNOW }
+enum DeathCause { HEALTH, HUNGER, WEATHER }

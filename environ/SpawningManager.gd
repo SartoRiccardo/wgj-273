@@ -7,15 +7,20 @@ export (Resource) var spawns_autumn
 export (Resource) var spawns_winter
 
 var rng = RandomNumberGenerator.new()
+var active = true
 
 var entity_count = {}
 
 func _ready():
 	if enabled:
 		$Timer.connect("timeout", self, "_on_spawn_attempt")
+		Helpers.get_player().connect("died", self, "_on_player_death")
 	rng.randomize()
 
 func _on_spawn_attempt():
+	if !active:
+		return
+	
 	var season = Helpers.get_game_node().get_current_season()
 	var spawn_data = spawns_spring
 	match season:
@@ -40,7 +45,10 @@ func _on_spawn_attempt():
 				continue
 			
 			var spawn_point = area.random_point()
-			var distance_from_player = spawn_point.distance_to(Helpers.get_player().global_position)
+			var player = Helpers.get_player()
+			if !is_instance_valid(player):
+				return
+			var distance_from_player = spawn_point.distance_to(player.global_position)
 			if distance_from_player < entity.min_distance_from_player:
 				continue
 			
@@ -74,3 +82,6 @@ func pick_random_biome_node(biome_type):
 func _on_entity_despawn(entity):
 	if entity_count[entity] >= 1:
 		entity_count[entity] -= 1
+
+func _on_player_death():
+	active = false

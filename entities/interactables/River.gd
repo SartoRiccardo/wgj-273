@@ -20,7 +20,14 @@ func _ready():
 	player = Helpers.get_player()
 
 func _process(_d):
-	if player != null and enable_tooltip:
+	if player == null:
+		return
+	
+	if !is_instance_valid(player):
+		player = null
+		return
+	
+	if enable_tooltip:
 		$TooltipData.global_position = player.global_position
 	
 func is_pickuppable(inventory):

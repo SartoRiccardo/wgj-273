@@ -19,7 +19,7 @@ func init_from(building_list, inventory):
 func select(building, building_idx, inventory):
 	for i in $PanelContainer/BuildableList.get_child_count():
 		var build_icon = $PanelContainer/BuildableList.get_child(i)
-		build_icon.self_modulate = Color(1, 1, 1, 1 if i == building_idx else 0.5)
+		build_icon.self_modulate = Color(1, 1, 1, 1.0 if i == building_idx else 0.5)
 
 	var material_root = $BuildingDesc/VBoxContainer/MaterialList
 	Helpers.remove_all_children(material_root)
