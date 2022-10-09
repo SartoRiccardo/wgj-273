@@ -14,7 +14,6 @@ var distance = 0.0
 func _ready():
 	rng.randomize()
 	wander_start = position
-	print(position, wander_start)
 
 func _process(delta):
 	if is_close_to_destination() or distance <= 0:

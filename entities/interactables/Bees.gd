@@ -8,9 +8,9 @@ func _ready():
 	rng.randomize()
 	for __ in bee_amount-1:
 		var bee = BEE_SCENE.instance()
-		var bee_pos = global_position + Vector2(
+		var bee_pos = Vector2(
 			rng.randf_range(-10.0, 10.0),
 			rng.randf_range(-10.0, 10.0)
 		)
-		bee.global_position = bee_pos
+		bee.position = bee_pos
 		$Hive.add_child(bee)
