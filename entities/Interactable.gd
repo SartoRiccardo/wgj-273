@@ -17,6 +17,8 @@ func _ready():
 	else:
 		$TooltipData/Range.connect("area_entered", self, "_on_player_nearby")
 		$TooltipData/Range.connect("area_exited", self, "_on_player_leave")
+	if has_node("Sprite"):
+		get_node("Sprite").set_use_parent_material(true)
 		
 func _process(_d):
 	if enable_tooltip:

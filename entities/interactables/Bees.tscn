@@ -1,10 +1,30 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://entities/Interactable.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/interactables/Bees.gd" type="Script" id=2]
 [ext_resource path="res://ui/TooltipContents.tscn" type="PackedScene" id=3]
 [ext_resource path="res://resources/interactable/interactable_bees.tres" type="Resource" id=4]
 [ext_resource path="res://assets/ui/inventory.png" type="Texture" id=5]
+
+[sub_resource type="Shader" id=4]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+uniform vec4 override_color : hint_color;
+uniform float override_amount : hint_range(0, 1);
+
+void fragment() {
+	vec4 color = texture(TEXTURE, UV);
+	COLOR = vec4(
+		mix(override_color.rgb, color.rgb, 1.0-override_amount),
+		color.a
+	);
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+resource_local_to_scene = true
+shader = SubResource( 4 )
+shader_param/override_color = Color( 1, 1, 1, 1 )
+shader_param/override_amount = 1.0
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 25.0
@@ -18,13 +38,16 @@ atlas = ExtResource( 5 )
 region = Rect2( 32, 0, 16, 16 )
 
 [node name="Bees" instance=ExtResource( 1 )]
+material = SubResource( 5 )
 script = ExtResource( 2 )
 interactable_data = ExtResource( 4 )
+bee_amount = 10
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ActionRange" index="0"]
 shape = SubResource( 1 )
 
 [node name="Hive" type="Node2D" parent="." index="1"]
+use_parent_material = true
 
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 3 )]
 margin_left = 6.0

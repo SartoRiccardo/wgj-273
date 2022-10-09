@@ -13,12 +13,14 @@ var distance = 0.0
 
 func _ready():
 	rng.randomize()
+	wander_start = position
+	print(position, wander_start)
 
 func _process(delta):
-	if is_close_to_destination():
+	if is_close_to_destination() or distance <= 0:
 		var wander_angle = rng.randf_range(0, 2*PI)
 		var wander_distance = rng.randf_range(0, wander_range)
-		wander_start = wander_target
+		wander_start = position
 		wander_target = Vector2(
 			cos(wander_angle)*wander_distance,
 			sin(wander_angle)*wander_distance
