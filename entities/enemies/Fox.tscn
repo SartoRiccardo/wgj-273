@@ -53,13 +53,7 @@ monitoring = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange" index="0"]
 shape = SubResource( 5 )
 
-[node name="Sight" type="RayCast2D" parent="." index="5"]
-enabled = true
-cast_to = Vector2( -250, 0 )
-collision_mask = 64
-collide_with_areas = true
-
-[node name="Hitbox" parent="." index="6"]
+[node name="Hitbox" parent="." index="5"]
 monitoring = false
 monitorable = false
 

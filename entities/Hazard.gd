@@ -6,6 +6,7 @@ signal unangered
 
 export (Array, Resource) var stuns
 export (Resource) var properties
+export (float) var sight_angle_turn = 7.0
 
 var game = null
 
@@ -18,7 +19,6 @@ var following = null
 var rng = RandomNumberGenerator.new()
 var velocity = Vector2.ZERO
 
-var sight = null
 var sight_base_angle = 0
 var despawning = false
 var spawn_area = null
@@ -49,7 +49,7 @@ func _ready():
 	$RecalcPath.set_paused(true)
 	$ProjectileInfo/Tooltip/CounterList.init(stuns)
 	
-	sight = get_node_or_null("Sight")
+	$Sight.cast_to = properties.sight_length * Vector2.LEFT
 	rng.randomize()
 
 func _process(delta):
@@ -82,7 +82,6 @@ func process_idle(delta):
 		call("_process_idle", delta)
 	
 	wander(delta)
-	update_sight(delta)
 	check_sight()
 
 func process_angered(delta):
@@ -145,8 +144,7 @@ func lose_sight_player():
 func check_player_distance():
 	if following and global_position.distance_to(following.global_position) > properties.outrun_distance:
 		following = null
-		if sight:
-			sight.set_enabled(true)
+		$Sight.set_enabled(true)
 		lose_sight_player()
 		if state != Enums.HazardState.STUNNED:
 			change_state(Enums.HazardState.IDLE)
@@ -184,26 +182,20 @@ func wander(delta):
 	var desired_velocity = direction * properties.speed_idle * speed_multiplier()
 	velocity += (desired_velocity - velocity) * delta * 4.0
 
-func update_sight(delta):
-	if !sight:
-		return
-	
-	if !sight.is_enabled():
-		sight.set_enabled(true)
-	sight.rotation_degrees += properties.sight_rotate_speed * delta
-	if sight.rotation_degrees > sight_base_angle + properties.max_sight_angle:
-		sight.rotation_degrees -= (properties.max_sight_angle-properties.min_sight_angle)
-
 func check_sight():
-	if !sight:
-		return
-	if sight.is_colliding():
-		var collider = sight.get_collider()
-		if collider.get_parent().is_in_group("playable"):
-			following = collider.get_parent()
-			sight.set_enabled(false)
-			lock_on_player()
-			change_state(Enums.HazardState.ANGERED)
+	var angle_to_check = sight_base_angle - properties.sight_angle
+	while angle_to_check <= sight_base_angle + properties.sight_angle:
+		$Sight.cast_to = properties.sight_length * Vector2.LEFT.rotated(deg2rad(angle_to_check))
+		$Sight.force_raycast_update()
+		if $Sight.is_colliding():
+			var collider = $Sight.get_collider()
+			if collider.get_parent().is_in_group("playable"):
+				following = collider.get_parent()
+				$Sight.set_enabled(false)
+				lock_on_player()
+				change_state(Enums.HazardState.ANGERED)
+				break
+		angle_to_check += sight_angle_turn
 
 func get_throwable_objects(inventory):
 	var throwable = []

@@ -42,6 +42,8 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Campfire"]
 shape = SubResource( 1 )
 
+[node name="Sight" type="RayCast2D" parent="."]
+
 [node name="ProjectileInfo" type="Node2D" parent="."]
 position = Vector2( 0, -10 )
 

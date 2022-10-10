@@ -71,12 +71,6 @@ one_way_collision_margin = 0.0
 scale = Vector2( 1, 0.602564 )
 frames = SubResource( 3 )
 
-[node name="Sight" type="RayCast2D" parent="." index="3"]
-enabled = true
-cast_to = Vector2( -150, 0 )
-collision_mask = 64
-collide_with_areas = true
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" index="0"]
 rotation = 1.5708
 shape = SubResource( 1 )
@@ -84,6 +78,12 @@ shape = SubResource( 1 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" index="0"]
 rotation = 1.5708
 shape = SubResource( 4 )
+
+[node name="Sight" parent="." index="7"]
+enabled = true
+collision_mask = 64
+collide_with_areas = true
+collide_with_bodies = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="11"]
 autoplay = "appear"

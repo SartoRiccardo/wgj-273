@@ -37,12 +37,6 @@ frames = SubResource( 1 )
 position = Vector2( 0, 1 )
 shape = SubResource( 2 )
 
-[node name="Sight" type="RayCast2D" parent="." index="4"]
-enabled = true
-cast_to = Vector2( -300, 0 )
-collision_mask = 64
-collide_with_areas = true
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" index="0"]
 position = Vector2( 0, -9 )
 rotation = 1.5708

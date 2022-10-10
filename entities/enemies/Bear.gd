@@ -8,11 +8,6 @@ func _ready():
 	behavior.connect("docile_change", self, "_on_docile_change")
 
 # Override
-func update_sight(delta):
-	if !behavior.docile:
-		.update_sight(delta)
-
-# Override
 func change_state(new_state):
 	if new_state == Enums.HazardState.ANGERED and \
 			state != Enums.HazardState.IDLE and \

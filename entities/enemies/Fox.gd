@@ -20,11 +20,6 @@ func check_sight():
 			$AttackRange.set_monitoring(true)
 			change_state(Enums.HazardState.ANGERED)
 
-func update_sight(delta):
-	if friendly:
-		return
-	.update_sight(delta)
-
 func _process_idle(_delta):
 	if state_is_new:
 		$Sight.set_enabled(true and not friendly)
