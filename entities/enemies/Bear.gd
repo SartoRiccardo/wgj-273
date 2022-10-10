@@ -4,6 +4,7 @@ export (int) var speed = 75
 export (Resource) var behavior
 
 func _ready():
+	collision_layer = 1
 	behavior.connect("docile_change", self, "_on_docile_change")
 
 # Override

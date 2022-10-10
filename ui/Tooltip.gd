@@ -45,6 +45,8 @@ func popup():
 	$AnimationPlayer.play("tooltip_appear")
 
 func retract(_force=false):
+	if !$Tween.is_inside_tree():
+		return
 	$Tween.stop(self)
 	$Tween.interpolate_property(self, "rect_position", rect_position,
 		base_position, 0.3, Tween.TRANS_CUBIC, Tween.EASE_IN

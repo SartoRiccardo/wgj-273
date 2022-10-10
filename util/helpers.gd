@@ -92,6 +92,25 @@ func draw_point(parent, coords, color=Color.black):
 func stepify_vec2(vec2, step):
 	return Vector2(stepify(vec2.x, step), stepify(vec2.y, step))
 
+func lerp_vec2(from, target, step):
+	return Vector2(lerp(from.x, target.x, step), lerp(from.y, target.y, step))
+
+func distance_from_polygon(point : Vector2, polygon : PoolVector2Array):
+	if Geometry.is_point_in_polygon(point, polygon):
+		return 0.0
+	
+	var distance = Geometry.get_closest_point_to_segment_2d(
+		point, polygon[0], polygon[1]
+	).distance_to(point)
+	for i in range(1, polygon.size()):
+		var segment_distance = Geometry.get_closest_point_to_segment_2d(
+			point, polygon[i], polygon[(i+1)%polygon.size()]
+		).distance_to(point)
+		if distance > segment_distance:
+			distance = segment_distance
+	
+	return distance
+	
 func remove_all_children(node):
 	for child in node.get_children():
 		node.remove_child(child)

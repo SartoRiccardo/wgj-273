@@ -41,7 +41,7 @@ func _process(delta):
 			tilemap_to_fade = null
 
 func is_walkable(point: Vector2):
-	for area in $Walkable.get_children():
-		if Geometry.is_point_in_polygon(point, area.polygon):
+	for area in $WalkableLand.get_children():
+		if Geometry.is_point_in_polygon(point, area.navpoly.get_outline(0)):
 			return true
 	return false

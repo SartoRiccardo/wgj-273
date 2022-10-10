@@ -1,10 +1,11 @@
 extends KinematicBody2D
+class_name Hazard
 
 signal angered
 signal unangered
 
 export (Array, Resource) var stuns
-export (Resource) var hazard_properties
+export (Resource) var properties
 
 var game = null
 
@@ -12,13 +13,15 @@ var global_speed_multiplier = 1.0
 var mov_speed_multiplier = 1.0
 var state = Enums.HazardState.IDLE
 var state_is_new = true
+var wander_finished = true
 var following = null
-var wander_target = Vector2.ZERO
 var rng = RandomNumberGenerator.new()
+var velocity = Vector2.ZERO
 
 var sight = null
 var sight_base_angle = 0
 var despawning = false
+var spawn_area = null
 
 func _ready():
 	var player = Helpers.get_player()
@@ -35,16 +38,18 @@ func _ready():
 		game.connect("season_change", self, "_on_season_change")
 		game.connect("speed_increase", self, "_on_game_speed_increase")
 		game.connect("speed_decrease", self, "_on_game_speed_decrease")
+		$NavigationAgent2D.set_navigation(Helpers.get_first_of_group("navigation"))
 	$StunTimer.connect("timeout", self, "_on_stun_end")
 	$IdleTimer.connect("timeout", self, "_on_idle_timeout")
 	$Campfire.connect("area_entered", self, "_on_campfire_entered")
 	$Campfire.connect("area_exited", self, "_on_campfire_exited")
 	$Water.connect("area_entered", self, "_on_water_entered")
 	$Water.connect("area_exited", self, "_on_water_exited")
+	$RecalcPath.connect("timeout", self, "_on_retarget")
+	$RecalcPath.set_paused(true)
 	$ProjectileInfo/Tooltip/CounterList.init(stuns)
 	
 	sight = get_node_or_null("Sight")
-	wander_target = global_position
 	rng.randomize()
 
 func _process(delta):
@@ -64,10 +69,15 @@ func _process(delta):
 		Enums.HazardState.FLEEING:
 			process_fleeing(delta)
 	
+	velocity = move_and_slide(velocity)
+	
 	if cur_state == state:
 		state_is_new = false
 
 func process_idle(delta):
+	if state_is_new:
+		$RecalcPath.set_paused(true)
+	
 	if self.has_method("_process_idle"):
 		call("_process_idle", delta)
 	
@@ -76,15 +86,17 @@ func process_idle(delta):
 	check_sight()
 
 func process_angered(delta):
+	if state_is_new:
+		$RecalcPath.set_paused(false)
+		
 	if self.has_method("_process_angered"):
 		call("_process_angered", delta)
 	else:
 		if following:
-			global_position = global_position.move_toward(
-				following.global_position,
-				hazard_properties.speed_angered * delta * mov_speed_multiplier * global_speed_multiplier
-			)
-	
+			var direction = global_position.direction_to($NavigationAgent2D.get_next_location())
+			var desired_velocity = direction * properties.speed_angered * speed_multiplier()
+			velocity += (desired_velocity - velocity) * delta * 4.0
+		
 	if following == null:
 		change_state(Enums.HazardState.IDLE)
 		lose_sight_player()
@@ -96,14 +108,21 @@ func process_angered(delta):
 func process_stunned(delta):
 	if self.has_method("_process_stunned"):
 		call("_process_stunned", delta)
-		
+	
+	velocity = Helpers.lerp_vec2(Vector2.ZERO, velocity, pow(2, -10*delta))
 	check_player_distance()
 
 func process_attacking(delta):
+	if state_is_new:
+		$RecalcPath.set_paused(false)
+		
 	if self.has_method("_process_attacking"):
 		call("_process_attacking", delta)
 
 func process_fleeing(delta):
+	if state_is_new:
+		$RecalcPath.set_paused(true)
+		
 	if self.has_method("_process_fleeing"):
 		call("_process_fleeing", delta)
 	
@@ -124,7 +143,7 @@ func lose_sight_player():
 	emit_signal("unangered")
 
 func check_player_distance():
-	if following and global_position.distance_to(following.global_position) > hazard_properties.outrun_distance:
+	if following and global_position.distance_to(following.global_position) > properties.outrun_distance:
 		following = null
 		if sight:
 			sight.set_enabled(true)
@@ -151,18 +170,19 @@ func get_hit(projectile):
 
 func wander(delta):
 	if state_is_new:
-		wander_target = global_position
+		$NavigationAgent2D.set_target_location(global_position)
 	
-	if global_position == wander_target:
+	if $NavigationAgent2D.is_navigation_finished() or wander_finished:
+		wander_finished = true
 		if $IdleTimer.time_left == 0:
-			var variance = rng.randf_range(-hazard_properties.idle_rand, hazard_properties.idle_rand)
-			$IdleTimer.start(hazard_properties.idle_time * (1+variance) / global_speed_multiplier)
+			var variance = rng.randf_range(-properties.idle_rand, properties.idle_rand)
+			$IdleTimer.start(properties.idle_time * (1+variance) / global_speed_multiplier)
+		velocity = Helpers.lerp_vec2(Vector2.ZERO, velocity, pow(2, -7*delta))
 		return
 	
-	global_position = global_position.move_toward(
-		wander_target,
-		hazard_properties.speed_idle * delta * mov_speed_multiplier * global_speed_multiplier
-	)
+	var direction = global_position.direction_to($NavigationAgent2D.get_next_location())
+	var desired_velocity = direction * properties.speed_idle * speed_multiplier()
+	velocity += (desired_velocity - velocity) * delta * 4.0
 
 func update_sight(delta):
 	if !sight:
@@ -170,9 +190,9 @@ func update_sight(delta):
 	
 	if !sight.is_enabled():
 		sight.set_enabled(true)
-	sight.rotation_degrees += hazard_properties.sight_rotate_speed * delta
-	if sight.rotation_degrees > sight_base_angle + hazard_properties.max_sight_angle:
-		sight.rotation_degrees -= (hazard_properties.max_sight_angle-hazard_properties.min_sight_angle)
+	sight.rotation_degrees += properties.sight_rotate_speed * delta
+	if sight.rotation_degrees > sight_base_angle + properties.max_sight_angle:
+		sight.rotation_degrees -= (properties.max_sight_angle-properties.min_sight_angle)
 
 func check_sight():
 	if !sight:
@@ -204,22 +224,32 @@ func get_stun_for(item):
 			return stun
 	return null
 
+func speed_multiplier():
+	return mov_speed_multiplier * global_speed_multiplier
+
 func _on_stun_end():
 	if state == Enums.HazardState.STUNNED:
 		change_state(Enums.HazardState.ANGERED)
 
 func _on_idle_timeout():
+	if spawn_area and spawn_area.distance_from(global_position) > properties.max_wander_outside_biome:
+		var area_point = spawn_area.random_point()
+		wander_finished = false
+		$NavigationAgent2D.set_target_location(area_point)
+		return
+	
 	var attempts = 0
 	var max_attempts = 10
 	var success = false
 	while not success and attempts < max_attempts:
 		var angle = rng.randf_range(0, 2*PI)
-		var distance = rng.randf_range(hazard_properties.wander_min_radius, hazard_properties.wander_max_radius)
+		var distance = rng.randf_range(properties.wander_min_radius, properties.wander_max_radius)
 		var path_to_target = Vector2(cos(angle) * distance, sin(angle) * distance)
-		var new_wander_target = global_position + path_to_target
-		success = game.is_walkable(new_wander_target)
+		var wander_target = global_position + path_to_target
+		success = game.is_walkable(wander_target)
 		if success:  # Is in map
-			wander_target = new_wander_target
+			wander_finished = false
+			$NavigationAgent2D.set_target_location(wander_target)
 			var direction = path_to_target.normalized()
 			if abs(direction.x) > abs(direction.y):
 				sight_base_angle = 180 if direction.x >= 0 else 0
@@ -235,11 +265,9 @@ func _on_campfire_exited(_a2d):
 	mov_speed_multiplier *= 2.0
 	
 func _on_water_entered(_a2d):
-	print("enter water")
 	mov_speed_multiplier *= 0.3
 
 func _on_water_exited(_a2d):
-	print("exit water")
 	mov_speed_multiplier /= 0.3
 
 func _on_game_speed_increase(multiplier):
@@ -255,8 +283,8 @@ func _on_player_enter_hut():
 		change_state(Enums.HazardState.IDLE)
 
 func _on_season_change(season):
-	if hazard_properties.exists_in_seasons.size() > 0 and \
-			!(season in hazard_properties.exists_in_seasons) and \
+	if properties.exists_in_seasons.size() > 0 and \
+			!(season in properties.exists_in_seasons) and \
 			not despawning:
 		despawning = true
 		var despawn_delay = rng.randf_range(10, 15)
@@ -264,3 +292,7 @@ func _on_season_change(season):
 		if $VisibilityNotifier2D.is_on_screen():
 			yield($VisibilityNotifier2D, "screen_exited")
 		queue_free()
+
+func _on_retarget():
+	if following and is_instance_valid(following):
+		$NavigationAgent2D.set_target_location(following.global_position)

@@ -131,7 +131,6 @@ tracks/2/keys = {
 [sub_resource type="StyleBoxEmpty" id=25]
 
 [node name="Player" type="KinematicBody2D" groups=["playable"]]
-collision_mask = 0
 script = ExtResource( 2 )
 edible_items = [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ]
 buildable_items = [ ExtResource( 8 ), ExtResource( 9 ) ]

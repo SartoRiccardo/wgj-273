@@ -40,7 +40,7 @@ var inv_changes = {}
 var inside_hut = null
 var buildable_items_idx = 0
 
-var lives = 5.0 - 4
+var lives = 5.0
 var near_campfire = 0
 var weather = null
 var weather_damage = 0.0

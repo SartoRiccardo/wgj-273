@@ -4,7 +4,7 @@ var flee_direction = Vector2.ZERO
 var friendly = false
 
 func _ready():
-	$AttackRange/CollisionShape2D.shape.set_radius(hazard_properties.attack_range)
+	$AttackRange/CollisionShape2D.shape.set_radius(properties.attack_range)
 	$AttackRange.connect("area_entered", self, "_on_attack_range_entered")
 	$Hitbox.connect("area_entered", self, "_on_steal")
 	$VisibilityNotifier2D.connect("screen_exited", self, "_on_screen_exited")
@@ -37,23 +37,25 @@ func _process_angered(delta):
 		$Sight.set_enabled(false)
 		$AttackRange.set_monitoring(true)
 	
-	if following:
-		global_position = global_position.move_toward(
-			following.global_position,
-			hazard_properties.speed_following * delta * mov_speed_multiplier * global_speed_multiplier
-		)
+	if following and is_instance_valid(following):
+		var direction = global_position.direction_to($NavigationAgent2D.get_next_location())
+		var current_speed = properties.speed_following * mov_speed_multiplier * global_speed_multiplier
+		var desired_velocity = direction * current_speed
+		velocity += (desired_velocity - velocity) * delta * 4.0
+		velocity = move_and_slide(velocity)
 
 func _process_attacking(delta):
-	global_position = global_position.move_toward(
-		following.global_position,
-		hazard_properties.speed_angered * delta * mov_speed_multiplier * global_speed_multiplier
-	)
+	var direction = global_position.direction_to($NavigationAgent2D.get_next_location())
+	var current_speed = properties.speed_angered * speed_multiplier()
+	var desired_velocity = direction * current_speed
+	velocity += (desired_velocity - velocity) * delta * 4.0
 
 func _process_fleeing(delta):
 	if flee_direction == Vector2.ZERO:
-		var angle_from_player = global_position.angle_to(following.global_position)
-		flee_direction = Vector2(cos(angle_from_player), sin(angle_from_player))
-	global_position += flee_direction * delta * hazard_properties.speed_angered
+		flee_direction = -global_position.direction_to(following.global_position)
+	var current_speed = properties.speed_angered * speed_multiplier()
+	var desired_velocity = flee_direction * current_speed
+	velocity += (desired_velocity - velocity) * delta * 4.0
 
 func _process_stunned(_delta):
 	pass
@@ -91,7 +93,7 @@ func _on_steal(_a2d):
 	if valid_steal_items.size() > 0:
 		var steal_item = valid_steal_items[rng.randi_range(0, valid_steal_items.size()-1)]
 		var steal_amount = rng.randi_range(
-			hazard_properties.min_inv_steal, hazard_properties.max_inv_steal
+			properties.min_inv_steal, properties.max_inv_steal
 		)
 		inventory.steal(steal_item, steal_amount)
 	else:

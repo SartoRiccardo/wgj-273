@@ -59,8 +59,11 @@ func _on_spawn_attempt():
 			var instance = entity.scene.instance()
 			instance.connect("tree_exited", self, "_on_entity_despawn", [entity.scene])
 			instance.global_position = spawn_point
+			if instance is Hazard:
+				instance.spawn_area = area
 			Helpers.get_first_of_group("%s_root" % entity.node_type) \
 				.add_child(instance)
+			break
 
 func pick_random_biome_node(biome_type):
 	var picked = null

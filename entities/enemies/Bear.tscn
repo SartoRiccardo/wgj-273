@@ -8,8 +8,8 @@
 [ext_resource path="res://resources/hazards/hazard_bear.tres" type="Resource" id=6]
 [ext_resource path="res://resources/hazards/bear_behavior.tres" type="Resource" id=7]
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 8, 2.5 )
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 10.5, 4 )
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -58,22 +58,24 @@ tracks/1/keys = {
 [node name="Bear" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 stuns = [ ExtResource( 5 ), ExtResource( 4 ) ]
-hazard_properties = ExtResource( 6 )
+properties = ExtResource( 6 )
+speed = 75
 behavior = ExtResource( 7 )
 
-[node name="WorldShape" type="CollisionShape2D" parent="." index="0"]
-position = Vector2( 0, -2.5 )
-shape = SubResource( 2 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
+position = Vector2( 1.5, 7 )
+shape = SubResource( 6 )
+one_way_collision_margin = 0.0
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="2"]
+scale = Vector2( 1, 0.602564 )
+frames = SubResource( 3 )
 
 [node name="Sight" type="RayCast2D" parent="." index="3"]
 enabled = true
 cast_to = Vector2( -150, 0 )
 collision_mask = 64
 collide_with_areas = true
-
-[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="4"]
-scale = Vector2( 1, 0.602564 )
-frames = SubResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" index="0"]
 rotation = 1.5708

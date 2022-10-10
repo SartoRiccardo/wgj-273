@@ -14,4 +14,5 @@ idle_time = 6.0
 idle_rand = 0.3
 wander_min_radius = 60.0
 wander_max_radius = 150.0
+max_wander_outside_biome = 50.0
 exists_in_seasons = [ 3 ]

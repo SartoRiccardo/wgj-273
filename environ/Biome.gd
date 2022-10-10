@@ -7,9 +7,7 @@ func _ready():
 	rng.randomize()
 
 func is_in_biome(point : Vector2):
-	if Geometry.is_point_in_polygon(point, polygon):
-		return true
-	return false
+	return Geometry.is_point_in_polygon(point, polygon)
 
 func get_area():
 	var triangulated = Geometry.triangulate_polygon(polygon)
@@ -23,6 +21,15 @@ func get_area():
 		)
 		total_area += tri_area
 	return total_area
+
+func get_polygon():
+	var new_polygon = polygon
+	for i in new_polygon.size():
+		new_polygon[i] += position
+	return new_polygon
+
+func distance_from(point):
+	return Helpers.distance_from_polygon(point, get_polygon())
 
 func random_point():
 	var triangulated = Geometry.triangulate_polygon(polygon)
