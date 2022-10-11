@@ -132,14 +132,14 @@ func change_state(new_state):
 func lock_on_player():
 	if !is_in_group("angered"):
 		$ProjectileInfo/Tooltip.popup()
-	add_to_group("angered")
-	emit_signal("angered")
+		add_to_group("angered")
+		emit_signal("angered")
 
 func lose_sight_player():
 	if is_in_group("angered"):
 		remove_from_group("angered")
 		$ProjectileInfo/Tooltip.retract()
-	emit_signal("unangered")
+		emit_signal("unangered")
 
 func check_player_distance():
 	if following and global_position.distance_to(following.global_position) > properties.outrun_distance:

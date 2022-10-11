@@ -10,6 +10,7 @@ func _ready():
 		global_position = player.global_position
 
 func _process(delta):
+	Helpers.writeln_console(angered_hazards)
 	if player == null:
 		player = Helpers.get_first_of_group("playable")
 		return
@@ -32,8 +33,7 @@ func _on_hazard_angered():
 
 func _on_hazard_unangered():
 	angered_hazards -= 1
-	if angered_hazards == 0:
-		angered_hazards = 0
+	if angered_hazards <= 0:
 		$AnimationPlayer.stop(true)
 		$AnimationPlayer.play("panic_end")
 		if angered_hazards < 0:

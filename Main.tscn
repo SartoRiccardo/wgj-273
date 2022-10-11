@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://environ/Terrain.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/Player.tscn" type="PackedScene" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://entities/interactables/River.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/GameUI.tscn" type="PackedScene" id=9]
 [ext_resource path="res://resources/ui/font.tres" type="DynamicFont" id=10]
+[ext_resource path="res://entities/enemies/Bear.tscn" type="PackedScene" id=11]
 [ext_resource path="res://resources/season_spawns/spawns_autumn.tres" type="Resource" id=16]
 [ext_resource path="res://resources/season_spawns/spawns_winter.tres" type="Resource" id=17]
 
@@ -56,7 +57,6 @@ polygon = PoolVector2Array( 97, -267, 97, -130, 128, -130, 128, -97, 159, -96, 1
 [node name="River" parent="Terrain/Water" instance=ExtResource( 8 )]
 material = null
 position = Vector2( 0, 1 )
-scale = Vector2( 1, 1 )
 
 [node name="RiverArea" type="CollisionPolygon2D" parent="Terrain/Water/River"]
 polygon = PoolVector2Array( 97, -267, 97, -130, 128, -130, 128, -97, 159, -96, 161, -3, 191, -1, 193, 61, 226, 64, 223, 293, 321, 294, 320, 161, 288, 159, 287, 65, 256, 64, 255, 33, 225, 32, 223, -31, 190, -32, 190, -127, 159, -128, 159, -158, 127, -159, 128, -266 )
@@ -69,6 +69,8 @@ polygon = PoolVector2Array( 97, -267, 97, -130, 128, -130, 128, -97, 159, -96, 1
 position = Vector2( -49, 213 )
 
 [node name="Animals" type="Node" parent="." groups=["animal_root"]]
+
+[node name="Bear" parent="Animals" instance=ExtResource( 11 )]
 
 [node name="Projectiles" type="Node" parent="." groups=["projectile_root"]]
 
@@ -102,6 +104,7 @@ custom_fonts/font = ExtResource( 10 )
 text = "aaa"
 
 [node name="SpawningManager" parent="." instance=ExtResource( 5 )]
+enabled = false
 spawns_autumn = ExtResource( 16 )
 spawns_winter = ExtResource( 17 )
 

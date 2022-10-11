@@ -6,7 +6,7 @@ signal amount_change(item, old_amount, new_amount)
 
 
 var contents = {
-	Enums.Item.ROCK: 100,
+	Enums.Item.ROCK: 1000,
 	Enums.Item.LEAF: 100,
 	Enums.Item.STICK: 100,
 	Enums.Item.FLOWER: 100,

@@ -373,7 +373,8 @@ func exit_hut():
 	emit_signal("exit_hut")
 
 func _on_action_timeout():
-	if interacting_with == null:
+	if interacting_with == null or state != State.PICKUP:
+		interacting_with = null
 		return
 	$Inventory.add(
 		interacting_with.interactable_data.item, interacting_with.pickup($Inventory)
