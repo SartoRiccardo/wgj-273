@@ -4,7 +4,6 @@ signal equip(item, amount)
 signal stolen(item, amount)
 signal amount_change(item, old_amount, new_amount)
 
-
 var contents = {
 	Enums.Item.ROCK: 1000,
 	Enums.Item.LEAF: 100,
@@ -28,18 +27,17 @@ func _change_amount(item, amount, is_theft=false):
 		if contents[item] < 0:
 			contents[item] = 0
 		
-		if contents[item] != prev_amount:
-			if is_theft and prev_amount > contents[item]:
-				emit_signal("stolen", item, prev_amount - contents[item])
-			emit_signal("amount_change", item, prev_amount, contents[item])
+		if is_theft and prev_amount > contents[item]:
+			emit_signal("stolen", item, prev_amount - contents[item])
+		emit_signal("amount_change", item, prev_amount, contents[item])
 
 func add(item, amount=1):
-	if amount <= 0:
+	if amount < 0:
 		return
 	_change_amount(item, amount)
 
 func remove(item, amount=1):
-	if amount <= 0:
+	if amount < 0:
 		return
 	_change_amount(item, -amount)
 

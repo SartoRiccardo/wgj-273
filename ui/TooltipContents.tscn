@@ -11,9 +11,6 @@ region = Rect2( 0, 19, 16, 14 )
 margin_right = 4.0
 margin_bottom = 14.0
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Require" type="TextureRect" parent="."]
 margin_right = 16.0
@@ -43,3 +40,8 @@ margin_left = 72.0
 margin_right = 80.0
 margin_bottom = 14.0
 text = "3"
+
+[node name="Chance" type="Label" parent="."]
+margin_left = 84.0
+margin_right = 84.0
+margin_bottom = 14.0

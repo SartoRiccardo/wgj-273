@@ -12,6 +12,10 @@ func generate_from(changes):
 	for i in items.size():
 		var item = items[i]
 		if changes[item] == 0:
+			if items.size() == 1:
+				var label = Label.new()
+				label.text = "Nothing!"
+				add_child(label)
 			continue
 		
 		var label = Label.new()

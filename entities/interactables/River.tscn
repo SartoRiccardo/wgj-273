@@ -50,9 +50,6 @@ monitoring = false
 visible = false
 disabled = true
 
-[node name="Tooltip" parent="TooltipData" index="1"]
-rect_scale = Vector2( 1, 1 )
-
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 5 )]
 margin_left = 6.0
 margin_top = 6.0
@@ -60,6 +57,14 @@ margin_right = 84.0
 margin_bottom = 20.0
 reward_texture = SubResource( 1 )
 interactable_data = ExtResource( 3 )
+
+[node name="CollectProgress" parent="TooltipData/Tooltip" index="3"]
+margin_right = 84.0
+margin_bottom = 20.0
+
+[node name="ColorRect" parent="TooltipData/Tooltip/CollectProgress" index="0"]
+margin_right = 84.0
+margin_bottom = 20.0
 
 [node name="AnimationPlayer" parent="." index="4"]
 autoplay = ""

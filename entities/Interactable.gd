@@ -5,6 +5,7 @@ var rng = RandomNumberGenerator.new()
 export (Resource) var interactable_data
 export (bool) var enable_tooltip = true
 
+onready var progress_bar = $TooltipData/Tooltip/CollectProgress/ColorRect
 onready var tooltip = $TooltipData/Tooltip
 var despawning = false
 
@@ -15,14 +16,30 @@ func _ready():
 	if not enable_tooltip:
 		remove_child($TooltipData)
 	else:
+		var player = Helpers.get_player()
+		player.connect("state_change", self, "_on_player_state_change")
+		progress_bar.rect_size = Vector2.ZERO
 		$TooltipData/Range.connect("area_entered", self, "_on_player_nearby")
 		$TooltipData/Range.connect("area_exited", self, "_on_player_leave")
 	if has_node("Sprite"):
 		get_node("Sprite").set_use_parent_material(true)
-		
+	if interactable_data:
+		$Collect.set_wait_time(interactable_data.time)
+	
 func _process(_d):
 	if enable_tooltip:
-		$TooltipData/Tooltip.rect_size = Vector2.ZERO
+		if !$Collect.is_stopped():
+			progress_bar.rect_size = Vector2(
+				tooltip.rect_size.x * (1 - $Collect.time_left/$Collect.wait_time),
+				tooltip.rect_size.y
+			)
+		else:
+			progress_bar.rect_size = Vector2.ZERO
+		tooltip.rect_size = Vector2.ZERO
+
+func set_interactable_data(data):
+	interactable_data = data
+	$Collect.set_wait_time(interactable_data.time)
 
 func tooltip_popup():
 	if not enable_tooltip:
@@ -34,9 +51,24 @@ func tooltip_retract(force=false):
 		return
 	tooltip.retract()
 
+func timer():
+	return $Collect
+
+func start_collect():
+	$Collect.start()
+
+func stop_collect():
+	$Collect.stop()
+	$Collect.set_wait_time(interactable_data.time)
+
 func pickup(inventory):
-	inventory.remove(interactable_data.requirement, interactable_data.requirement_amount)
-	var amount_picked = rng.randi_range(interactable_data.amount_min, interactable_data.amount_max)
+	if interactable_data.requirement_amount > 0:
+		inventory.remove(interactable_data.requirement, interactable_data.requirement_amount)
+	var amount_picked
+	if rng.randf() < interactable_data.fail_chance:
+		amount_picked = rng.randi_range(interactable_data.amount_min, interactable_data.amount_max)
+	else:
+		amount_picked = 0
 	if interactable_data.die_on_pickup:
 		despawn()
 	return amount_picked
@@ -71,3 +103,8 @@ func _on_season_change(season):
 		if $VisibilityNotifier2D.is_on_screen():
 			yield($VisibilityNotifier2D, "screen_exited")
 		queue_free()
+
+const STATE_FLEEING = 2
+func _on_player_state_change(state):
+	if enable_tooltip:
+		$TooltipData/Range.set_monitoring(state != STATE_FLEEING)

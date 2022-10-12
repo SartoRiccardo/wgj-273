@@ -11,11 +11,12 @@ export (Texture) var bullet_normal
 const ATLAS_SIZE = Vector2(16, 16)
 
 var equipped = null
+var inventory = null
 
 func _ready():
 	var player = Helpers.get_player()
 	if player:
-		var inventory = player.get_inventory()
+		inventory = player.get_inventory()
 		init_ui(inventory)
 
 func init_ui(inventory):
@@ -33,7 +34,7 @@ func init_ui(inventory):
 func update_pages(equipped_item):
 	var bullets = pages.get_children()
 	for i in range(bullets.size()):
-		if i == equipped_item:
+		if inventory.contents.keys()[i] == equipped_item:
 			bullets[i].texture = bullet_focused
 		else:
 			bullets[i].texture = bullet_normal

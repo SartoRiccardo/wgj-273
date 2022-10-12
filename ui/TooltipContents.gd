@@ -31,6 +31,9 @@ func set_interactable_data(texture, data, require_texture=null):
 		$Require.set_texture(require_texture)
 		$RequireAmount.set_text(str(interactable_data.requirement_amount))
 	
+	$Chance.set_visible(data.fail_chance > 0)
+	$Chance.set_text("(%s%%)" % int((1-data.fail_chance)*100))
+	
 	force_size_recalculate()
 	var parent = get_parent()
 	if parent.has_method("reset_rect"):

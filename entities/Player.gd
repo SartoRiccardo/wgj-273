@@ -41,6 +41,7 @@ var inside_hut = null
 var buildable_items_idx = 0
 
 var lives = 5.0
+var hurtarea_overlap = 0
 var near_campfire = 0
 var weather = null
 var weather_damage = 0.0
@@ -48,7 +49,6 @@ onready var hunger_timeout = $Hunger.wait_time
 onready var prev_hunger = HUNGER_STAGES-1
 
 func _ready():
-	$ActionTimer.connect("timeout", self, "_on_action_timeout")
 	$WaterDetect.add_child($WorldShape.duplicate())
 	$WaterDetect.connect("area_entered", self, "_on_water_enter")
 	$WaterDetect.connect("area_exited", self, "_on_water_exited")
@@ -57,6 +57,8 @@ func _ready():
 	$CampfireDetection.connect("area_exited", self, "_on_campfire_exited")
 	$BuildingMenu/Tooltip/BuildingMenu.init_from(buildable_items, $Inventory)
 	$Hunger.connect("timeout", self, "_on_hunger_expire")
+	$HurtBox.connect("area_entered", self, "_on_hurtbox_entered")
+	$HurtBox.connect("area_exited", self, "_on_hurtbox_exited")
 	
 	if not dev_detectable:
 		$DetectionRange.get_child(0).set_disabled(true)
@@ -79,18 +81,26 @@ func _process(delta):
 		State.HUT:
 			process_hut(delta)
 	
-	if $HurtBox.is_monitoring() and $HurtBox.get_overlapping_areas().size() > 0:
+	if hurtarea_overlap > 0:
 		get_hurt(Enums.DeathCause.HEALTH)
 
 func change_state(new_state):
-	if state != new_state:
-		state = new_state
-		emit_signal("state_change", state)
+	if state == new_state:
+		return
+	
+	match state:
+		State.PICKUP:
+			interacting_with = null
+	
+	state = new_state
+	emit_signal("state_change", state)
 
 func process_pickup(_delta):
 	if Input.is_action_just_released("do_action") or interacting_with == null:
+		if interacting_with != null:
+			interacting_with.stop_collect()
+			interacting_with.timer().disconnect("timeout", self, "_on_collectible_pickup")
 		interacting_with = null
-		$ActionTimer.stop()
 		change_state(State.NORMAL)
 		return
 
@@ -226,7 +236,9 @@ func handle_actions(is_just_pressed=false):
 			projectile_root.add_child(projectile)
 		elif interact_priority[0]:
 			interacting_with = interact_priority[0]
-			$ActionTimer.start(interacting_with.interactable_data.time)
+			interacting_with.start_collect()
+			if !interacting_with.timer().is_connected("timeout", self, "_on_collectible_pickup"):
+				interacting_with.timer().connect("timeout", self, "_on_collectible_pickup")
 		elif is_just_pressed:
 			eat()
 
@@ -329,8 +341,6 @@ func get_hurt(cause):
 func die(death_cause):
 	var dead_player = death_scene.instance()
 	dead_player.cause = death_cause
-#	dead_player.speed = speed
-#	dead_player.direction = velocity.normalized()
 	dead_player.global_position = global_position
 	get_parent().add_child_below_node(self, dead_player)
 	queue_free()
@@ -372,7 +382,7 @@ func exit_hut():
 		game.slow_down()
 	emit_signal("exit_hut")
 
-func _on_action_timeout():
+func _on_collectible_pickup():
 	if interacting_with == null or state != State.PICKUP:
 		interacting_with = null
 		return
@@ -384,6 +394,8 @@ func _on_action_timeout():
 func _on_hazard_angered():
 	if state != State.FLEEING and $BuildingMenu/Tooltip.is_open():
 		$BuildingMenu/Tooltip.retract()
+	if interacting_with:
+		interacting_with.stop_collect()
 		
 	change_state(State.FLEEING)
 
@@ -414,3 +426,9 @@ func _on_campfire_exited(_a2d):
 
 func _on_hunger_expire():
 	die(Enums.DeathCause.HUNGER)
+
+func _on_hurtbox_entered(_a2d):
+	hurtarea_overlap += 1
+
+func _on_hurtbox_exited(_a2d):
+	hurtarea_overlap -= 1

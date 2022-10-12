@@ -7,6 +7,7 @@ script = ExtResource( 1 )
 item = 5
 amount_min = 1
 amount_max = 1
+fail_chance = 0.0
 time = 3.0
 die_on_pickup = false
 requirement = 0

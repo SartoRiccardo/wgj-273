@@ -10,7 +10,6 @@ func _ready():
 		global_position = player.global_position
 
 func _process(delta):
-	Helpers.writeln_console(angered_hazards)
 	if player == null:
 		player = Helpers.get_first_of_group("playable")
 		return
