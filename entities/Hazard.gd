@@ -108,7 +108,7 @@ func process_stunned(delta):
 	if self.has_method("_process_stunned"):
 		call("_process_stunned", delta)
 	
-	velocity = Helpers.lerp_vec2(Vector2.ZERO, velocity, pow(2, -10*delta))
+	velocity = Helpers.lerp_vec2(Vector2.ZERO, velocity, pow(2, -10*delta*global_speed_multiplier))
 	check_player_distance()
 
 func process_attacking(delta):
@@ -175,7 +175,7 @@ func wander(delta):
 		if $IdleTimer.time_left == 0:
 			var variance = rng.randf_range(-properties.idle_rand, properties.idle_rand)
 			$IdleTimer.start(properties.idle_time * (1+variance) / global_speed_multiplier)
-		velocity = Helpers.lerp_vec2(Vector2.ZERO, velocity, pow(2, -7*delta))
+		velocity = Helpers.lerp_vec2(Vector2.ZERO, velocity, pow(2, -7*delta*global_speed_multiplier))
 		return
 	
 	var direction = global_position.direction_to($NavigationAgent2D.get_next_location())
@@ -272,6 +272,7 @@ func _on_game_speed_decrease(multiplier):
 
 func _on_player_enter_hut():
 	if state in [Enums.HazardState.ATTACKING, Enums.HazardState.ANGERED]:
+		lose_sight_player()
 		change_state(Enums.HazardState.IDLE)
 
 func _on_season_change(season):
