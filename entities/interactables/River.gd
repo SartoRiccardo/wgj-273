@@ -14,9 +14,7 @@ func _ready():
 	if river_area:
 		remove_child(river_area)
 		$ActionRange.add_child(river_area)
-		$TooltipRange.add_child(river_area.duplicate())
-		$TooltipRange.connect("area_entered", self, "_on_player_nearby")
-		$TooltipRange.connect("area_exited", self, "_on_player_leave")
+		$TooltipData/Range.add_child(river_area.duplicate())
 	player = Helpers.get_player()
 
 func _process(_d):
@@ -28,6 +26,7 @@ func _process(_d):
 		return
 	
 	if enable_tooltip:
+		$TooltipData/Range.position = -player.global_position
 		$TooltipData.global_position = player.global_position
 	
 func is_pickuppable(inventory):
@@ -46,5 +45,4 @@ func _on_season_changed(season):
 	if enable_tooltip:
 		$TooltipData/Tooltip/TooltipContents.interactable_data = interactable_data
 		$TooltipData/Tooltip/TooltipContents.refresh()
-		$TooltipRange.set_monitoring(not disabled)
-
+		$TooltipData/Range.set_monitoring(not disabled)

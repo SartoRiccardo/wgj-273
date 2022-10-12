@@ -94,7 +94,8 @@ func _on_player_leave(_a2d):
 	tooltip_retract()
 
 func _on_season_change(season):
-	if interactable_data.exist_in_seasons.size() > 0 and \
+	if interactable_data and \
+			interactable_data.exist_in_seasons.size() > 0 and \
 			!(season in interactable_data.exist_in_seasons) and \
 			not despawning:
 		despawning = true

@@ -25,7 +25,7 @@ void fragment() {
 resource_local_to_scene = true
 shader = SubResource( 2 )
 shader_param/override_color = Color( 1, 1, 1, 1 )
-shader_param/override_amount = 1.0
+shader_param/override_amount = 0.8
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 6 )
@@ -37,34 +37,28 @@ script = ExtResource( 2 )
 interactable_summer = ExtResource( 4 )
 interactable_half_season = ExtResource( 3 )
 
-[node name="TooltipRange" type="Area2D" parent="." index="1"]
-collision_layer = 0
-collision_mask = 64
-monitorable = false
-
-[node name="Range" parent="TooltipData" index="0"]
-visible = false
-monitoring = false
-
 [node name="CollisionShape2D" parent="TooltipData/Range" index="0"]
-visible = false
 disabled = true
+
+[node name="Tooltip" parent="TooltipData" index="1"]
+margin_right = 94.0
+margin_bottom = 26.0
 
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 5 )]
 margin_left = 6.0
 margin_top = 6.0
-margin_right = 84.0
+margin_right = 88.0
 margin_bottom = 20.0
 reward_texture = SubResource( 1 )
 interactable_data = ExtResource( 3 )
 
 [node name="CollectProgress" parent="TooltipData/Tooltip" index="3"]
-margin_right = 84.0
+margin_right = 88.0
 margin_bottom = 20.0
 
 [node name="ColorRect" parent="TooltipData/Tooltip/CollectProgress" index="0"]
-margin_right = 84.0
+margin_right = 88.0
 margin_bottom = 20.0
 
-[node name="AnimationPlayer" parent="." index="4"]
+[node name="AnimationPlayer" parent="." index="3"]
 autoplay = ""
