@@ -354,6 +354,8 @@ func enter_hut(hut):
 		area.set_monitoring(false)
 		area.set_monitorable(false)
 	$DetectionRange.collision_layer = 0
+	collision_layer = 0
+	collision_mask = 0
 	$AnimatedSprite.set_visible(false)
 	global_position = inside_hut.global_position
 	speed = 0.0
@@ -374,6 +376,8 @@ func exit_hut():
 		area.set_monitoring(true)
 		area.set_monitorable(true)
 	$DetectionRange.collision_layer = 0b1000000
+	collision_layer = 0b1
+	collision_mask = 0b1
 	$AnimatedSprite.set_visible(true)
 	$AnimatedSprite.set_animation("walk_down")
 	global_position += Vector2.DOWN*20
