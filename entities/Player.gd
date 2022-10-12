@@ -42,6 +42,7 @@ var buildable_items_idx = 0
 
 var lives = 5.0
 var hurtarea_overlap = 0
+var interactables_overlap = []
 var near_campfire = 0
 var weather = null
 var weather_damage = 0.0
@@ -59,6 +60,8 @@ func _ready():
 	$Hunger.connect("timeout", self, "_on_hunger_expire")
 	$HurtBox.connect("area_entered", self, "_on_hurtbox_entered")
 	$HurtBox.connect("area_exited", self, "_on_hurtbox_exited")
+	$ActionRange.connect("area_entered", self, "_on_interactable_nearby")
+	$ActionRange.connect("area_exited", self, "_on_interactable_leave")
 	
 	if not dev_detectable:
 		$DetectionRange.get_child(0).set_disabled(true)
@@ -181,7 +184,7 @@ func handle_inventory_inputs():
 			$Inventory.equip_prev()
 
 func handle_actions(is_just_pressed=false):
-	var interactables = $ActionRange.get_overlapping_areas()
+#	var interactables = $ActionRange.get_overlapping_areas()
 	var targets = get_valid_shoot_targets()
 	if interacting_with == null:
 		var interact_priority = {}
@@ -201,9 +204,7 @@ func handle_actions(is_just_pressed=false):
 				in_water == buildable_items[buildable_items_idx].on_water:
 			interact_priority[3] = buildable_items[buildable_items_idx]
 		
-		for area in interactables:
-			var interactable = area.get_parent()
-			
+		for interactable in interactables_overlap:
 			# [0] Collectibles
 			if !interactable.is_in_group("non_collectible") and interactable.is_pickuppable($Inventory) and \
 					interact_priority[0] == null and state != State.FLEEING:
@@ -432,3 +433,9 @@ func _on_hurtbox_entered(_a2d):
 
 func _on_hurtbox_exited(_a2d):
 	hurtarea_overlap -= 1
+
+func _on_interactable_nearby(area2d):
+	interactables_overlap.append(area2d.get_parent())
+
+func _on_interactable_leave(area2d):
+	interactables_overlap.erase(area2d.get_parent())

@@ -65,7 +65,7 @@ func pickup(inventory):
 	if interactable_data.requirement_amount > 0:
 		inventory.remove(interactable_data.requirement, interactable_data.requirement_amount)
 	var amount_picked
-	if rng.randf() < interactable_data.fail_chance:
+	if interactable_data.fail_chance < rng.randf():
 		amount_picked = rng.randi_range(interactable_data.amount_min, interactable_data.amount_max)
 	else:
 		amount_picked = 0

@@ -37,12 +37,12 @@ func _on_season_changed(season):
 	var new_data = interactable_half_season
 	match season:
 		Enums.Season.SUMMER:
-			interactable_data = interactable_summer
+			new_data = interactable_summer
 		Enums.Season.WINTER:
 			disabled = true
 	
 	set_interactable_data(new_data)
 	if enable_tooltip:
-		$TooltipData/Tooltip/TooltipContents.interactable_data = interactable_data
+		$TooltipData/Tooltip/TooltipContents.interactable_data = new_data
 		$TooltipData/Tooltip/TooltipContents.refresh()
 		$TooltipData/Range.set_monitoring(not disabled)

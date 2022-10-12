@@ -24,7 +24,7 @@ shader_param/override_color = Color( 1, 1, 1, 1 )
 shader_param/override_amount = 1.0
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 31.0161
+radius = 17.2627
 
 [sub_resource type="Animation" id=1]
 resource_name = "tooltip_appear"
