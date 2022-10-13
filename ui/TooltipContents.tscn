@@ -1,11 +1,54 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://ui/TooltipContents.gd" type="Script" id=1]
 [ext_resource path="res://assets/ui/frames.png" type="Texture" id=2]
+[ext_resource path="res://assets/particles/glow.png" type="Texture" id=3]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 2 )
 region = Rect2( 0, 19, 16, 14 )
+
+[sub_resource type="Curve" id=6]
+min_value = -1.0
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=3]
+curve = SubResource( 6 )
+
+[sub_resource type="Curve" id=4]
+_data = [ Vector2( 0.0111111, 0 ), 0.0, 2.997, 0, 0, Vector2( 0.177778, 0.587546 ), 2.72727, 2.72727, 0, 0, Vector2( 0.527778, 1 ), 0.0169006, -0.0307096, 0, 0, Vector2( 0.922222, 0.523909 ), -3.19481, -3.19481, 0, 0, Vector2( 1, 0 ), -5.00282, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=5]
+curve = SubResource( 4 )
+
+[sub_resource type="ParticlesMaterial" id=7]
+emission_shape = 5
+emission_ring_radius = 8.0
+emission_ring_inner_radius = 6.0
+emission_ring_height = 1.0
+emission_ring_axis = Vector3( 0, 0, 1 )
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 0.03
+scale_curve = SubResource( 5 )
+color = Color( 1, 0.843137, 0, 1 )
+hue_variation_curve = SubResource( 3 )
+
+[sub_resource type="ParticlesMaterial" id=2]
+emission_shape = 5
+emission_ring_radius = 6.0
+emission_ring_inner_radius = 5.0
+emission_ring_height = 1.0
+emission_ring_axis = Vector3( 0, 0, 1 )
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 0.03
+scale_curve = SubResource( 5 )
+hue_variation_curve = SubResource( 3 )
 
 [node name="TooltipContents" type="HBoxContainer"]
 margin_right = 4.0
@@ -30,10 +73,26 @@ margin_bottom = 14.0
 texture = SubResource( 1 )
 
 [node name="Reward" type="TextureRect" parent="."]
+show_behind_parent = true
 margin_left = 52.0
 margin_right = 68.0
 margin_bottom = 14.0
 texture = SubResource( 1 )
+
+[node name="Node2D" type="Node2D" parent="Reward"]
+show_behind_parent = true
+
+[node name="Outer" type="Particles2D" parent="Reward/Node2D"]
+emitting = false
+amount = 100
+process_material = SubResource( 7 )
+texture = ExtResource( 3 )
+
+[node name="White" type="Particles2D" parent="Reward/Node2D"]
+emitting = false
+amount = 80
+process_material = SubResource( 2 )
+texture = ExtResource( 3 )
 
 [node name="RewardAmount" type="Label" parent="."]
 margin_left = 72.0

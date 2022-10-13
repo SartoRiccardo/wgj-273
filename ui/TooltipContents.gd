@@ -10,9 +10,14 @@ func _ready():
 
 func _process(_d):
 	rect_size = Vector2.ZERO
+	$Reward/Node2D.position = $Reward.rect_size / 2
 
 func refresh():
 	set_interactable_data(reward_texture, interactable_data, requirement_texture)
+
+func set_boosted(boosted):
+	$Reward/Node2D/White.set_emitting(boosted)
+	$Reward/Node2D/Outer.set_emitting(boosted)
 
 func set_interactable_data(texture, data, require_texture=null):
 	$Reward.set_texture(texture)
