@@ -48,6 +48,7 @@ var near_campfire = 0
 var weather = null
 var weather_damage = 0.0
 var hazards_angered = []
+var is_building_menu_open = false
 onready var hunger_timeout = $Hunger.wait_time
 onready var prev_hunger = HUNGER_STAGES-1
 
@@ -167,7 +168,7 @@ func handle_movement_inputs():
 func handle_inventory_inputs():
 	if Input.is_action_just_pressed("next_inv_item") and \
 			not Input.is_key_pressed(KEY_SHIFT):
-		if $BuildingMenu/Tooltip.is_open():
+		if is_building_menu_open:
 			buildable_items_idx = (buildable_items_idx+1) % buildable_items.size()
 			$BuildingMenu/Tooltip/BuildingMenu.select(
 				buildable_items[buildable_items_idx], buildable_items_idx, $Inventory
@@ -175,7 +176,7 @@ func handle_inventory_inputs():
 		else:
 			$Inventory.equip_next()
 	if Input.is_action_just_pressed("prev_inv_item"):
-		if $BuildingMenu/Tooltip.is_open():
+		if is_building_menu_open:
 			buildable_items_idx -= 1
 			while buildable_items_idx < 0:
 				buildable_items_idx += buildable_items.size()
@@ -200,7 +201,7 @@ func handle_actions(is_just_pressed=false):
 				interact_priority[1] = Helpers.get_closest_node_to(targets, global_position)
 		
 		# [3] Build
-		if $BuildingMenu/Tooltip.is_open() and is_just_pressed and \
+		if is_building_menu_open and is_just_pressed and \
 				buildable_items[buildable_items_idx].is_buildable($Inventory) and \
 				in_water == buildable_items[buildable_items_idx].on_water:
 			interact_priority[3] = buildable_items[buildable_items_idx]
@@ -222,7 +223,7 @@ func handle_actions(is_just_pressed=false):
 				var build_node = build.building_scene.instance()
 				build_node.global_position = global_position
 				build.take_materials($Inventory)
-				$BuildingMenu/Tooltip.retract()
+				set_building_menu_open(false)
 				parent.add_child(build_node)
 		elif interact_priority[2]:
 			enter_hut(interact_priority[2])
@@ -269,10 +270,15 @@ func handle_ui():
 		inv_changes = {}
 	
 	if Input.is_action_just_pressed("build_menu"):
-		if $BuildingMenu/Tooltip.is_open():
-			$BuildingMenu/Tooltip.retract()
-		else:
-			$BuildingMenu/Tooltip.popup()
+		set_building_menu_open(!is_building_menu_open)
+
+func set_building_menu_open(is_open: bool):
+	if is_open:
+		is_building_menu_open = true
+		$BuildingMenu/Tooltip.popup()
+	else:
+		is_building_menu_open = false
+		$BuildingMenu/Tooltip.retract()
 
 func update_sprite():
 	if pressed_actions.size() == 0:
@@ -397,8 +403,8 @@ func _on_collectible_pickup():
 
 func _on_hazard_angered(hazard):
 	hazards_angered.append(hazard)
-	if state != State.FLEEING and $BuildingMenu/Tooltip.is_open():
-		$BuildingMenu/Tooltip.retract()
+	if state != State.FLEEING and is_building_menu_open:
+		set_building_menu_open(false)
 	if interacting_with:
 		interacting_with.stop_collect()
 		

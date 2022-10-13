@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://entities/Interactable.tscn" type="PackedScene" id=2]
 [ext_resource path="res://entities/interactables/Building.gd" type="Script" id=6]
@@ -26,11 +26,27 @@ shader_param/override_amount = 1.0
 [sub_resource type="CircleShape2D" id=3]
 radius = 31.0161
 
+[sub_resource type="Animation" id=6]
+resource_name = "despawn_building"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+
 [node name="Building" groups=["building"] instance=ExtResource( 2 )]
 material = SubResource( 5 )
+scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 6 )
 duration_seasons = 1.0
-duration_seasons_dead = 1.0
+duration_dead = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ActionRange" index="0"]
 shape = SubResource( 3 )
@@ -49,6 +65,9 @@ margin_bottom = 20.0
 [node name="ColorRect" parent="TooltipData/Tooltip/CollectProgress" index="0"]
 margin_right = 84.0
 margin_bottom = 20.0
+
+[node name="AnimationPlayer" parent="." index="3"]
+anims/despawn_building = SubResource( 6 )
 
 [node name="Glow" type="Tween" parent="." index="4"]
 

@@ -31,3 +31,9 @@ func _on_river_entered():
 func _on_river_exited():
 	in_river = false
 	set_glow(false)
+
+# Override
+func _on_season_change(season):
+	if season == Enums.Season.WINTER:
+		decay()
+	._on_season_change(season)

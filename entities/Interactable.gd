@@ -77,15 +77,25 @@ func pickup(inventory):
 	return amount_picked
 
 func despawn():
+	$ActionRange.set_monitorable(false)
+	$ActionRange.set_monitoring(false)
+	delete_tooltip()
+	$Tween.interpolate_property(
+		self, "position:y", position.y, position.y + Vector2.UP.y*30, 1.0
+	)
+	$Tween.start()
+	$AnimationPlayer.play("despawn")
+	yield($AnimationPlayer, "animation_finished")
 	queue_free()
 
 func delete_tooltip():
-	enable_tooltip = false
-	$TooltipData/Range.queue_free()
-	if Helpers.stepify_vec2($TooltipData/Tooltip.rect_scale, 0.001) != Vector2.ZERO:
-		tooltip_retract(true)
-		yield ($TooltipData/Tween, "tween_completed")
-	remove_child($TooltipData)
+	if enable_tooltip:
+		enable_tooltip = false
+		$TooltipData/Range.queue_free()
+		if Helpers.stepify_vec2($TooltipData/Tooltip.rect_scale, 0.001) != Vector2.ZERO:
+			tooltip_retract(true)
+			yield ($TooltipData/Tween, "tween_completed")
+		remove_child($TooltipData)
 
 func is_pickuppable(inventory):
 	return inventory.get_amount(interactable_data.requirement) >= interactable_data.requirement_amount

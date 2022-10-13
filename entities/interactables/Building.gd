@@ -3,11 +3,12 @@ extends "res://entities/Interactable.gd"
 signal decay
 
 export (float) var duration_seasons = 1.0
-export (float) var duration_seasons_dead = 1.0
+export (float) var duration_dead = 1.0
 
 # https://godotengine.org/qa/24585/how-to-loop-a-tween-solved
 var glow_values_init = [0.0, 0.6]
 var glow_values = [0.0, 0.6]
+var speed_multiplier = 1.0
 
 func _ready():
 	var game = Helpers.get_game_node()
@@ -17,6 +18,14 @@ func _ready():
 	game.connect("speed_decrease", self, "_on_game_speed_decrease")
 	$Lifespan.start(game.season_duration * duration_seasons)
 	$Glow.connect("tween_completed", self, "_on_tween_completed")
+
+func despawn():
+	$ActionRange.set_monitorable(false)
+	$ActionRange.set_monitoring(false)
+	delete_tooltip()
+	$AnimationPlayer.play("despawn_building")
+	yield($AnimationPlayer, "animation_finished")
+	queue_free()
 
 func set_glow(glow: bool):
 	if glow:
@@ -41,7 +50,7 @@ func decay():
 func _on_lifespan_timeout():
 	decay()
 	var game = Helpers.get_game_node()
-	$LifespanDead.start(game.season_duration * duration_seasons_dead)
+	$LifespanDead.start(game.season_duration * duration_dead / speed_multiplier)
 
 func _on_lifespan_dead_timeout():
 	despawn()
@@ -51,12 +60,14 @@ func _on_game_speed_increase(multiplier):
 		$Lifespan.start($Lifespan.time_left/multiplier)
 	if !$LifespanDead.is_stopped():
 		$LifespanDead.start($LifespanDead.time_left/multiplier)
+	speed_multiplier *= multiplier
 
 func _on_game_speed_decrease(multiplier):
 	if !$Lifespan.is_stopped():
 		$Lifespan.start($Lifespan.time_left*multiplier)
 	if !$LifespanDead.is_stopped():
 		$LifespanDead.start($LifespanDead.time_left*multiplier)
+	speed_multiplier /= multiplier
 
 func _on_tween_completed(_obj, _key):
 	glow_values.invert()

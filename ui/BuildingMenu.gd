@@ -55,13 +55,9 @@ func select(building, building_idx, inventory):
 	placement_node.set_visible(player_in_water != building.on_water)
 	placement_node.set_text("Requires %s." % ("water" if building.on_water else "land"))
 
-func _process(_d):
-	Helpers.writeln_console(player_in_water)
-
 func set_in_water(in_water):
 	if building_list.size() <= selected:
 		return
 	player_in_water = in_water
-	print(building_list, selected)
 	var placement_node = $BuildingDesc/VBoxContainer/Placement
 	placement_node.set_visible(player_in_water != building_list[selected].on_water)
