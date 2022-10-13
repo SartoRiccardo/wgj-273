@@ -4,7 +4,7 @@ signal weather_change(weather)
 
 export (Enums.Weather) var starting_weather = Enums.Weather.CLEAR
 export (Vector3) var box_extents = Vector3(320, 180, 1)
-export (float) var weather_chance = 1/60.0
+export (float) var weather_chance = 1/100.0
 export (float) var storm_chance = 1/4.0
 
 var rng = RandomNumberGenerator.new()
@@ -58,7 +58,8 @@ func _on_season_change(season):
 				change_weather(Enums.Weather.CLEAR)
 
 func _on_weather_summon_attempt():
-	if rng.randf() > weather_chance or !game:
+	var attempt = rng.randf()
+	if attempt > weather_chance or !game:
 		return
 	
 	var season = game.get_current_season()

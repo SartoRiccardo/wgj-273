@@ -7,6 +7,7 @@ signal speed_decrease(multiplier)
 export (int) var season_duration = 30
 
 const SPEED_UP_MULTIPLIER = 5.0
+const DEATH_SCREEN_SCN = preload("res://ui/DeathScreen.tscn")
 
 var current_season = 0
 var cycles = 0
@@ -48,7 +49,7 @@ func get_season_duration():
 	return ret
 
 func get_season_progression():
-	return $SeasonTimer.time_left / get_season_duration()
+	return 1 - $SeasonTimer.time_left / get_season_duration()
 
 func _on_season_timeout():
 	current_season = (current_season+1) % season_cycle.size()
@@ -63,3 +64,8 @@ func _on_season_timeout():
 
 func _on_player_die():
 	$SeasonTimer.set_paused(true)
+	yield(get_tree().create_timer(1.5), "timeout")
+	var death_screen = DEATH_SCREEN_SCN.instance()
+	var cur_month = current_season*3 + int(get_season_progression()*3)
+	death_screen.set_time_survived(cycles, cur_month)
+	$GameUI.add_child(death_screen)
