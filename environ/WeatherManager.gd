@@ -4,12 +4,14 @@ signal weather_change(weather)
 
 export (Enums.Weather) var starting_weather = Enums.Weather.CLEAR
 export (Vector3) var box_extents = Vector3(320, 180, 1)
-export (float) var weather_chance = 1/100.0
+export (float) var weather_chance = 1/60.0
 export (float) var storm_chance = 1/4.0
 
 var rng = RandomNumberGenerator.new()
 var weather = null
+var clear_weather_time = true
 var game = null
+var cur_weather_chance = weather_chance
 
 func _ready():
 	var player = Helpers.get_player()
@@ -59,7 +61,8 @@ func _on_season_change(season):
 
 func _on_weather_summon_attempt():
 	var attempt = rng.randf()
-	if attempt > weather_chance or !game:
+	if attempt > cur_weather_chance or !game:
+		cur_weather_chance *= 1.03
 		return
 	
 	var season = game.get_current_season()
@@ -79,13 +82,17 @@ func _on_weather_summon_attempt():
 
 func _on_weather_timeout():
 	change_weather(Enums.Weather.CLEAR)
-	$SummonWeather.set_paused(false)
-	$WeatherDuration.set_paused(true)
+	$SummonWeather.set_paused(clear_weather_time)
+	$WeatherDuration.set_paused(!clear_weather_time)
+	clear_weather_time = !clear_weather_time
+	cur_weather_chance = weather_chance
 
 func _on_game_speed_increase(multiplier):
 	$SummonWeather.start($SummonWeather.time_left/multiplier)
 	$WeatherDuration.start($WeatherDuration.time_left/multiplier)
+	cur_weather_chance *= multiplier
 
 func _on_game_speed_decrease(multiplier):
 	$SummonWeather.start($SummonWeather.time_left*multiplier)
 	$WeatherDuration.start($WeatherDuration.time_left*multiplier)
+	cur_weather_chance /= multiplier
