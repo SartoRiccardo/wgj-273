@@ -9,7 +9,7 @@ func _ready():
 # Override
 func change_state(new_state):
 	if properties.docile and new_state in [Enums.HazardState.ANGERED, Enums.HazardState.ATTACKING]:
-		return
+		new_state = Enums.HazardState.IDLE
 	.change_state(new_state)
 
 # Override
@@ -25,7 +25,7 @@ func set_tooltip_open(open_tooltip: bool):
 	.set_tooltip_open(open_tooltip)
 
 func _on_docile_change(docile):
-	if properties.docile:
+	if docile:
 		if state == Enums.HazardState.ANGERED:
 			change_state(Enums.HazardState.IDLE)
 		lose_sight_player()
@@ -37,3 +37,5 @@ func _on_docile_change(docile):
 func _on_hit(item):
 	if item == Enums.Item.HONEY:
 		properties.set_docile(true)
+		yield(get_tree().create_timer(5.0), "timeout")
+		properties.set_docile(false)
