@@ -6,9 +6,11 @@ signal docile_change(status)
 export (bool) var docile = false
 
 var _seasons_passed = 0
+var initialized = false
 
 func init(game):
 	game.connect("season_change", self, "_on_season_change")
+	initialized = true
 
 func set_docile(new_docile):
 	docile = new_docile

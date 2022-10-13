@@ -5,6 +5,8 @@ export (int) var speed = 75
 func _ready():
 	collision_layer = 1
 	properties.connect("docile_change", self, "_on_docile_change")
+	if !properties.initialized:
+		properties.init(Helpers.get_game_node())
 
 # Override
 func change_state(new_state):
@@ -37,5 +39,3 @@ func _on_docile_change(docile):
 func _on_hit(item):
 	if item == Enums.Item.HONEY:
 		properties.set_docile(true)
-		yield(get_tree().create_timer(5.0), "timeout")
-		properties.set_docile(false)
