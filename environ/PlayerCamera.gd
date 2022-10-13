@@ -24,13 +24,13 @@ func _process(delta):
 		lerp(mov_target.y, global_position.y, pow(2, -15*delta))
 	)
 
-func _on_hazard_angered():
+func _on_hazard_angered(_hzd):
 	angered_hazards += 1
 	if angered_hazards == 1:
 		$AnimationPlayer.stop(true)
 		$AnimationPlayer.play("panic")
 
-func _on_hazard_unangered():
+func _on_hazard_unangered(_hzd):
 	angered_hazards -= 1
 	if angered_hazards <= 0:
 		$AnimationPlayer.stop(true)

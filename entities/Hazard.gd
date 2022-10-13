@@ -1,8 +1,8 @@
 extends KinematicBody2D
 class_name Hazard
 
-signal angered
-signal unangered
+signal angered(hazard)
+signal unangered(hazard)
 
 export (Array, Resource) var stuns
 export (Resource) var properties
@@ -105,6 +105,9 @@ func process_angered(delta):
 		return
 
 func process_stunned(delta):
+	if state_is_new:
+		$ProjectileInfo/Tooltip.retract()
+	
 	if self.has_method("_process_stunned"):
 		call("_process_stunned", delta)
 	
@@ -133,13 +136,13 @@ func lock_on_player():
 	if !is_in_group("angered"):
 		$ProjectileInfo/Tooltip.popup()
 		add_to_group("angered")
-		emit_signal("angered")
+		emit_signal("angered", self)
 
 func lose_sight_player():
 	if is_in_group("angered"):
 		remove_from_group("angered")
 		$ProjectileInfo/Tooltip.retract()
-		emit_signal("unangered")
+		emit_signal("unangered", self)
 
 func check_player_distance():
 	if following and global_position.distance_to(following.global_position) > properties.outrun_distance:
@@ -165,6 +168,8 @@ func get_hit(projectile):
 			
 			if self.has_method("_on_hit"):
 				call_deferred("_on_hit", item)
+			
+			break
 
 func wander(delta):
 	if state_is_new:
@@ -221,6 +226,7 @@ func speed_multiplier():
 
 func _on_stun_end():
 	if state == Enums.HazardState.STUNNED:
+		$ProjectileInfo/Tooltip.popup()
 		change_state(Enums.HazardState.ANGERED)
 
 func _on_idle_timeout():

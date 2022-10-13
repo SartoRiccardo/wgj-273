@@ -47,6 +47,7 @@ var interactables_overlap = []
 var near_campfire = 0
 var weather = null
 var weather_damage = 0.0
+var hazards_angered = []
 onready var hunger_timeout = $Hunger.wait_time
 onready var prev_hunger = HUNGER_STAGES-1
 
@@ -185,8 +186,6 @@ func handle_inventory_inputs():
 			$Inventory.equip_prev()
 
 func handle_actions(is_just_pressed=false):
-#	var interactables = $ActionRange.get_overlapping_areas()
-	var targets = get_valid_shoot_targets()
 	if interacting_with == null:
 		var interact_priority = {}
 		for i in 4:
@@ -194,10 +193,11 @@ func handle_actions(is_just_pressed=false):
 		
 		# [1] Shoot angered enemies
 		var projectile_root = Helpers.get_first_of_group("projectile_root")
-		if state == State.FLEEING and targets.size() > 0 and interact_priority[1] == null and \
+		if state == State.FLEEING and interact_priority[1] == null and \
 				projectile_root != null and ($Inventory.equipped in PROJECTILE_RES.keys()):
-			var target = Helpers.get_closest_node_to(targets, global_position)
-			interact_priority[1] = target
+			var targets = get_valid_shoot_targets()
+			if targets.size() > 0:
+				interact_priority[1] = Helpers.get_closest_node_to(targets, global_position)
 		
 		# [3] Build
 		if $BuildingMenu/Tooltip.is_open() and is_just_pressed and \
@@ -317,11 +317,9 @@ func eat():
 			$Inventory.remove(item.item, 1)
 			$Hunger.start($Hunger.time_left + hunger_gained)
 
-# TODO optimize, don't do every frame, update only when necessary
 func get_valid_shoot_targets():
-	var hazards = get_tree().get_nodes_in_group("angered")
 	var valid = []
-	for hzr in hazards:
+	for hzr in hazards_angered:
 		if hzr.global_position.distance_to(global_position) <= SHOOT_RANGE and \
 				!hzr.is_in_group("targeted") and \
 				hzr.state != Enums.HazardState.STUNNED and \
@@ -397,7 +395,8 @@ func _on_collectible_pickup():
 	)
 	interacting_with = null
 
-func _on_hazard_angered():
+func _on_hazard_angered(hazard):
+	hazards_angered.append(hazard)
 	if state != State.FLEEING and $BuildingMenu/Tooltip.is_open():
 		$BuildingMenu/Tooltip.retract()
 	if interacting_with:
@@ -405,7 +404,8 @@ func _on_hazard_angered():
 		
 	change_state(State.FLEEING)
 
-func _on_hazard_unangered():
+func _on_hazard_unangered(hazard):
+	hazards_angered.erase(hazard)
 	if get_tree().get_nodes_in_group("angered").size() == 0:
 		change_state(State.NORMAL)
 
