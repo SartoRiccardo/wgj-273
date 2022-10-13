@@ -7,7 +7,10 @@ export (bool) var enable_tooltip = true
 
 onready var progress_bar = $TooltipData/Tooltip/CollectProgress/ColorRect
 onready var tooltip = $TooltipData/Tooltip
+
+var rates_are_boosted = false
 var despawning = false
+var collect_speed_multiplier = 1.0
 
 func _ready():
 	rng.randomize()
@@ -25,7 +28,7 @@ func _ready():
 		get_node("Sprite").set_use_parent_material(true)
 	if interactable_data:
 		$Collect.set_wait_time(interactable_data.time)
-	
+
 func _process(_d):
 	if enable_tooltip:
 		if !$Collect.is_stopped():
@@ -39,7 +42,7 @@ func _process(_d):
 
 func set_interactable_data(data):
 	interactable_data = data
-	$Collect.set_wait_time(interactable_data.time)
+	$Collect.set_wait_time(interactable_data.time / collect_speed_multiplier)
 
 func tooltip_popup():
 	if not enable_tooltip:
@@ -59,7 +62,7 @@ func start_collect():
 
 func stop_collect():
 	$Collect.stop()
-	$Collect.set_wait_time(interactable_data.time)
+	$Collect.set_wait_time(interactable_data.time / collect_speed_multiplier)
 
 func pickup(inventory):
 	if interactable_data.requirement_amount > 0:
@@ -86,6 +89,14 @@ func delete_tooltip():
 
 func is_pickuppable(inventory):
 	return inventory.get_amount(interactable_data.requirement) >= interactable_data.requirement_amount
+
+func set_rates_boosted(boosted: bool):
+	rates_are_boosted = boosted
+	var contents = get_node_or_null("TooltipData/Tooltip/TooltipContents")
+	if !contents:
+		return
+	elif contents.has_method("set_boosted"):
+		contents.set_boosted(boosted)
 
 func _on_player_nearby(_a2d):
 	tooltip_popup()

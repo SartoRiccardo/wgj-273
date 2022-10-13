@@ -1,9 +1,15 @@
 extends "res://entities/Interactable.gd"
 
+signal river_entered
+signal river_exited
+
 export (Resource) var interactable_summer
 export (Resource) var interactable_half_season
+
 var disabled = false
 var player = null
+var dams_near_player = 0
+var player_is_in_river = false
 
 func _ready():
 	var game = Helpers.get_game_node()
@@ -16,6 +22,8 @@ func _ready():
 		$ActionRange.add_child(river_area)
 		$TooltipData/Range.add_child(river_area.duplicate())
 	player = Helpers.get_player()
+	$ActionRange.connect("area_entered", self, "_on_river_entered")
+	$ActionRange.connect("area_exited", self, "_on_river_exited")
 
 func _process(_d):
 	if player == null:
@@ -32,6 +40,11 @@ func _process(_d):
 func is_pickuppable(inventory):
 	return not disabled and .is_pickuppable(inventory)
 
+# Override
+func set_interactable_data(data):
+	.set_interactable_data(data)
+	$Collect.wait_time /= collect_speed_multiplier
+
 func _on_season_changed(season):
 	disabled = false
 	var new_data = interactable_half_season
@@ -46,3 +59,30 @@ func _on_season_changed(season):
 		$TooltipData/Tooltip/TooltipContents.interactable_data = new_data
 		$TooltipData/Tooltip/TooltipContents.refresh()
 		$TooltipData/Range.set_monitoring(not disabled)
+
+func _on_dam_entered(_a2d):
+	dams_near_player += 1
+	if dams_near_player == 1:
+		collect_speed_multiplier *= 2
+		set_rates_boosted(true)
+		$TooltipData/Tooltip/TooltipContents.set_boosted(true)
+		$Collect.set_wait_time(interactable_data.time / collect_speed_multiplier)
+
+func _on_dam_exited(_a2d):
+	dams_near_player -= 1
+	if dams_near_player <= 0:
+		dams_near_player = 0
+		collect_speed_multiplier /= 2
+		$Collect.set_wait_time(interactable_data.time * collect_speed_multiplier)
+		set_rates_boosted(false)
+		$TooltipData/Tooltip/TooltipContents.set_boosted(false)
+
+func _on_river_entered(area2d):
+	if area2d.get_parent() is Player:
+		player_is_in_river = true
+		emit_signal("river_entered")
+
+func _on_river_exited(area2d):
+	if area2d.get_parent() is Player:
+		player_is_in_river = false
+		emit_signal("river_exited")

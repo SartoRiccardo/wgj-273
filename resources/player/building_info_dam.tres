@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=5 format=2]
+
+[ext_resource path="res://resources/player/BuildingInfo.gd" type="Script" id=1]
+[ext_resource path="res://resources/player/ItemAmount.gd" type="Script" id=2]
+[ext_resource path="res://entities/interactables/buildings/Dam.tscn" type="PackedScene" id=3]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 2 )
+item = 1
+amount = 25
+
+[resource]
+script = ExtResource( 1 )
+building_scene = ExtResource( 3 )
+item = 9
+materials = [ SubResource( 1 ) ]
+on_water = true
+season_duration = 2.0
+description = "Helps you fish slightly faster while above it. Breaks in winter."

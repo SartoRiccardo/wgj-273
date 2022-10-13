@@ -31,11 +31,14 @@ shader_param/override_amount = 0.8
 atlas = ExtResource( 6 )
 region = Rect2( 0, 16, 16, 16 )
 
-[node name="River" instance=ExtResource( 1 )]
+[node name="River" groups=["river"] instance=ExtResource( 1 )]
 material = SubResource( 3 )
 script = ExtResource( 2 )
 interactable_summer = ExtResource( 4 )
 interactable_half_season = ExtResource( 3 )
+
+[node name="ActionRange" parent="." index="0"]
+collision_mask = 16
 
 [node name="CollisionShape2D" parent="TooltipData/Range" index="0"]
 disabled = true
@@ -43,6 +46,7 @@ disabled = true
 [node name="Tooltip" parent="TooltipData" index="1"]
 margin_right = 94.0
 margin_bottom = 26.0
+rect_scale = Vector2( 1, 1 )
 
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 5 )]
 margin_left = 6.0

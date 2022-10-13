@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://assets/entities/player.png" type="Texture" id=1]
 [ext_resource path="res://entities/Player.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://resources/player/building_info_campfire.tres" type="Resource" id=8]
 [ext_resource path="res://resources/player/building_info_hut.tres" type="Resource" id=9]
 [ext_resource path="res://entities/DeadPlayer.tscn" type="PackedScene" id=10]
+[ext_resource path="res://resources/player/building_info_dam.tres" type="Resource" id=11]
 
 [sub_resource type="Resource" id=15]
 script = ExtResource( 4 )
@@ -133,7 +134,7 @@ tracks/2/keys = {
 [node name="Player" type="KinematicBody2D" groups=["playable"]]
 script = ExtResource( 2 )
 edible_items = [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ]
-buildable_items = [ ExtResource( 8 ), ExtResource( 9 ) ]
+buildable_items = [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 11 ) ]
 death_scene = ExtResource( 10 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
