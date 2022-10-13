@@ -2,8 +2,11 @@ extends VBoxContainer
 
 export (Resource) var item_icons
 var selected = null
+var player_in_water = false
+var building_list = []
 
-func init_from(building_list, inventory):
+func init_from(init_building_list, inventory):
+	building_list = init_building_list
 	if building_list.size() == 0:
 		return
 	
@@ -17,9 +20,10 @@ func init_from(building_list, inventory):
 	select(building_list[selected], selected, inventory)
 
 func select(building, building_idx, inventory):
+	selected = building_idx
 	for i in $PanelContainer/BuildableList.get_child_count():
 		var build_icon = $PanelContainer/BuildableList.get_child(i)
-		build_icon.self_modulate = Color(1, 1, 1, 1.0 if i == building_idx else 0.5)
+		build_icon.self_modulate = Color(1, 1, 1, 1.0 if i == selected else 0.5)
 
 	var material_root = $BuildingDesc/VBoxContainer/MaterialList
 	Helpers.remove_all_children(material_root)
@@ -46,3 +50,18 @@ func select(building, building_idx, inventory):
 		desc_node.text += "\nLasts 1 season."
 	else:
 		desc_node.text += "\nLasts %s seasons." % building.season_duration
+	
+	var placement_node = $BuildingDesc/VBoxContainer/Placement
+	placement_node.set_visible(player_in_water != building.on_water)
+	placement_node.set_text("Requires %s." % ("water" if building.on_water else "land"))
+
+func _process(_d):
+	Helpers.writeln_console(player_in_water)
+
+func set_in_water(in_water):
+	if building_list.size() <= selected:
+		return
+	player_in_water = in_water
+	print(building_list, selected)
+	var placement_node = $BuildingDesc/VBoxContainer/Placement
+	placement_node.set_visible(player_in_water != building_list[selected].on_water)

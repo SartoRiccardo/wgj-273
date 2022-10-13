@@ -411,9 +411,11 @@ func _on_hazard_unangered(hazard):
 
 func _on_water_enter(_a2d):
 	in_water = true
+	$BuildingMenu/Tooltip/BuildingMenu.set_in_water(true)
 
 func _on_water_exited(_a2d):
 	in_water = false
+	$BuildingMenu/Tooltip/BuildingMenu.set_in_water(false)
 
 func _on_inventory_change(item, old_amount, new_amount):
 	if item in inv_changes:
