@@ -106,7 +106,7 @@ func process_angered(delta):
 
 func process_stunned(delta):
 	if state_is_new:
-		$ProjectileInfo/Tooltip.retract()
+		set_tooltip_open(false)
 	
 	if self.has_method("_process_stunned"):
 		call("_process_stunned", delta)
@@ -134,14 +134,14 @@ func change_state(new_state):
 
 func lock_on_player():
 	if !is_in_group("angered"):
-		$ProjectileInfo/Tooltip.popup()
+		set_tooltip_open(true)
 		add_to_group("angered")
 		emit_signal("angered", self)
 
 func lose_sight_player():
 	if is_in_group("angered"):
 		remove_from_group("angered")
-		$ProjectileInfo/Tooltip.retract()
+		set_tooltip_open(false)
 		emit_signal("unangered", self)
 
 func check_player_distance():
@@ -224,9 +224,15 @@ func get_stun_for(item):
 func speed_multiplier():
 	return mov_speed_multiplier * global_speed_multiplier
 
+func set_tooltip_open(open_tooltip: bool):
+	if open_tooltip:
+		$ProjectileInfo/Tooltip.popup()
+	else:
+		$ProjectileInfo/Tooltip.retract()
+
 func _on_stun_end():
 	if state == Enums.HazardState.STUNNED:
-		$ProjectileInfo/Tooltip.popup()
+		set_tooltip_open(true)
 		change_state(Enums.HazardState.ANGERED)
 
 func _on_idle_timeout():

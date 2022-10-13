@@ -1,13 +1,13 @@
 [gd_resource type="Resource" load_steps=2 format=2]
 
-[ext_resource path="res://resources/hazards/HazardResource.gd" type="Script" id=1]
+[ext_resource path="res://resources/hazards/BearBehavior.gd" type="Script" id=1]
 
 [resource]
 script = ExtResource( 1 )
 speed_idle = 30
 speed_angered = 75
 outrun_distance = 300
-sight_angle = 30.0
+sight_angle = 45.0
 sight_rotate_speed = 270.0
 sight_length = 150.0
 idle_time = 5.0
@@ -16,3 +16,4 @@ wander_min_radius = 30.0
 wander_max_radius = 60.0
 max_wander_outside_biome = 50.0
 exists_in_seasons = [ 0, 1, 2 ]
+docile = false

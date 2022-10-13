@@ -1,4 +1,4 @@
-extends Resource
+extends "res://resources/hazards/HazardResource.gd"
 class_name BearBehavior
 
 signal docile_change(status)

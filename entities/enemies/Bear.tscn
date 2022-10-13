@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://entities/Hazard.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/enemies/Bear.gd" type="Script" id=2]
@@ -6,7 +6,6 @@
 [ext_resource path="res://resources/stuns/stun_honey.tres" type="Resource" id=4]
 [ext_resource path="res://resources/stuns/stun_rock.tres" type="Resource" id=5]
 [ext_resource path="res://resources/hazards/hazard_bear.tres" type="Resource" id=6]
-[ext_resource path="res://resources/hazards/bear_behavior.tres" type="Resource" id=7]
 
 [sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 10.5, 4 )
@@ -60,7 +59,6 @@ script = ExtResource( 2 )
 stuns = [ ExtResource( 5 ), ExtResource( 4 ) ]
 properties = ExtResource( 6 )
 speed = 75
-behavior = ExtResource( 7 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
 position = Vector2( 1.5, 7 )

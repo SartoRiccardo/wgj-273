@@ -1,22 +1,31 @@
 extends "res://entities/Hazard.gd"
 
 export (int) var speed = 75
-export (Resource) var behavior
 
 func _ready():
 	collision_layer = 1
-	behavior.connect("docile_change", self, "_on_docile_change")
+	properties.connect("docile_change", self, "_on_docile_change")
 
 # Override
 func change_state(new_state):
-	if new_state == Enums.HazardState.ANGERED and \
-			state != Enums.HazardState.IDLE and \
-			behavior.docile:
-		new_state = Enums.HazardState.IDLE
+	if properties.docile and new_state in [Enums.HazardState.ANGERED, Enums.HazardState.ATTACKING]:
+		return
 	.change_state(new_state)
 
+# Override
+func check_sight():
+	if properties.docile:
+		return
+	.check_sight()
+
+# Override
+func set_tooltip_open(open_tooltip: bool):
+	if open_tooltip and properties.docile:
+		return
+	.set_tooltip_open(open_tooltip)
+
 func _on_docile_change(docile):
-	if docile:
+	if properties.docile:
 		if state == Enums.HazardState.ANGERED:
 			change_state(Enums.HazardState.IDLE)
 		lose_sight_player()
@@ -27,4 +36,4 @@ func _on_docile_change(docile):
 
 func _on_hit(item):
 	if item == Enums.Item.HONEY:
-		behavior.set_docile(true)
+		properties.set_docile(true)
