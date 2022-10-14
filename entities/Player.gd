@@ -48,6 +48,8 @@ var speed = 0.0
 var interacting_with = null
 var hazards_angered = []
 var interactables_overlap = []
+#var current_anim_frame = 0
+#const WALK_PARTICLES_EVERY = 2
 # Flags
 var in_water = false
 var inside_hut = null
@@ -68,6 +70,7 @@ func _ready():
 	$Areas/HurtBox.connect("area_exited", self, "_on_hurtbox_exited")
 	$Areas/ActionRange.connect("area_entered", self, "_on_interactable_nearby")
 	$Areas/ActionRange.connect("area_exited", self, "_on_interactable_leave")
+#	$AnimatedSprite.connect("frame_changed", self, "_on_anim_frame_changed")
 	
 	# Folder nodes are only so I don't lose my mind in the editor
 	for area in $Areas.get_children():
@@ -309,8 +312,10 @@ func update_sprite():
 	
 	if $AnimatedSprite.get_animation() != anim_name:
 		$AnimatedSprite.set_animation(anim_name)
+#		current_anim_frame = 0
 	if $AnimatedSprite.is_flipped_h() != flip_h:
 		$AnimatedSprite.set_flip_h(flip_h)
+#		current_anim_frame = 0
 	
 	if mov_vector == Vector2.ZERO:
 		$AnimatedSprite.stop()
@@ -331,8 +336,7 @@ func eat():
 				return
 			$Inventory.remove(item.item, 1)
 			$Hunger.start($Hunger.time_left + hunger_gained)
-			$Particles/Eat.restart()
-			$Particles/Eat.set_emitting(true)
+			$Particles/Eat.spawn()
 
 func get_valid_shoot_targets():
 	var valid = []
@@ -464,3 +468,8 @@ func _on_interactable_nearby(area2d):
 
 func _on_interactable_leave(area2d):
 	interactables_overlap.erase(area2d.get_parent())
+
+#func _on_anim_frame_changed():
+#	current_anim_frame = (current_anim_frame+1) % WALK_PARTICLES_EVERY
+#	if current_anim_frame == 0:
+#		$WalkParticles.spawn()
