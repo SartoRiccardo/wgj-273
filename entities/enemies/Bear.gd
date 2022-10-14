@@ -26,6 +26,12 @@ func set_tooltip_open(open_tooltip: bool):
 		return
 	.set_tooltip_open(open_tooltip)
 
+func emit_docile_particles():
+	if properties.docile:
+		$Particles2D.set_emitting(true)
+		yield(get_tree().create_timer(rng.randf()*2+2), "timeout")
+		call_deferred("emit_docile_particles")
+
 func _on_docile_change(docile):
 	if docile:
 		if state == Enums.HazardState.ANGERED:
@@ -33,6 +39,7 @@ func _on_docile_change(docile):
 		lose_sight_player()
 		$Hitbox.set_monitorable(false)
 		$Sight.set_enabled(false)
+		emit_docile_particles()
 	else:
 		$Hitbox.set_monitorable(true)
 
