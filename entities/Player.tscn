@@ -251,6 +251,7 @@ shape = SubResource( 14 )
 
 [node name="InventoryChangeRoot" type="Node2D" parent="."]
 position = Vector2( 0, -16 )
+z_index = 1102
 
 [node name="LabelFull" type="Label" parent="InventoryChangeRoot"]
 anchor_left = 0.5
