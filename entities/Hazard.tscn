@@ -46,6 +46,7 @@ shape = SubResource( 1 )
 
 [node name="ProjectileInfo" type="Node2D" parent="."]
 position = Vector2( 0, -10 )
+z_index = 1100
 
 [node name="Tooltip" parent="ProjectileInfo" instance=ExtResource( 2 )]
 margin_left = 0.0

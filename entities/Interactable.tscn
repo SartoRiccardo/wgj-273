@@ -121,7 +121,7 @@ collision_mask = 0
 [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
 
 [node name="TooltipData" type="Node2D" parent="."]
-z_index = 100
+z_index = 1100
 
 [node name="Range" type="Area2D" parent="TooltipData"]
 collision_layer = 0

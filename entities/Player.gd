@@ -41,7 +41,7 @@ var inv_changes = {}
 var inside_hut = null
 var buildable_items_idx = 0
 
-var lives = 1.0
+var lives = 5.0
 var hurtarea_overlap = 0
 var interactables_overlap = []
 var near_campfire = 0
