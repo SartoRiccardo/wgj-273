@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://entities/interactables/Building.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/placeholders/campfire.png" type="Texture" id=2]
@@ -38,6 +38,14 @@ _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.688889, 0.983273 ), 0.0, 0
 [sub_resource type="CurveTexture" id=8]
 curve = SubResource( 7 )
 
+[sub_resource type="Curve" id=10]
+min_value = -40.0
+max_value = 40.0
+_data = [ Vector2( 0, -40 ), 0.0, 0.0, 0, 0, Vector2( 1, 40 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=11]
+curve = SubResource( 10 )
+
 [sub_resource type="ParticlesMaterial" id=9]
 emission_shape = 2
 emission_box_extents = Vector3( 10, 4, 1 )
@@ -49,6 +57,10 @@ initial_velocity = 20.0
 initial_velocity_random = 0.18
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
+radial_accel = 10.0
+radial_accel_random = 0.3
+tangential_accel_random = 1.0
+tangential_accel_curve = SubResource( 11 )
 scale_curve = SubResource( 8 )
 color = Color( 1, 0.329412, 0.152941, 1 )
 hue_variation = 0.1
@@ -84,7 +96,14 @@ scale = Vector2( 1, 1 )
 script = ExtResource( 3 )
 interactable_data = ExtResource( 4 )
 
+[node name="ActionRange" parent="." index="0"]
+visible = false
+
+[node name="VisibilityNotifier2D" parent="." index="1"]
+visible = false
+
 [node name="Effect" type="Area2D" parent="." index="2"]
+visible = false
 collision_layer = 256
 collision_mask = 0
 monitoring = false
@@ -104,16 +123,21 @@ shadow_filter = 3
 shadow_filter_smooth = 11.1
 
 [node name="Particles2D" type="Particles2D" parent="." index="4"]
+amount = 13
 process_material = SubResource( 9 )
 
 [node name="Sprite" type="Sprite" parent="." index="5"]
 texture = ExtResource( 2 )
 
 [node name="AoE" type="Sprite" parent="." index="6"]
+visible = false
 modulate = Color( 1, 0, 0, 0.196078 )
 position = Vector2( -2.39015e-05, -6.67572e-06 )
 scale = Vector2( 0.71875, 0.71875 )
 texture = ExtResource( 7 )
+
+[node name="TooltipData" parent="." index="8"]
+visible = false
 
 [node name="Tooltip" parent="TooltipData" index="1"]
 rect_scale = Vector2( 1e-05, 1e-05 )
@@ -128,10 +152,14 @@ requirement_texture = SubResource( 3 )
 interactable_data = ExtResource( 4 )
 
 [node name="CollectProgress" parent="TooltipData/Tooltip" index="3"]
+margin_left = 6.0
+margin_top = 6.0
 margin_right = 88.0
 
 [node name="ColorRect" parent="TooltipData/Tooltip/CollectProgress" index="0"]
+margin_left = -6.0
+margin_top = -6.0
 margin_right = 88.0
 
-[node name="AnimationPlayer" parent="." index="8"]
+[node name="AnimationPlayer" parent="." index="10"]
 anims/decay = SubResource( 6 )
