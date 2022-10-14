@@ -148,38 +148,48 @@ animation = "walk_down"
 position = Vector2( 0, 6 )
 shape = SubResource( 10 )
 
-[node name="WaterDetect" type="Area2D" parent="."]
+[node name="Particles" type="Node2D" parent="."]
+
+[node name="Eat" type="Particles2D" parent="Particles"]
+
+[node name="Hurt" type="Particles2D" parent="Particles"]
+
+[node name="Walk" type="Particles2D" parent="Particles"]
+
+[node name="Areas" type="Node2D" parent="."]
+
+[node name="WaterDetect" type="Area2D" parent="Areas"]
 collision_layer = 0
 collision_mask = 4
 monitorable = false
 
-[node name="ActionRange" type="Area2D" parent="."]
+[node name="ActionRange" type="Area2D" parent="Areas"]
 collision_layer = 0
 collision_mask = 16
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ActionRange"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Areas/ActionRange"]
 position = Vector2( 0, 3 )
 shape = SubResource( 14 )
 
-[node name="DetectionRange" type="Area2D" parent="."]
+[node name="DetectionRange" type="Area2D" parent="Areas"]
 collision_layer = 64
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionRange"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Areas/DetectionRange"]
 shape = SubResource( 12 )
 
-[node name="HurtBox" type="Area2D" parent="."]
+[node name="HurtBox" type="Area2D" parent="Areas"]
 collision_layer = 32
 collision_mask = 32
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Areas/HurtBox"]
 shape = SubResource( 13 )
 
-[node name="CampfireDetection" type="Area2D" parent="."]
+[node name="CampfireDetection" type="Area2D" parent="Areas"]
 collision_layer = 0
 collision_mask = 256
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CampfireDetection"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Areas/CampfireDetection"]
 position = Vector2( 0, 3 )
 shape = SubResource( 14 )
 

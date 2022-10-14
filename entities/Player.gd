@@ -30,44 +30,47 @@ enum State { NORMAL, PICKUP, FLEEING, HUT }
 
 onready var label_full_anim = $InventoryChangeRoot/LabelFull/AnimationPlayer
 
+# Stats
+onready var hunger_timeout = $Hunger.wait_time
+onready var prev_hunger = HUNGER_STAGES-1
+var lives = 5.0
+var weather = null
+var weather_damage = 0.0
+# Inventory
+var inv_changes = {}
+var buildable_items_idx = 0
+# Behavior
 var state = State.NORMAL
 var pressed_actions = []
 var mov_vector = Vector2.ZERO
 var velocity = mov_vector
 var speed = 0.0
 var interacting_with = null
-var in_water = false
-var inv_changes = {}
-var inside_hut = null
-var buildable_items_idx = 0
-
-var lives = 5.0
-var hurtarea_overlap = 0
-var interactables_overlap = []
-var near_campfire = 0
-var weather = null
-var weather_damage = 0.0
 var hazards_angered = []
+var interactables_overlap = []
+# Flags
+var in_water = false
+var inside_hut = null
+var hurtarea_overlap = 0
+var near_campfire = 0
 var is_building_menu_open = false
-onready var hunger_timeout = $Hunger.wait_time
-onready var prev_hunger = HUNGER_STAGES-1
 
 func _ready():
-	$WaterDetect.add_child($WorldShape.duplicate())
-	$WaterDetect.connect("area_entered", self, "_on_water_enter")
-	$WaterDetect.connect("area_exited", self, "_on_water_exited")
+	$Areas/WaterDetect.add_child($WorldShape.duplicate())
+	$Areas/WaterDetect.connect("area_entered", self, "_on_water_enter")
+	$Areas/WaterDetect.connect("area_exited", self, "_on_water_exited")
 	$Inventory.connect("amount_change", self, "_on_inventory_change")
-	$CampfireDetection.connect("area_entered", self, "_on_campfire_enter")
-	$CampfireDetection.connect("area_exited", self, "_on_campfire_exited")
+	$Areas/CampfireDetection.connect("area_entered", self, "_on_campfire_enter")
+	$Areas/CampfireDetection.connect("area_exited", self, "_on_campfire_exited")
 	$BuildingMenu/Tooltip/BuildingMenu.init_from(buildable_items, $Inventory)
 	$Hunger.connect("timeout", self, "_on_hunger_expire")
-	$HurtBox.connect("area_entered", self, "_on_hurtbox_entered")
-	$HurtBox.connect("area_exited", self, "_on_hurtbox_exited")
-	$ActionRange.connect("area_entered", self, "_on_interactable_nearby")
-	$ActionRange.connect("area_exited", self, "_on_interactable_leave")
+	$Areas/HurtBox.connect("area_entered", self, "_on_hurtbox_entered")
+	$Areas/HurtBox.connect("area_exited", self, "_on_hurtbox_exited")
+	$Areas/ActionRange.connect("area_entered", self, "_on_interactable_nearby")
+	$Areas/ActionRange.connect("area_exited", self, "_on_interactable_leave")
 	
 	if not dev_detectable:
-		$DetectionRange.get_child(0).set_disabled(true)
+		$Areas/DetectionRange.get_child(0).set_disabled(true)
 
 func _process(delta):
 	handle_movement_inputs()
@@ -354,11 +357,11 @@ func die(death_cause):
 
 func enter_hut(hut):
 	inside_hut = hut
-	var to_disable = [$ActionRange, $HurtBox]
+	var to_disable = [$Areas/ActionRange, $Areas/HurtBox]
 	for area in to_disable:
 		area.set_monitoring(false)
 		area.set_monitorable(false)
-	$DetectionRange.collision_layer = 0
+	$Areas/DetectionRange.collision_layer = 0
 	collision_layer = 0
 	collision_mask = 0
 	$AnimatedSprite.set_visible(false)
@@ -376,11 +379,11 @@ func exit_hut():
 	if inside_hut == null:
 		return
 	inside_hut.disconnect("decay", self, "exit_hut")
-	var to_enable = [$ActionRange, $HurtBox]
+	var to_enable = [$Areas/ActionRange, $Areas/HurtBox]
 	for area in to_enable:
 		area.set_monitoring(true)
 		area.set_monitorable(true)
-	$DetectionRange.collision_layer = 0b1000000
+	$Areas/DetectionRange.collision_layer = 0b1000000
 	collision_layer = 0b1
 	collision_mask = 0b1
 	$AnimatedSprite.set_visible(true)
