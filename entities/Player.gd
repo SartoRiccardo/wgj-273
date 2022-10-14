@@ -69,6 +69,12 @@ func _ready():
 	$Areas/ActionRange.connect("area_entered", self, "_on_interactable_nearby")
 	$Areas/ActionRange.connect("area_exited", self, "_on_interactable_leave")
 	
+	# Folder nodes are only so I don't lose my mind in the editor
+	for area in $Areas.get_children():
+		$Areas.remove_child(area)
+		add_child_below_node($Areas, area)
+	remove_child($Areas)
+	
 	if not dev_detectable:
 		$Areas/DetectionRange.get_child(0).set_disabled(true)
 
@@ -346,13 +352,14 @@ func get_hurt(cause):
 		lives -= 1.0
 		emit_signal("hurt", lives)
 		$Invulnerability.start()
+		$Particles/Hurt.restart()
+		$Particles/Hurt.set_emitting(true)
 		if lives <= 0:
 			die(cause)
 
 func die(death_cause):
 	var dead_player = death_scene.instance()
-	dead_player.cause = death_cause
-	dead_player.global_position = global_position
+	dead_player.init_from(self, death_cause)
 	get_parent().add_child_below_node(self, dead_player)
 	queue_free()
 	emit_signal("died")

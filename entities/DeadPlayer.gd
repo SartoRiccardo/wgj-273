@@ -18,3 +18,10 @@ func _ready():
 func _process(delta):
 	speed = lerp(0.0, speed, pow(2, -6*delta))
 	move_and_slide(direction*speed)
+
+func init_from(player, death_cause):
+	cause = death_cause
+	global_position = player.global_position
+	var hurt_particles = player.get_node("Particles/Hurt").duplicate()
+	hurt_particles.set_emitting(true)
+	add_child(hurt_particles)

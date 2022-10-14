@@ -45,6 +45,7 @@ monitorable = false
 shape = SubResource( 1 )
 
 [node name="Sight" type="RayCast2D" parent="."]
+collision_mask = 64
 
 [node name="ProjectileInfo" type="Node2D" parent="."]
 position = Vector2( 0, -10 )

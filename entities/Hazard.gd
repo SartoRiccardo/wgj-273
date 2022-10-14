@@ -194,7 +194,7 @@ func check_sight():
 		$Sight.force_raycast_update()
 		if $Sight.is_colliding():
 			var collider = $Sight.get_collider()
-			if collider.get_parent().is_in_group("playable"):
+			if collider.get_parent() is Player:
 				following = collider.get_parent()
 				$Sight.set_enabled(false)
 				lock_on_player()
