@@ -48,6 +48,9 @@ shape = SubResource( 1 )
 [node name="Sprite" type="Sprite" parent="." index="1"]
 texture = SubResource( 2 )
 
+[node name="TooltipData" parent="." index="4"]
+visible = false
+
 [node name="Tooltip" parent="TooltipData" index="1"]
 margin_left = -22.0
 margin_top = -13.0
@@ -58,7 +61,15 @@ rect_pivot_offset = Vector2( 22, 13 )
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 4 )]
 margin_left = 6.0
 margin_top = 6.0
-margin_right = 84.0
+margin_right = 88.0
 margin_bottom = 20.0
 reward_texture = SubResource( 3 )
 interactable_data = ExtResource( 2 )
+
+[node name="CollectProgress" parent="TooltipData/Tooltip" index="3"]
+margin_right = 88.0
+margin_bottom = 20.0
+
+[node name="ColorRect" parent="TooltipData/Tooltip/CollectProgress" index="0"]
+margin_right = 88.0
+margin_bottom = 20.0

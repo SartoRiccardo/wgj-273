@@ -1,10 +1,30 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://assets/interactables.png" type="Texture" id=1]
 [ext_resource path="res://entities/Interactable.tscn" type="PackedScene" id=2]
 [ext_resource path="res://resources/interactable/interactable_sticks.tres" type="Resource" id=3]
 [ext_resource path="res://ui/TooltipContents.tscn" type="PackedScene" id=4]
 [ext_resource path="res://assets/ui/inventory.png" type="Texture" id=5]
+
+[sub_resource type="Shader" id=4]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+uniform vec4 override_color : hint_color;
+uniform float override_amount : hint_range(0, 1);
+
+void fragment() {
+	vec4 color = texture(TEXTURE, UV);
+	COLOR = vec4(
+		mix(override_color.rgb, color.rgb, 1.0-override_amount),
+		color.a
+	);
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+resource_local_to_scene = true
+shader = SubResource( 4 )
+shader_param/override_color = Color( 1, 1, 1, 1 )
+shader_param/override_amount = 0.0
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 13, 10.5 )
@@ -13,11 +33,15 @@ extents = Vector2( 13, 10.5 )
 atlas = ExtResource( 1 )
 region = Rect2( 32, 32, 32, 32 )
 
+[sub_resource type="OccluderPolygon2D" id=6]
+polygon = PoolVector2Array( -12, 4.74, -8, 0.74, -11, -4.26, -6, -5.26, -8, -11.26, -2, -8.26, 1, -10.26, 3, -6.26, 12, -5.26, 7, 0.74, 8, 4.74, 3, 3.74, 3, 9.74, -6, 3.74, -10, 7.74 )
+
 [sub_resource type="AtlasTexture" id=3]
 atlas = ExtResource( 5 )
 region = Rect2( 16, 0, 16, 16 )
 
 [node name="Sticks" instance=ExtResource( 2 )]
+material = SubResource( 5 )
 interactable_data = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ActionRange" index="0"]
@@ -26,6 +50,9 @@ shape = SubResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="." index="1"]
 texture = SubResource( 1 )
+
+[node name="LightOccluder2D" parent="." index="3"]
+occluder = SubResource( 6 )
 
 [node name="Tooltip" parent="TooltipData" index="1"]
 margin_left = -45.0
@@ -37,7 +64,15 @@ rect_pivot_offset = Vector2( 45, 14 )
 [node name="TooltipContents" parent="TooltipData/Tooltip" index="0" instance=ExtResource( 4 )]
 margin_left = 6.0
 margin_top = 6.0
-margin_right = 84.0
+margin_right = 88.0
 margin_bottom = 22.0
 reward_texture = SubResource( 3 )
 interactable_data = ExtResource( 3 )
+
+[node name="CollectProgress" parent="TooltipData/Tooltip" index="3"]
+margin_right = 88.0
+margin_bottom = 22.0
+
+[node name="ColorRect" parent="TooltipData/Tooltip/CollectProgress" index="0"]
+margin_right = 88.0
+margin_bottom = 22.0
