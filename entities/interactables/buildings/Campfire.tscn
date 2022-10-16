@@ -7,7 +7,7 @@
 [ext_resource path="res://assets/ui/inventory.png" type="Texture" id=5]
 [ext_resource path="res://ui/TooltipContents.tscn" type="PackedScene" id=6]
 [ext_resource path="res://assets/entities/campfire_aoe.png" type="Texture" id=7]
-[ext_resource path="res://assets/particles/glow.png" type="Texture" id=8]
+[ext_resource path="res://assets/particles/glow-sm.png" type="Texture" id=8]
 
 [sub_resource type="Shader" id=4]
 resource_local_to_scene = true
@@ -105,8 +105,8 @@ monitoring = false
 shape = SubResource( 1 )
 
 [node name="Light2D" type="Light2D" parent="." index="3"]
-position = Vector2( 0.500004, 0 )
-scale = Vector2( 0.55, 0.55 )
+position = Vector2( 0.500011, 7.62939e-06 )
+scale = Vector2( 4, 4 )
 texture = ExtResource( 8 )
 color = Color( 1, 0.494118, 0, 0.694118 )
 energy = 0.6
