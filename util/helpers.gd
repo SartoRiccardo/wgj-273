@@ -1,5 +1,7 @@
 extends Node
 
+signal game_paused_change(paused)
+
 var rng = RandomNumberGenerator.new()
 var main_node = null
 
@@ -118,7 +120,11 @@ func remove_all_children(node):
 		node.remove_child(child)
 		child.queue_free()
 
-func change_scene_to(scene, free_last : bool = false):
+func pause_game(pause:bool):
+	get_tree().set_pause(pause)
+	emit_signal("game_paused_change", pause)
+
+func change_scene_to(scene, free_last : bool = true):
 	if main_node and main_node.has_method("change_scene_to") and \
 			scene is Node:
 		main_node.change_scene_to(scene, free_last)

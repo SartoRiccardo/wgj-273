@@ -19,14 +19,14 @@ func _ready():
 		inventory = player.get_inventory()
 		init_ui(inventory)
 
-func init_ui(inventory):
-	inventory.connect("equip", self, "_on_item_equip")
-	inventory.connect("amount_change", self, "_on_content_amount_change")
-	equipped = inventory.equipped
-	update_item(equipped, inventory.get_amount(equipped))
+func init_ui(starting_inv):
+	starting_inv.connect("equip", self, "_on_item_equip")
+	starting_inv.connect("amount_change", self, "_on_content_amount_change")
+	equipped = starting_inv.equipped
+	update_item(equipped, starting_inv.get_amount(equipped))
 	
 	var page_bullet = pages.get_children()[0]
-	for __ in range(inventory.contents.size()-1):
+	for __ in range(starting_inv.contents.size()-1):
 		var new_bullet = page_bullet.duplicate()
 		pages.add_child(new_bullet)
 	update_pages(equipped)

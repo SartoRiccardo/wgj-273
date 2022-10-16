@@ -27,12 +27,18 @@ func _ready():
 		controls: pages_container.get_node("Controls"),
 		misc: pages_container.get_node("Misc")
 	}
-	
+
+func _unhandled_input(event):
+	if event.is_action("ui_cancel") and Input.is_action_just_pressed("ui_cancel"):
+		go_back()
+
+func go_back():
+	if back_to:
+		Helpers.change_scene_to(back_to)
 
 func _on_item_selected():
 	for item in pages:
 		pages[item].set_visible(item == tree.get_selected())
 
 func _go_back():
-	if back_to:
-		Helpers.change_scene_to(back_to)
+	go_back()

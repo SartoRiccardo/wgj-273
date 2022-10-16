@@ -71,6 +71,7 @@ func _ready():
 	$Areas/ActionRange.connect("area_entered", self, "_on_interactable_nearby")
 	$Areas/ActionRange.connect("area_exited", self, "_on_interactable_leave")
 #	$AnimatedSprite.connect("frame_changed", self, "_on_anim_frame_changed")
+	Helpers.connect("game_paused_change", self, "_on_game_pause")
 	
 	# Folder nodes are only so I don't lose my mind in the editor
 	for area in $Areas.get_children():
@@ -473,3 +474,17 @@ func _on_interactable_leave(area2d):
 #	current_anim_frame = (current_anim_frame+1) % WALK_PARTICLES_EVERY
 #	if current_anim_frame == 0:
 #		$WalkParticles.spawn()
+
+func _on_game_pause(paused):
+	if paused:
+		return
+	
+	var movements = ["move_down", "move_up", "move_left", "move_right"]
+	
+	var pa_size = pressed_actions.size()
+	for __ in pa_size:
+		pressed_actions.remove(0)
+	for evt in movements:
+		if Input.is_action_pressed(evt):
+			pressed_actions.erase(evt)
+			pressed_actions.append(evt)
