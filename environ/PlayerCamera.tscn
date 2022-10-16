@@ -80,6 +80,7 @@ tracks/1/keys = {
 [node name="Camera2D" type="Camera2D" groups=["camera"]]
 current = true
 script = ExtResource( 1 )
+bg_color = Color( 0.737255, 0.901961, 1, 1 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

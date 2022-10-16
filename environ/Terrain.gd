@@ -1,5 +1,7 @@
 extends Node2D
 
+var tileset = load("res://assets/tiles/tileset.tres")
+const BARRIER_TILE = 1
 var tilemap_to_fade = null
 onready var season_tilemaps = {
 	Enums.Season.WINTER: $Tilesets/Winter,
@@ -7,6 +9,12 @@ onready var season_tilemaps = {
 	Enums.Season.SUMMER: $Tilesets/Summer,
 	Enums.Season.SPRING: $Tilesets/Spring,
 }
+
+func _ready():
+	hide_barriers()
+
+func hide_barriers():
+	tileset.tile_set_texture(BARRIER_TILE, ImageTexture.new())
 
 func change_season(new_season: int):
 	for season in season_tilemaps:

@@ -1,10 +1,13 @@
 extends Camera2D
 
+export (Color) var bg_color
+
 var player
 var angered_hazards = 0
 var mov_target = Vector2.ZERO
 
 func _ready():
+	VisualServer.set_default_clear_color(bg_color)
 	player = Helpers.get_first_of_group("playable")
 	if player != null:
 		global_position = player.global_position
