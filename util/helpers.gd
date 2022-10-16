@@ -110,7 +110,7 @@ func distance_from_polygon(point : Vector2, polygon : PoolVector2Array):
 			distance = segment_distance
 	
 	return distance
-	
+
 func remove_all_children(node):
 	for child in node.get_children():
 		node.remove_child(child)

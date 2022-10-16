@@ -14,10 +14,11 @@ func _ready():
 	var game = Helpers.get_game_node()
 	$Lifespan.connect("timeout", self, "_on_lifespan_timeout")
 	$LifespanDead.connect("timeout", self, "_on_lifespan_dead_timeout")
-	game.connect("speed_increase", self, "_on_game_speed_increase")
-	game.connect("speed_decrease", self, "_on_game_speed_decrease")
-	$Lifespan.start(game.season_duration * duration_seasons)
 	$Glow.connect("tween_completed", self, "_on_tween_completed")
+	if game:
+		game.connect("speed_increase", self, "_on_game_speed_increase")
+		game.connect("speed_decrease", self, "_on_game_speed_decrease")
+		$Lifespan.start(game.season_duration * duration_seasons)
 
 func despawn():
 	$ActionRange.set_monitorable(false)

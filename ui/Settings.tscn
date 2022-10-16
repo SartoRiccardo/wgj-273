@@ -1,0 +1,300 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://resources/ui/main_theme.tres" type="Theme" id=1]
+[ext_resource path="res://ui/Settings.gd" type="Script" id=2]
+[ext_resource path="res://resources/ui/font_title.tres" type="DynamicFont" id=3]
+[ext_resource path="res://assets/tiles/tileset.tres" type="TileSet" id=4]
+
+[node name="Options" type="CanvasLayer"]
+script = ExtResource( 2 )
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="TileMap" type="TileMap" parent="Background"]
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 32, 32 )
+format = 1
+tile_data = PoolIntArray( -1, 4, 5, -65536, 4, 2, -65535, 4, 2, -65534, 4, 6, -65533, 4, 6, -65532, 4, 2, -65531, 4, 6, -65530, 4, 2, -65529, 4, 6, -65528, 4, 6, -65527, 4, 6, -65526, 4, 2, -65525, 4, 2, -65524, 4, 3, 65535, 4, 65541, 0, 4, 131080, 1, 4, 65542, 2, 4, 8, 3, 4, 196616, 4, 4, 65542, 5, 4, 196616, 6, 4, 65544, 7, 4, 65544, 8, 4, 65538, 9, 4, 65542, 10, 4, 8, 11, 4, 8, 12, 4, 65543, 131071, 4, 65537, 65536, 4, 65538, 65537, 4, 65544, 65538, 4, 8, 65539, 4, 65538, 65540, 4, 65544, 65541, 4, 65538, 65542, 4, 65542, 65543, 4, 65544, 65544, 4, 65544, 65545, 4, 65544, 65546, 4, 65542, 65547, 4, 131080, 65548, 4, 65539, 196607, 4, 65541, 131072, 4, 65542, 131073, 4, 8, 131074, 4, 131080, 131075, 4, 8, 131076, 4, 65538, 131077, 4, 65538, 131078, 4, 131080, 131079, 4, 196616, 131080, 4, 8, 131081, 4, 196616, 131082, 4, 65538, 131083, 4, 65544, 131084, 4, 65539, 262143, 4, 65537, 196608, 4, 8, 196609, 4, 65538, 196610, 4, 65538, 196611, 4, 8, 196612, 4, 8, 196613, 4, 65542, 196614, 4, 65538, 196615, 4, 65538, 196616, 4, 131080, 196617, 4, 196616, 196618, 4, 65544, 196619, 4, 196616, 196620, 4, 65539, 327679, 4, 65537, 262144, 4, 65538, 262145, 4, 131080, 262146, 4, 65544, 262147, 4, 8, 262148, 4, 65544, 262149, 4, 65544, 262150, 4, 65542, 262151, 4, 196616, 262152, 4, 8, 262153, 4, 65538, 262154, 4, 8, 262155, 4, 65538, 262156, 4, 65539, 393215, 4, 65537, 327680, 4, 8, 327681, 4, 131080, 327682, 4, 131080, 327683, 4, 196616, 327684, 4, 8, 327685, 4, 65542, 327686, 4, 131080, 327687, 4, 65538, 327688, 4, 65542, 327689, 4, 65542, 327690, 4, 65542, 327691, 4, 131080, 327692, 4, 65539, 458751, 4, 65537, 393216, 4, 65542, 393217, 4, 8, 393218, 4, 196616, 393219, 4, 196616, 393220, 4, 65544, 393221, 4, 65542, 393222, 4, 131080, 393223, 4, 131080, 393224, 4, 196616, 393225, 4, 8, 393226, 4, 65542, 393227, 4, 8, 393228, 4, 65539, 524287, 4, 131077, 458752, 4, 131078, 458753, 4, 131078, 458754, 4, 131078, 458755, 4, 131074, 458756, 4, 131074, 458757, 4, 131074, 458758, 4, 131078, 458759, 4, 131078, 458760, 4, 131078, 458761, 4, 131078, 458762, 4, 131074, 458763, 4, 131078, 458764, 4, 131079 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+custom_constants/margin_right = 30
+custom_constants/margin_top = 12
+custom_constants/margin_left = 30
+custom_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 30.0
+margin_top = 12.0
+margin_right = 354.0
+margin_bottom = 204.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+margin_right = 324.0
+margin_bottom = 24.0
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = "Settings"
+align = 1
+valign = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 28.0
+margin_right = 324.0
+margin_bottom = 166.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Tree" type="Tree" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_right = 100.0
+margin_bottom = 138.0
+rect_min_size = Vector2( 100, 0 )
+size_flags_vertical = 3
+hide_folding = true
+hide_root = true
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 104.0
+margin_right = 324.0
+margin_bottom = 138.0
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer"]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 214.0
+margin_bottom = 132.0
+size_flags_horizontal = 3
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+
+[node name="Volume" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 203.0
+margin_bottom = 121.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Volume"]
+margin_right = 198.0
+margin_bottom = 116.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Volume/ScrollContainer"]
+margin_right = 198.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+custom_constants/margin_right = 6
+custom_constants/margin_left = 2
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Volume/ScrollContainer/MarginContainer"]
+margin_left = 2.0
+margin_right = 192.0
+margin_bottom = 32.0
+custom_constants/hseparation = 10
+columns = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Volume/ScrollContainer/MarginContainer/GridContainer"]
+margin_top = 1.0
+margin_right = 79.0
+margin_bottom = 13.0
+text = "Music"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Volume/ScrollContainer/MarginContainer/GridContainer"]
+margin_left = 89.0
+margin_right = 190.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Volume/ScrollContainer/MarginContainer/GridContainer"]
+margin_top = 19.0
+margin_right = 79.0
+margin_bottom = 31.0
+text = "Sound Effects"
+
+[node name="HSlider2" type="HSlider" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Volume/ScrollContainer/MarginContainer/GridContainer"]
+margin_left = 89.0
+margin_top = 18.0
+margin_right = 190.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+
+[node name="Controls" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer"]
+visible = false
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 203.0
+margin_bottom = 121.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls"]
+margin_top = 28.0
+margin_right = 198.0
+margin_bottom = 164.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer"]
+margin_right = 198.0
+margin_bottom = 152.0
+size_flags_horizontal = 3
+custom_constants/margin_right = 6
+custom_constants/margin_left = 2
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer"]
+margin_left = 2.0
+margin_right = 192.0
+margin_bottom = 152.0
+size_flags_horizontal = 3
+custom_constants/hseparation = 10
+columns = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_top = 5.0
+margin_right = 101.0
+margin_bottom = 17.0
+size_flags_horizontal = 3
+text = "Move Up"
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_left = 111.0
+margin_right = 181.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 70, 0 )
+focus_mode = 0
+size_flags_horizontal = 0
+enabled_focus_mode = 0
+text = "W"
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_top = 31.0
+margin_right = 101.0
+margin_bottom = 43.0
+size_flags_horizontal = 3
+text = "Move Right"
+
+[node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_left = 111.0
+margin_top = 26.0
+margin_right = 181.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 70, 0 )
+focus_mode = 0
+size_flags_horizontal = 0
+enabled_focus_mode = 0
+text = "A"
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_top = 57.0
+margin_right = 101.0
+margin_bottom = 69.0
+size_flags_horizontal = 3
+text = "Move Down"
+
+[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_left = 111.0
+margin_top = 52.0
+margin_right = 181.0
+margin_bottom = 74.0
+rect_min_size = Vector2( 70, 0 )
+focus_mode = 0
+size_flags_horizontal = 0
+enabled_focus_mode = 0
+text = "S"
+
+[node name="Label4" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_top = 83.0
+margin_right = 101.0
+margin_bottom = 95.0
+size_flags_horizontal = 3
+text = "Move Left"
+
+[node name="Button4" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_left = 111.0
+margin_top = 78.0
+margin_right = 181.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 70, 0 )
+focus_mode = 0
+size_flags_horizontal = 0
+enabled_focus_mode = 0
+text = "D"
+
+[node name="Label5" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_top = 109.0
+margin_right = 101.0
+margin_bottom = 121.0
+size_flags_horizontal = 3
+text = "Action"
+
+[node name="Button5" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_left = 111.0
+margin_top = 104.0
+margin_right = 181.0
+margin_bottom = 126.0
+rect_min_size = Vector2( 70, 0 )
+focus_mode = 0
+size_flags_horizontal = 0
+enabled_focus_mode = 0
+text = "SPACE"
+
+[node name="Label6" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_top = 135.0
+margin_right = 101.0
+margin_bottom = 147.0
+size_flags_horizontal = 3
+text = "Open Building Menu"
+autowrap = true
+
+[node name="Button6" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Controls/ScrollContainer/MarginContainer/GridContainer"]
+margin_left = 111.0
+margin_top = 130.0
+margin_right = 181.0
+margin_bottom = 152.0
+rect_min_size = Vector2( 70, 0 )
+focus_mode = 0
+size_flags_horizontal = 0
+size_flags_vertical = 4
+enabled_focus_mode = 0
+text = "B"
+
+[node name="Misc" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer"]
+visible = false
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 203.0
+margin_bottom = 121.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Misc"]
+margin_top = 28.0
+margin_right = 198.0
+margin_bottom = 164.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Misc/ScrollContainer"]
+margin_right = 198.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/Misc/ScrollContainer/VBoxContainer"]
+margin_right = 198.0
+margin_bottom = 22.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "FULLSCREEN: ON"
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_left = 112.0
+margin_top = 170.0
+margin_right = 212.0
+margin_bottom = 192.0
+rect_min_size = Vector2( 100, 0 )
+size_flags_horizontal = 4
+text = "BACK"

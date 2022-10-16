@@ -4,6 +4,7 @@ var rng = RandomNumberGenerator.new()
 
 export (Resource) var interactable_data
 export (bool) var enable_tooltip = true
+export (bool) var decorative = false
 
 onready var progress_bar = $TooltipData/Tooltip/CollectProgress/ColorRect
 onready var tooltip = $TooltipData/Tooltip
@@ -15,11 +16,12 @@ var collect_speed_multiplier = 1.0
 func _ready():
 	rng.randomize()
 	var game = Helpers.get_game_node()
-	game.connect("season_change", self, "_on_season_change")
+	var player = Helpers.get_player()
+	if game:
+		game.connect("season_change", self, "_on_season_change")
 	if not enable_tooltip:
 		remove_child($TooltipData)
-	else:
-		var player = Helpers.get_player()
+	elif player:
 		player.connect("state_change", self, "_on_player_state_change")
 		progress_bar.rect_size = Vector2.ZERO
 		$TooltipData/Range.connect("area_entered", self, "_on_player_nearby")
@@ -28,6 +30,8 @@ func _ready():
 		get_node("Sprite").set_use_parent_material(true)
 	if interactable_data:
 		$Collect.set_wait_time(interactable_data.time)
+	if decorative:
+		$AnimationPlayer.advance(1.0)
 
 func _process(_d):
 	if enable_tooltip:

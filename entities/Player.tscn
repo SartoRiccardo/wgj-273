@@ -189,7 +189,6 @@ position = Vector2( 0, 6 )
 shape = SubResource( 10 )
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
-visible = false
 occluder = SubResource( 26 )
 
 [node name="Particles" type="Node2D" parent="."]

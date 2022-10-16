@@ -48,9 +48,6 @@ shape = SubResource( 1 )
 [node name="Sprite" type="Sprite" parent="." index="1"]
 texture = SubResource( 2 )
 
-[node name="TooltipData" parent="." index="4"]
-visible = false
-
 [node name="Tooltip" parent="TooltipData" index="1"]
 margin_left = -22.0
 margin_top = -13.0

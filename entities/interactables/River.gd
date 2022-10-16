@@ -13,8 +13,9 @@ var player_is_in_river = false
 
 func _ready():
 	var game = Helpers.get_game_node()
-	game.connect("season_change", self, "_on_season_changed")
-	_on_season_changed(game.get_current_season())
+	if game:
+		game.connect("season_change", self, "_on_season_changed")
+		_on_season_changed(game.get_current_season())
 	
 	var river_area = get_node_or_null("RiverArea")
 	if river_area:

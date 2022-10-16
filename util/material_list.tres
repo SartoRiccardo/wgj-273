@@ -1,11 +1,14 @@
-[gd_resource type="Resource" load_steps=6 format=2]
+[gd_resource type="Resource" load_steps=8 format=2]
 
 [ext_resource path="res://util/MaterialList.gd" type="Script" id=1]
 [ext_resource path="res://resources/particles/projectile_trail.tres" type="Material" id=2]
 [ext_resource path="res://resources/particles/weather_snow.tres" type="Material" id=3]
 [ext_resource path="res://resources/particles/weather_blizzard.tres" type="Material" id=4]
 [ext_resource path="res://resources/particles/weather_rain.tres" type="Material" id=5]
+[ext_resource path="res://resources/particles/move_trail.tres" type="Material" id=6]
+[ext_resource path="res://resources/particles/move_trail_material.tres" type="Material" id=7]
 
 [resource]
 script = ExtResource( 1 )
-materials = [ ExtResource( 2 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 3 ) ]
+materials = [ ExtResource( 2 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 3 ), ExtResource( 6 ) ]
+shaders = [ ExtResource( 7 ) ]

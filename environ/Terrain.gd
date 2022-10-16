@@ -8,7 +8,7 @@ onready var season_tilemaps = {
 	Enums.Season.SPRING: $Tilesets/Spring,
 }
 
-func change_season(new_season=null):
+func change_season(new_season: int):
 	for season in season_tilemaps:
 		var terrain = season_tilemaps[season]
 		if season == new_season:
