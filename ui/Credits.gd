@@ -6,4 +6,4 @@ func _ready():
 	$MarginContainer/VBoxContainer/Button.connect("pressed", self, "_on_back")
 
 func _on_back():
-	get_parent().change_scene_to(MAIN_MENU_SCN.instance())
+	Helpers.change_scene_to(MAIN_MENU_SCN.instance())

@@ -1,8 +1,13 @@
 extends Node
 
 func change_scene_to(scene: Node, free_previous : bool = true):
-	var current_scene = get_child(get_child_count()-1)
-	remove_child(current_scene)
+	$AnimationPlayer.play("transition_hide")
+	yield($AnimationPlayer, "animation_finished")
+	
+	var current_scene = $Stage.get_child(0)
+	$Stage.remove_child(current_scene)
 	if free_previous:
 		current_scene.queue_free()
-	add_child(scene)
+	$Stage.add_child(scene)
+	
+	$AnimationPlayer.play("transition_show")

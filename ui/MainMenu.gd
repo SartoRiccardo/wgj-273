@@ -16,15 +16,15 @@ func _ready():
 	quit_btn.connect("pressed", self, "_on_quit")
 
 func _on_play():
-	get_parent().change_scene_to(GAME_SCN.instance())
+	Helpers.change_scene_to(GAME_SCN.instance())
 
 func _on_options():
 	var settings = SETTINGS_SCN.instance()
 	settings.back_to = self
-	get_parent().change_scene_to(settings, false)
+	Helpers.change_scene_to(settings, false)
 
 func _on_credits():
-	get_parent().change_scene_to(CREDITS_SCN.instance())
+	Helpers.change_scene_to(CREDITS_SCN.instance())
 
 func _on_quit():
 	get_tree().quit()

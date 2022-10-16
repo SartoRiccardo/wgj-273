@@ -35,4 +35,4 @@ func _on_item_selected():
 
 func _go_back():
 	if back_to:
-		get_parent().change_scene_to(back_to)
+		Helpers.change_scene_to(back_to)
