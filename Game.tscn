@@ -166,7 +166,7 @@ position = Vector2( 48, 49 )
 one_shot = true
 
 [node name="SpawningManager" parent="." instance=ExtResource( 5 )]
-enabled = false
+dev_enabled = false
 spawns_autumn = ExtResource( 16 )
 spawns_winter = ExtResource( 17 )
 

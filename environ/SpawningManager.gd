@@ -1,6 +1,6 @@
 extends Node
 
-export (bool) var enabled = true
+export (bool) var dev_enabled = true
 export (Resource) var spawns_spring
 export (Resource) var spawns_summer
 export (Resource) var spawns_autumn
@@ -12,7 +12,10 @@ var active = true
 var entity_count = {}
 
 func _ready():
-	if enabled:
+	if OS.has_feature("release"):
+		dev_enabled = true
+		
+	if dev_enabled:
 		$Timer.connect("timeout", self, "_on_spawn_attempt")
 		Helpers.get_player().connect("died", self, "_on_player_death")
 	rng.randomize()

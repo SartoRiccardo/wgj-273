@@ -58,6 +58,9 @@ var near_campfire = 0
 var is_building_menu_open = false
 
 func _ready():
+	if OS.has_feature("release"):
+		dev_detectable = true
+	
 	$Areas/WaterDetect.add_child($WorldShape.duplicate())
 	$Areas/WaterDetect.connect("area_entered", self, "_on_water_enter")
 	$Areas/WaterDetect.connect("area_exited", self, "_on_water_exited")
