@@ -11,7 +11,6 @@ func _ready():
 
 # Override
 func _on_sight_collide(collider_parent):
-	print("colliding")
 	if friendly:
 		return
 	if collider_parent is Player:
@@ -19,17 +18,6 @@ func _on_sight_collide(collider_parent):
 		$Sight.set_enabled(false)
 		$AttackRange.set_monitoring(true)
 		change_state(Enums.HazardState.ANGERED)
-
-#func check_sight():
-#	if friendly:
-#		return
-#	if $Sight.is_colliding():
-#		var collider = $Sight.get_collider()
-#		if collider.get_parent().is_in_group("playable"):
-#			following = collider.get_parent()
-#			$Sight.set_enabled(false)
-#			$AttackRange.set_monitoring(true)
-#			change_state(Enums.HazardState.ANGERED)
 
 func _process_idle(_delta):
 	if state_is_new:

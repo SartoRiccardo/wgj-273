@@ -32,6 +32,7 @@ func _on_hazard_angered(_hzd):
 	if angered_hazards == 1:
 		$AnimationPlayer.stop(true)
 		$AnimationPlayer.play("panic")
+		$Panic.play()
 
 func _on_hazard_unangered(_hzd):
 	angered_hazards -= 1

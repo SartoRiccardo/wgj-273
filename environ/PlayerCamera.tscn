@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://environ/PlayerCamera.gd" type="Script" id=1]
 [ext_resource path="res://assets/ui/vignette.png" type="Texture" id=2]
 [ext_resource path="res://environ/WeatherManager.tscn" type="PackedScene" id=3]
+[ext_resource path="res://sound/hazard_angered.wav" type="AudioStream" id=4]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -97,3 +98,6 @@ anims/panic = SubResource( 3 )
 anims/panic_end = SubResource( 4 )
 
 [node name="WeatherManager" parent="." instance=ExtResource( 3 )]
+
+[node name="Panic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )

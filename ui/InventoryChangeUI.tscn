@@ -72,3 +72,4 @@ anims/default = SubResource( 7 )
 [node name="Tween" type="Tween" parent="."]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = "SFX"

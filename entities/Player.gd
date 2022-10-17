@@ -239,7 +239,7 @@ func handle_actions(is_just_pressed=false):
 			if interactable.is_in_group("hut") and is_just_pressed and interact_priority[2] == null:
 				interact_priority[2] = interactable
 		
-		if interact_priority[3]:
+		if interact_priority[3]:  # Build
 			var build = interact_priority[3]
 			var parent = Helpers.get_first_of_group("collectible_root")
 			if parent:
@@ -249,9 +249,10 @@ func handle_actions(is_just_pressed=false):
 				build.take_materials($Inventory)
 				set_building_menu_open(false)
 				parent.add_child(build_node)
-		elif interact_priority[2]:
+				$SFX/Build.play()
+		elif interact_priority[2]:  # Enter hut
 			enter_hut(interact_priority[2])
-		elif interact_priority[1]:
+		elif interact_priority[1]:  # Launch projectile
 			var target = interact_priority[1]
 			var projectile = PROJECTILE_SCENE.instance()
 			projectile.set_target(target)
@@ -262,12 +263,12 @@ func handle_actions(is_just_pressed=false):
 			if stun_data:
 				$Inventory.remove($Inventory.equipped, stun_data.amount_needed)
 			projectile_root.add_child(projectile)
-		elif interact_priority[0]:
+		elif interact_priority[0]:  # Pickup
 			interacting_with = interact_priority[0]
 			interacting_with.start_collect()
 			if !interacting_with.timer().is_connected("timeout", self, "_on_collectible_pickup"):
 				interacting_with.timer().connect("timeout", self, "_on_collectible_pickup")
-		elif is_just_pressed:
+		elif is_just_pressed:  # Eat
 			eat()
 
 func handle_hunger():
@@ -298,6 +299,10 @@ func handle_ui():
 		no_lose_chime = false
 	
 	if Input.is_action_just_pressed("build_menu"):
+		if is_building_menu_open:
+			$SFX/BuildMenuClose.play()
+		else:
+			$SFX/BuildMenuOpen.play()
 		set_building_menu_open(!is_building_menu_open)
 
 func set_building_menu_open(is_open: bool):
@@ -374,6 +379,7 @@ func get_hurt(cause):
 		$Invulnerability.start()
 		$Particles/Hurt.restart()
 		$Particles/Hurt.set_emitting(true)
+		$SFX/Hurt.play()
 		if lives <= 0:
 			die(cause)
 
