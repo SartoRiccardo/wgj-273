@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://entities/interactables/Building.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/placeholders/campfire.png" type="Texture" id=2]
@@ -27,7 +27,7 @@ void fragment() {
 resource_local_to_scene = true
 shader = SubResource( 4 )
 shader_param/override_color = Color( 1, 1, 1, 1 )
-shader_param/override_amount = 0.0
+shader_param/override_amount = 1.0
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 134.729
@@ -74,6 +74,45 @@ region = Rect2( 0, 32, 16, 16 )
 atlas = ExtResource( 5 )
 region = Rect2( 0, 16, 16, 16 )
 
+[sub_resource type="Animation" id=12]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Light2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AoE:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 0, 0, 0.211765 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Light2D:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 0.494118, 0, 0.694118 ) ]
+}
+
 [sub_resource type="Animation" id=6]
 resource_name = "decay"
 tracks/0/type = "value"
@@ -88,11 +127,36 @@ tracks/0/keys = {
 "update": 0,
 "values": [ Color( 1, 0, 0, 0.211765 ), Color( 1, 0, 0, 0 ) ]
 }
+tracks/1/type = "method"
+tracks/1/path = NodePath("Light2D")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Light2D:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 0.494118, 0, 0.694118 ), Color( 1, 0.494118, 0, 0 ) ]
+}
 
 [node name="Campfire" instance=ExtResource( 1 )]
 material = SubResource( 5 )
 position = Vector2( 0, 0 )
-scale = Vector2( 1, 1 )
 script = ExtResource( 3 )
 interactable_data = ExtResource( 4 )
 
@@ -125,7 +189,7 @@ process_material = SubResource( 9 )
 texture = ExtResource( 2 )
 
 [node name="AoE" type="Sprite" parent="." index="6"]
-modulate = Color( 1, 0, 0, 0.196078 )
+modulate = Color( 1, 0, 0, 0.211765 )
 position = Vector2( -2.39015e-05, -6.67572e-06 )
 scale = Vector2( 0.71875, 0.71875 )
 texture = ExtResource( 7 )
@@ -149,4 +213,5 @@ margin_right = 88.0
 margin_right = 88.0
 
 [node name="AnimationPlayer" parent="." index="10"]
+anims/RESET = SubResource( 12 )
 anims/decay = SubResource( 6 )
