@@ -193,13 +193,8 @@ func check_sight():
 		$Sight.cast_to = properties.sight_length * Vector2.LEFT.rotated(deg2rad(angle_to_check))
 		$Sight.force_raycast_update()
 		if $Sight.is_colliding():
-			var collider = $Sight.get_collider()
-			if collider.get_parent() is Player:
-				following = collider.get_parent()
-				$Sight.set_enabled(false)
-				lock_on_player()
-				change_state(Enums.HazardState.ANGERED)
-				break
+			_on_sight_collide($Sight.get_collider().get_parent())
+			break
 		angle_to_check += sight_angle_turn
 
 func get_throwable_objects(inventory):
@@ -229,6 +224,13 @@ func set_tooltip_open(open_tooltip: bool):
 		$ProjectileInfo/Tooltip.popup()
 	else:
 		$ProjectileInfo/Tooltip.retract()
+
+func _on_sight_collide(collider_parent):
+	if collider_parent is Player:
+		following = collider_parent
+		$Sight.set_enabled(false)
+		lock_on_player()
+		change_state(Enums.HazardState.ANGERED)
 
 func _on_stun_end():
 	if state == Enums.HazardState.STUNNED:

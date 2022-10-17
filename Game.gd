@@ -4,7 +4,7 @@ signal season_change(season)
 signal speed_increase(multiplier)
 signal speed_decrease(multiplier)
 
-export (int) var season_duration = 30
+export (int) var season_duration = 90
 
 const SPEED_UP_MULTIPLIER = 5.0
 const DEATH_SCREEN_SCN = preload("res://ui/DeathScreen.tscn")

@@ -9,16 +9,27 @@ func _ready():
 	$Hitbox.connect("area_entered", self, "_on_steal")
 	$VisibilityNotifier2D.connect("screen_exited", self, "_on_screen_exited")
 
-func check_sight():
+# Override
+func _on_sight_collide(collider_parent):
+	print("colliding")
 	if friendly:
 		return
-	if $Sight.is_colliding():
-		var collider = $Sight.get_collider()
-		if collider.get_parent().is_in_group("playable"):
-			following = collider.get_parent()
-			$Sight.set_enabled(false)
-			$AttackRange.set_monitoring(true)
-			change_state(Enums.HazardState.ANGERED)
+	if collider_parent is Player:
+		following = collider_parent
+		$Sight.set_enabled(false)
+		$AttackRange.set_monitoring(true)
+		change_state(Enums.HazardState.ANGERED)
+
+#func check_sight():
+#	if friendly:
+#		return
+#	if $Sight.is_colliding():
+#		var collider = $Sight.get_collider()
+#		if collider.get_parent().is_in_group("playable"):
+#			following = collider.get_parent()
+#			$Sight.set_enabled(false)
+#			$AttackRange.set_monitoring(true)
+#			change_state(Enums.HazardState.ANGERED)
 
 func _process_idle(_delta):
 	if state_is_new:
@@ -37,7 +48,6 @@ func _process_angered(delta):
 		var current_speed = properties.speed_following * mov_speed_multiplier * global_speed_multiplier
 		var desired_velocity = direction * current_speed
 		velocity += (desired_velocity - velocity) * delta * 4.0
-		velocity = move_and_slide(velocity)
 
 func _process_attacking(delta):
 	var direction = global_position.direction_to($NavigationAgent2D.get_next_location())
@@ -45,6 +55,7 @@ func _process_attacking(delta):
 	var desired_velocity = direction * current_speed
 	velocity += (desired_velocity - velocity) * delta * 4.0
 
+# TODO use NavigationAgent2D
 func _process_fleeing(delta):
 	if flee_direction == Vector2.ZERO:
 		flee_direction = -global_position.direction_to(following.global_position)

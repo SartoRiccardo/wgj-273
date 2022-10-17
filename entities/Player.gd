@@ -39,6 +39,7 @@ var weather_damage = 0.0
 # Inventory
 var inv_changes = {}
 var buildable_items_idx = 0
+var no_lose_chime = false
 # Behavior
 var state = State.NORMAL
 var pressed_actions = []
@@ -244,6 +245,7 @@ func handle_actions(is_just_pressed=false):
 			if parent:
 				var build_node = build.building_scene.instance()
 				build_node.global_position = global_position
+				no_lose_chime = true
 				build.take_materials($Inventory)
 				set_building_menu_open(false)
 				parent.add_child(build_node)
@@ -256,6 +258,7 @@ func handle_actions(is_just_pressed=false):
 			projectile.projectile_data = PROJECTILE_RES[$Inventory.equipped]
 			projectile.global_position = global_position
 			var stun_data = target.get_stun_for($Inventory.equipped)
+			no_lose_chime = true
 			if stun_data:
 				$Inventory.remove($Inventory.equipped, stun_data.amount_needed)
 			projectile_root.add_child(projectile)
@@ -288,8 +291,11 @@ func handle_ui():
 	if inv_changes.size() > 0:
 		var inv_changes_ui = INVENTORY_CHANGE_SCENE.instance()
 		inv_changes_ui.generate_from(inv_changes)
+		if no_lose_chime:
+			inv_changes_ui.set_play_chime(false)
 		$InventoryChangeRoot.add_child(inv_changes_ui)
 		inv_changes = {}
+		no_lose_chime = false
 	
 	if Input.is_action_just_pressed("build_menu"):
 		set_building_menu_open(!is_building_menu_open)

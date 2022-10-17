@@ -72,3 +72,6 @@ shape = SubResource( 3 )
 position = Vector2( -3, -1 )
 rotation = 1.5708
 shape = SubResource( 4 )
+
+[node name="Sight" parent="." index="9"]
+collide_with_areas = true
