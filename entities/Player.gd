@@ -358,6 +358,7 @@ func eat():
 			$Inventory.remove(item.item, 1)
 			$Hunger.start($Hunger.time_left + hunger_gained)
 			$Particles/Eat.spawn()
+			$SFX/Eat.play()
 
 func get_valid_shoot_targets():
 	var valid = []
