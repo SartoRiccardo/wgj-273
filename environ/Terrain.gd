@@ -21,14 +21,17 @@ func change_season(new_season: int):
 		var terrain = season_tilemaps[season]
 		if season == new_season:
 			$Tilesets.move_child(terrain, $Tilesets.get_child_count()-1)
-		if terrain.has_node("River/Water"):
-			var water = terrain.get_node("River/Water")
-			water.set_monitorable(new_season == season)
+#		if terrain.has_node("River/Water"):
+#			var water = terrain.get_node("River/Water")
+#			if new_season == season:
+#				water.set_monitorable(new_season == season)
+#			else:
+#				water.call_deferred("set_monitorable", false)
 	
 	$AnimationPlayer.play(
 		("transition_%s" % Enums.Season.keys()[new_season]).to_lower()
 	)
-	
+
 func is_walkable(point: Vector2):
 	for area in $WalkableLand.get_children():
 		if Geometry.is_point_in_polygon(point, area.navpoly.get_outline(0)):

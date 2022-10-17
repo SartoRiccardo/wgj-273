@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=56 format=2]
 
 [ext_resource path="res://assets/entities/player.png" type="Texture" id=1]
 [ext_resource path="res://entities/Player.gd" type="Script" id=2]
@@ -12,7 +12,22 @@
 [ext_resource path="res://entities/DeadPlayer.tscn" type="PackedScene" id=10]
 [ext_resource path="res://resources/player/building_info_dam.tres" type="Resource" id=11]
 [ext_resource path="res://assets/particles/eat.png" type="Texture" id=12]
+[ext_resource path="res://util/RandomSoundPlayer.tscn" type="PackedScene" id=13]
 [ext_resource path="res://environ/ParticleEmitter.tscn" type="PackedScene" id=14]
+[ext_resource path="res://sound/player/footstep_grass3.mp3" type="AudioStream" id=15]
+[ext_resource path="res://sound/player/footstep_grass1.mp3" type="AudioStream" id=16]
+[ext_resource path="res://sound/player/footstep_grass2.mp3" type="AudioStream" id=17]
+[ext_resource path="res://sound/player/footstep_grass0.mp3" type="AudioStream" id=18]
+[ext_resource path="res://sound/player/footstep_snow3.mp3" type="AudioStream" id=19]
+[ext_resource path="res://sound/player/footstep_snow0.mp3" type="AudioStream" id=20]
+[ext_resource path="res://sound/player/footstep_wood2.mp3" type="AudioStream" id=21]
+[ext_resource path="res://sound/player/footstep_wood1.mp3" type="AudioStream" id=22]
+[ext_resource path="res://sound/player/footstep_wood0.mp3" type="AudioStream" id=23]
+[ext_resource path="res://sound/player/footstep_snow1.mp3" type="AudioStream" id=24]
+[ext_resource path="res://sound/player/footstep_wood3.mp3" type="AudioStream" id=25]
+[ext_resource path="res://sound/player/footstep_snow2.mp3" type="AudioStream" id=26]
+[ext_resource path="res://sound/player/footstep_water0.mp3" type="AudioStream" id=27]
+[ext_resource path="res://resources/particles/splash.tres" type="Material" id=28]
 
 [sub_resource type="Resource" id=15]
 script = ExtResource( 4 )
@@ -28,6 +43,33 @@ points_filled = 0.5
 script = ExtResource( 4 )
 item = 6
 points_filled = 0.5
+
+[sub_resource type="Shader" id=35]
+code = "shader_type canvas_item;
+uniform float crop : hint_range(0.0, 1.0, 0.05);
+uniform int rows;
+
+void fragment() {
+	vec4 color = texture(TEXTURE, UV);
+	float row_height = 1.0/float(rows);
+	int row = int(UV.y / row_height);
+	if(row >= rows) row = rows-1;
+	
+	float px_alpha = 1.0;
+	if(row_height*float(row)+(1.0-crop)*row_height < UV.y &&
+			UV.y < row_height*float(row+1))
+		px_alpha = 0.0;
+	COLOR = vec4(color.rgb, color.a*px_alpha);
+//	if(row == 0) COLOR = vec4(1,0,0,1);
+//	if(row == 1) COLOR = vec4(0,1,0,1);
+//	if(row == 2) COLOR = vec4(0,0,1,1);
+//	COLOR = vec4(UV, 0, 1);
+}"
+
+[sub_resource type="ShaderMaterial" id=36]
+shader = SubResource( 35 )
+shader_param/crop = 0.0
+shader_param/rows = 3
 
 [sub_resource type="AtlasTexture" id=8]
 atlas = ExtResource( 1 )
@@ -181,17 +223,21 @@ buildable_items = [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 11 ) ]
 death_scene = ExtResource( 10 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+material = SubResource( 36 )
+position = Vector2( 0, -8 )
 frames = SubResource( 9 )
 animation = "walk_down"
 
 [node name="WorldShape" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 6 )
+position = Vector2( 0, -2 )
 shape = SubResource( 10 )
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2( 0, -8 )
 occluder = SubResource( 26 )
 
 [node name="Particles" type="Node2D" parent="."]
+position = Vector2( 0, -8 )
 
 [node name="Eat" parent="Particles" instance=ExtResource( 14 )]
 
@@ -211,7 +257,16 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource( 33 )
 
+[node name="Splash" type="Particles2D" parent="Particles"]
+position = Vector2( 0, 8 )
+emitting = false
+amount = 5
+lifetime = 0.6
+process_material = ExtResource( 28 )
+
 [node name="Areas" type="Node2D" parent="."]
+visible = false
+position = Vector2( 0, -8 )
 
 [node name="WaterDetect" type="Area2D" parent="Areas"]
 collision_layer = 0
@@ -249,7 +304,7 @@ position = Vector2( 0, 3 )
 shape = SubResource( 14 )
 
 [node name="InventoryChangeRoot" type="Node2D" parent="."]
-position = Vector2( 0, -16 )
+position = Vector2( 0, -24 )
 z_index = 1102
 
 [node name="LabelFull" type="Label" parent="InventoryChangeRoot"]
@@ -272,6 +327,7 @@ __meta__ = {
 anims/popup = SubResource( 18 )
 
 [node name="BuildingMenu" type="Node2D" parent="."]
+position = Vector2( 0, -8 )
 z_index = 1101
 
 [node name="Tooltip" parent="BuildingMenu" instance=ExtResource( 6 )]
@@ -287,6 +343,71 @@ margin_right = 130.0
 margin_bottom = 74.0
 
 [node name="Inventory" parent="." instance=ExtResource( 3 )]
+
+[node name="SFX" type="Node" parent="."]
+
+[node name="WalkGrass" parent="SFX" instance=ExtResource( 13 )]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="SFX/WalkGrass"]
+stream = ExtResource( 18 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="SFX/WalkGrass"]
+stream = ExtResource( 16 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="SFX/WalkGrass"]
+stream = ExtResource( 17 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="SFX/WalkGrass"]
+stream = ExtResource( 15 )
+bus = "SFX"
+
+[node name="WalkStick" parent="SFX" instance=ExtResource( 13 )]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="SFX/WalkStick"]
+stream = ExtResource( 23 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="SFX/WalkStick"]
+stream = ExtResource( 22 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="SFX/WalkStick"]
+stream = ExtResource( 21 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="SFX/WalkStick"]
+stream = ExtResource( 25 )
+bus = "SFX"
+
+[node name="WalkSnow" parent="SFX" instance=ExtResource( 13 )]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="SFX/WalkSnow"]
+stream = ExtResource( 20 )
+volume_db = -8.3
+bus = "SFX"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="SFX/WalkSnow"]
+stream = ExtResource( 24 )
+volume_db = -8.3
+bus = "SFX"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="SFX/WalkSnow"]
+stream = ExtResource( 26 )
+volume_db = -8.3
+bus = "SFX"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="SFX/WalkSnow"]
+stream = ExtResource( 19 )
+volume_db = -8.3
+bus = "SFX"
+
+[node name="WalkWater" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource( 27 )
+volume_db = -10.0
+bus = "SFX"
 
 [node name="Invulnerability" type="Timer" parent="."]
 wait_time = 5.0

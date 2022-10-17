@@ -48,14 +48,16 @@ var speed = 0.0
 var interacting_with = null
 var hazards_angered = []
 var interactables_overlap = []
-#var current_anim_frame = 0
-#const WALK_PARTICLES_EVERY = 2
+var current_anim_frame = 0
+const WALK_PARTICLES_EVERY = 2
 # Flags
-var in_water = false
+var in_water = 0
 var inside_hut = null
 var hurtarea_overlap = 0
 var near_campfire = 0
 var is_building_menu_open = false
+# Other
+var season = Enums.Season.SPRING
 
 func _ready():
 	if OS.has_feature("release"):
@@ -73,13 +75,17 @@ func _ready():
 	$Areas/HurtBox.connect("area_exited", self, "_on_hurtbox_exited")
 	$Areas/ActionRange.connect("area_entered", self, "_on_interactable_nearby")
 	$Areas/ActionRange.connect("area_exited", self, "_on_interactable_leave")
-#	$AnimatedSprite.connect("frame_changed", self, "_on_anim_frame_changed")
+	$AnimatedSprite.connect("frame_changed", self, "_on_anim_frame_changed")
 	Helpers.connect("game_paused_change", self, "_on_game_pause")
+	var game = Helpers.get_game_node()
+	if game:
+		game.connect("season_change", self, "_on_season_change")
 	
 	# Folder nodes are only so I don't lose my mind in the editor
 	for area in $Areas.get_children():
 		$Areas.remove_child(area)
 		add_child_below_node($Areas, area)
+		area.position += $Areas.position
 	remove_child($Areas)
 	
 	if not dev_detectable:
@@ -219,7 +225,7 @@ func handle_actions(is_just_pressed=false):
 		# [3] Build
 		if is_building_menu_open and is_just_pressed and \
 				buildable_items[buildable_items_idx].is_buildable($Inventory) and \
-				in_water == buildable_items[buildable_items_idx].on_water:
+				bool(in_water) == buildable_items[buildable_items_idx].on_water:
 			interact_priority[3] = buildable_items[buildable_items_idx]
 		
 		for interactable in interactables_overlap:
@@ -436,12 +442,23 @@ func _on_hazard_unangered(hazard):
 		change_state(State.NORMAL)
 
 func _on_water_enter(_a2d):
-	in_water = true
-	$BuildingMenu/Tooltip/BuildingMenu.set_in_water(true)
+	in_water += 1
+	if in_water == 1:
+		$Particles/Splash.set_emitting(true)
+		$AnimatedSprite.position += Vector2.DOWN * 4
+		$AnimatedSprite.get_material().set_shader_param("crop", 0.25)
+		$AnimatedSprite.set_speed_scale(0.3)
+		$BuildingMenu/Tooltip/BuildingMenu.set_in_water(true)
 
 func _on_water_exited(_a2d):
-	in_water = false
-	$BuildingMenu/Tooltip/BuildingMenu.set_in_water(false)
+	in_water -= 1
+	if in_water <= 0:
+		in_water = 0
+		$Particles/Splash.set_emitting(false)
+		$AnimatedSprite.position += Vector2.UP * 4
+		$AnimatedSprite.get_material().set_shader_param("crop", 0.0)
+		$AnimatedSprite.set_speed_scale(1.0)
+		$BuildingMenu/Tooltip/BuildingMenu.set_in_water(false)
 
 func _on_inventory_change(item, old_amount, new_amount):
 	if item in inv_changes:
@@ -473,9 +490,19 @@ func _on_interactable_nearby(area2d):
 func _on_interactable_leave(area2d):
 	interactables_overlap.erase(area2d.get_parent())
 
-#func _on_anim_frame_changed():
-#	current_anim_frame = (current_anim_frame+1) % WALK_PARTICLES_EVERY
-#	if current_anim_frame == 0:
+func _on_anim_frame_changed():
+	current_anim_frame = (current_anim_frame+1) % WALK_PARTICLES_EVERY
+	if current_anim_frame == 0:
+		if in_water:
+			$SFX/WalkWater.play()
+		else:
+			var walk_sound = $SFX/WalkGrass
+			match season:
+				Enums.Season.AUTUMN:
+					walk_sound = $SFX/WalkStick
+				Enums.Season.WINTER:
+					walk_sound = $SFX/WalkSnow
+			walk_sound.play()
 #		$WalkParticles.spawn()
 
 func _on_game_pause(paused):
@@ -491,3 +518,6 @@ func _on_game_pause(paused):
 		if Input.is_action_pressed(evt):
 			pressed_actions.erase(evt)
 			pressed_actions.append(evt)
+
+func _on_season_change(new_season):
+	season = new_season
