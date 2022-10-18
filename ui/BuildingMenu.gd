@@ -17,9 +17,9 @@ func init_from(init_building_list, inventory):
 		var building_icon = TextureRect.new()
 		building_icon.texture = item_icons.texture_for(building.item)
 		$PanelContainer/BuildableList.add_child(building_icon)
-	select(building_list[selected], selected, inventory)
+	select(building_list[selected], selected, inventory, false)
 
-func select(building, building_idx, inventory):
+func select(building, building_idx, inventory, play_sfx : bool = true):
 	selected = building_idx
 	for i in $PanelContainer/BuildableList.get_child_count():
 		var build_icon = $PanelContainer/BuildableList.get_child(i)
@@ -54,6 +54,9 @@ func select(building, building_idx, inventory):
 	var placement_node = $BuildingDesc/VBoxContainer/Placement
 	placement_node.set_visible(player_in_water != building.on_water)
 	placement_node.set_text("Requires %s." % ("water" if building.on_water else "land"))
+	
+	if play_sfx:
+		$Select.play()
 
 func set_in_water(in_water):
 	if building_list.size() <= selected:

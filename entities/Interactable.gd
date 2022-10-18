@@ -5,6 +5,7 @@ var rng = RandomNumberGenerator.new()
 export (Resource) var interactable_data
 export (bool) var enable_tooltip = true
 export (bool) var decorative = false
+export (NodePath) var collect_sfx_nodepath = "CollectSFX"
 
 onready var progress_bar = $TooltipData/Tooltip/CollectProgress/ColorRect
 onready var tooltip = $TooltipData/Tooltip
@@ -12,6 +13,7 @@ onready var tooltip = $TooltipData/Tooltip
 var rates_are_boosted = false
 var despawning = false
 var collect_speed_multiplier = 1.0
+var collect_sfx_node = null
 
 func _ready():
 	rng.randomize()
@@ -32,6 +34,8 @@ func _ready():
 		$Collect.set_wait_time(interactable_data.time)
 	if decorative:
 		$AnimationPlayer.advance(1.0)
+	if has_node(collect_sfx_nodepath):
+		collect_sfx_node = get_node(collect_sfx_nodepath)
 
 func _process(_d):
 	if enable_tooltip:
@@ -63,10 +67,14 @@ func timer():
 
 func start_collect():
 	$Collect.start()
+	if collect_sfx_node:
+		collect_sfx_node.play()
 
 func stop_collect():
 	$Collect.stop()
 	$Collect.set_wait_time(interactable_data.time / collect_speed_multiplier)
+	if collect_sfx_node:
+		collect_sfx_node.stop()
 
 func pickup(inventory):
 	if interactable_data.requirement_amount > 0:
@@ -81,6 +89,8 @@ func pickup(inventory):
 	return amount_picked
 
 func despawn():
+	if collect_sfx_node:
+		collect_sfx_node.stop()
 	$ActionRange.set_monitorable(false)
 	$ActionRange.set_monitoring(false)
 	delete_tooltip()

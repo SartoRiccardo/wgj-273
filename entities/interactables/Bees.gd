@@ -14,3 +14,4 @@ func _ready():
 		)
 		bee.position = bee_pos
 		$Hive.add_child(bee)
+	$EnvironSFX.play()

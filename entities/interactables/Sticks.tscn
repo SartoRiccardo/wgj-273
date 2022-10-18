@@ -1,10 +1,14 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://assets/interactables.png" type="Texture" id=1]
 [ext_resource path="res://entities/Interactable.tscn" type="PackedScene" id=2]
 [ext_resource path="res://resources/interactable/interactable_sticks.tres" type="Resource" id=3]
 [ext_resource path="res://ui/TooltipContents.tscn" type="PackedScene" id=4]
 [ext_resource path="res://assets/ui/inventory.png" type="Texture" id=5]
+[ext_resource path="res://util/RandomSoundPlayer.tscn" type="PackedScene" id=6]
+[ext_resource path="res://sound/interactables/pickup_wood0.wav" type="AudioStream" id=7]
+[ext_resource path="res://sound/interactables/pickup_wood1.wav" type="AudioStream" id=8]
+[ext_resource path="res://sound/interactables/pickup_wood2.wav" type="AudioStream" id=9]
 
 [sub_resource type="Shader" id=4]
 resource_local_to_scene = true
@@ -24,7 +28,7 @@ void fragment() {
 resource_local_to_scene = true
 shader = SubResource( 4 )
 shader_param/override_color = Color( 1, 1, 1, 1 )
-shader_param/override_amount = 0.0
+shader_param/override_amount = 1.0
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 13, 10.5 )
@@ -42,6 +46,7 @@ region = Rect2( 16, 0, 16, 16 )
 
 [node name="Sticks" instance=ExtResource( 2 )]
 material = SubResource( 5 )
+scale = Vector2( 1e-05, 1e-05 )
 interactable_data = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ActionRange" index="0"]
@@ -76,3 +81,18 @@ margin_bottom = 22.0
 [node name="ColorRect" parent="TooltipData/Tooltip/CollectProgress" index="0"]
 margin_right = 88.0
 margin_bottom = 22.0
+
+[node name="CollectSFX" parent="." index="5" instance=ExtResource( 6 )]
+loop = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CollectSFX" index="0"]
+stream = ExtResource( 7 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="CollectSFX" index="1"]
+stream = ExtResource( 8 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="CollectSFX" index="2"]
+stream = ExtResource( 9 )
+bus = "SFX"

@@ -1,10 +1,14 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://entities/Interactable.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/interactables.png" type="Texture" id=2]
 [ext_resource path="res://resources/interactable/interactable_leaf_pile.tres" type="Resource" id=3]
 [ext_resource path="res://ui/TooltipContents.tscn" type="PackedScene" id=4]
 [ext_resource path="res://assets/ui/inventory.png" type="Texture" id=5]
+[ext_resource path="res://sound/interactables/pickup_grass0.mp3" type="AudioStream" id=6]
+[ext_resource path="res://util/RandomSoundPlayer.tscn" type="PackedScene" id=7]
+[ext_resource path="res://sound/interactables/pickup_grass1.mp3" type="AudioStream" id=8]
+[ext_resource path="res://sound/interactables/pickup_grass2.mp3" type="AudioStream" id=9]
 
 [sub_resource type="Shader" id=4]
 resource_local_to_scene = true
@@ -79,3 +83,18 @@ margin_bottom = 22.0
 [node name="ColorRect" parent="TooltipData/Tooltip/CollectProgress" index="0"]
 margin_right = 88.0
 margin_bottom = 22.0
+
+[node name="CollectSFX" parent="." index="5" instance=ExtResource( 7 )]
+loop = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CollectSFX" index="0"]
+stream = ExtResource( 6 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="CollectSFX" index="1"]
+stream = ExtResource( 8 )
+bus = "SFX"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="CollectSFX" index="2"]
+stream = ExtResource( 9 )
+bus = "SFX"

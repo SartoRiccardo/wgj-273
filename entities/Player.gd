@@ -90,7 +90,7 @@ func _ready():
 	remove_child($Areas)
 	
 	if not dev_detectable:
-		$Areas/DetectionRange.get_child(0).set_disabled(true)
+		get_node("DetectionRange").get_child(0).set_disabled(true)
 
 func _process(delta):
 	handle_movement_inputs()
@@ -211,6 +211,7 @@ func handle_inventory_inputs():
 
 func handle_actions(is_just_pressed=false):
 	if interacting_with == null:
+		var failed = false
 		var interact_priority = {}
 		for i in 4:
 			interact_priority[i] = null
@@ -223,11 +224,13 @@ func handle_actions(is_just_pressed=false):
 			if targets.size() > 0:
 				interact_priority[1] = Helpers.get_closest_node_to(targets, global_position)
 		
-		# [3] Build
+		# [2] Build
 		if is_building_menu_open and is_just_pressed and \
 				buildable_items[buildable_items_idx].is_buildable($Inventory) and \
 				bool(in_water) == buildable_items[buildable_items_idx].on_water:
-			interact_priority[3] = buildable_items[buildable_items_idx]
+			interact_priority[2] = buildable_items[buildable_items_idx]
+		elif is_building_menu_open and is_just_pressed:
+			failed = true
 		
 		for interactable in interactables_overlap:
 			# [0] Collectibles
@@ -235,12 +238,14 @@ func handle_actions(is_just_pressed=false):
 					interact_priority[0] == null and state != State.FLEEING:
 				interact_priority[0] = interactable
 			
-			# [2] Enter the hut
-			if interactable.is_in_group("hut") and is_just_pressed and interact_priority[2] == null:
-				interact_priority[2] = interactable
+			# [3] Enter the hut
+			if interactable.is_in_group("hut") and is_just_pressed and interact_priority[3] == null:
+				interact_priority[3] = interactable
 		
-		if interact_priority[3]:  # Build
-			var build = interact_priority[3]
+		if interact_priority[3]:  # Enter hut
+			enter_hut(interact_priority[3])
+		elif interact_priority[2]:  # Build
+			var build = interact_priority[2]
 			var parent = Helpers.get_first_of_group("collectible_root")
 			if parent:
 				var build_node = build.building_scene.instance()
@@ -250,8 +255,6 @@ func handle_actions(is_just_pressed=false):
 				set_building_menu_open(false)
 				parent.add_child(build_node)
 				$SFX/Build.play()
-		elif interact_priority[2]:  # Enter hut
-			enter_hut(interact_priority[2])
 		elif interact_priority[1]:  # Launch projectile
 			var target = interact_priority[1]
 			var projectile = PROJECTILE_SCENE.instance()
@@ -269,7 +272,10 @@ func handle_actions(is_just_pressed=false):
 			if !interacting_with.timer().is_connected("timeout", self, "_on_collectible_pickup"):
 				interacting_with.timer().connect("timeout", self, "_on_collectible_pickup")
 		elif is_just_pressed:  # Eat
-			eat()
+			if !failed:
+				eat()
+			else:
+				$SFX/UIFail.play()
 
 func handle_hunger():
 	var time_left = $Hunger.time_left
@@ -298,7 +304,7 @@ func handle_ui():
 		inv_changes = {}
 		no_lose_chime = false
 	
-	if Input.is_action_just_pressed("build_menu"):
+	if Input.is_action_just_pressed("build_menu") and state != State.HUT:
 		if is_building_menu_open:
 			$SFX/BuildMenuClose.play()
 		else:
@@ -346,6 +352,15 @@ func update_sprite():
 			$AnimatedSprite.set_frame(0)
 		$AnimatedSprite.play()
 
+func can_eat():
+	var equipped = $Inventory.equipped
+	for item in edible_items:
+		var hunger_gained = hunger_timeout/HUNGER_STAGES * item.points_filled
+		if item.item == equipped and $Inventory.get_amount(equipped) > 0 and \
+				hunger_gained+$Hunger.time_left <= hunger_timeout:
+			return true
+	return false
+
 func eat():
 	var equipped = $Inventory.equipped
 	for item in edible_items:
@@ -354,7 +369,9 @@ func eat():
 			if hunger_gained+$Hunger.time_left > hunger_timeout:
 				label_full_anim.stop(true)
 				label_full_anim.play("popup")
+				$SFX/UIFail.play()
 				return
+			no_lose_chime = true
 			$Inventory.remove(item.item, 1)
 			$Hunger.start($Hunger.time_left + hunger_gained)
 			$Particles/Eat.spawn()
@@ -393,11 +410,11 @@ func die(death_cause):
 
 func enter_hut(hut):
 	inside_hut = hut
-	var to_disable = [$Areas/ActionRange, $Areas/HurtBox]
+	var to_disable = [get_node("ActionRange"), get_node("HurtBox")]
 	for area in to_disable:
 		area.set_monitoring(false)
 		area.set_monitorable(false)
-	$Areas/DetectionRange.collision_layer = 0
+	get_node("DetectionRange").collision_layer = 0
 	collision_layer = 0
 	collision_mask = 0
 	$AnimatedSprite.set_visible(false)
@@ -407,6 +424,8 @@ func enter_hut(hut):
 	change_state(State.HUT)
 	inside_hut.connect("decay", self, "exit_hut")
 	var game = Helpers.get_game_node()
+	if is_building_menu_open:
+		set_building_menu_open(false)
 	if game:
 		game.speed_up()
 	emit_signal("enter_hut")
@@ -415,11 +434,11 @@ func exit_hut():
 	if inside_hut == null:
 		return
 	inside_hut.disconnect("decay", self, "exit_hut")
-	var to_enable = [$Areas/ActionRange, $Areas/HurtBox]
+	var to_enable = [get_node("ActionRange"), get_node("HurtBox")]
 	for area in to_enable:
 		area.set_monitoring(true)
 		area.set_monitorable(true)
-	$Areas/DetectionRange.collision_layer = 0b1000000
+	get_node("DetectionRange").collision_layer = 0b1000000
 	collision_layer = 0b1
 	collision_mask = 0b1
 	$AnimatedSprite.set_visible(true)
@@ -457,6 +476,7 @@ func _on_hazard_unangered(hazard):
 func _on_water_enter(_a2d):
 	in_water += 1
 	if in_water == 1:
+		$SFX/EnterWater.play()
 		$Particles/Splash.set_emitting(true)
 		$AnimatedSprite.position += Vector2.DOWN * 4
 		$AnimatedSprite.get_material().set_shader_param("crop", 0.25)

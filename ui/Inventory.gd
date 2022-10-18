@@ -55,6 +55,7 @@ func update_item(item, amount):
 	item_count.set_text(str(amount))
 
 func _on_item_equip(item, amount):
+	$Select.play()
 	equipped = item
 	update_item(item, amount)
 	update_pages(item)
