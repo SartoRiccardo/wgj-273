@@ -260,11 +260,12 @@ func handle_actions(is_just_pressed=false):
 			var projectile = PROJECTILE_SCENE.instance()
 			projectile.set_target(target)
 			projectile.projectile_data = PROJECTILE_RES[$Inventory.equipped]
-			projectile.global_position = global_position
+			projectile.global_position = global_position + Vector2.UP*5
 			var stun_data = target.get_stun_for($Inventory.equipped)
 			no_lose_chime = true
 			if stun_data:
 				$Inventory.remove($Inventory.equipped, stun_data.amount_needed)
+			$SFX/Throw.play()
 			projectile_root.add_child(projectile)
 		elif interact_priority[0]:  # Pickup
 			interacting_with = interact_priority[0]
