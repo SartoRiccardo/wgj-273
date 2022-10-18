@@ -1,7 +1,8 @@
-[gd_resource type="Resource" load_steps=4 format=2]
+[gd_resource type="Resource" load_steps=5 format=2]
 
 [ext_resource path="res://assets/entities/projectiles.png" type="Texture" id=1]
 [ext_resource path="res://resources/projectiles/ProjectileResource.gd" type="Script" id=2]
+[ext_resource path="res://sound/projectiles/hit_fish.wav" type="AudioStream" id=3]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 1 )
@@ -9,6 +10,7 @@ region = Rect2( 12, 0, 8, 5 )
 
 [resource]
 script = ExtResource( 2 )
+hit_sound = ExtResource( 3 )
 texture = SubResource( 1 )
 type = 5
 bounce = false

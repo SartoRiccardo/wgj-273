@@ -67,6 +67,8 @@ margin_bottom = 28.0
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 target_desired_distance = 8.0
 
+[node name="Hit" type="AudioStreamPlayer" parent="."]
+
 [node name="StunTimer" type="Timer" parent="."]
 wait_time = 3.0
 one_shot = true

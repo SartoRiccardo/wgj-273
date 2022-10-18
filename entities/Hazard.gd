@@ -165,7 +165,9 @@ func get_hit(projectile):
 				sprite.play(anim_name)
 				yield (sprite, "animation_finished")
 			$StunTimer.start(stun.stun_seconds)
-			
+			if projectile.hit_sound:
+				$Hit.set_stream(projectile.hit_sound)
+				$Hit.play()
 			if self.has_method("_on_hit"):
 				call_deferred("_on_hit", item)
 			
