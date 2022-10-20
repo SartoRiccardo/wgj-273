@@ -1,12 +1,15 @@
 extends Node
 
 export (bool) var loop = false
+export (bool) var autoplay = false
 
 var rng = RandomNumberGenerator.new()
 var loop_is_playing = false
 
 func _ready():
 	rng.randomize()
+	if autoplay:
+		play()
 
 func play():
 	var children = get_children()
