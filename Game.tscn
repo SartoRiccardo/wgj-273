@@ -178,11 +178,37 @@ material = SubResource( 14 )
 position = Vector2( -91, 193 )
 
 [node name="Bear" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 207, -45 )
+
+[node name="Bear2" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 207, -73 )
+
+[node name="Bear3" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 207, -99 )
+
+[node name="Bear4" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 207, -126 )
+
+[node name="Bear5" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 179, -144 )
+
+[node name="Bear6" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 179, -170 )
+
+[node name="Bear7" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 148, -174 )
+
+[node name="Bear8" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 148, -199 )
+
+[node name="Bear9" parent="Animals" instance=ExtResource( 14 )]
+position = Vector2( 147, -226 )
 
 [node name="Projectiles" type="Node" parent="." groups=["projectile_root"]]
 
 [node name="PlayerCamera" parent="." instance=ExtResource( 3 )]
 position = Vector2( 48, 49 )
+zoom = Vector2( 4, 4 )
 
 [node name="SeasonTimer" type="Timer" parent="."]
 one_shot = true

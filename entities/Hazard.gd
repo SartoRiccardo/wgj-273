@@ -18,6 +18,7 @@ var wander_finished = true
 var following = null
 var rng = RandomNumberGenerator.new()
 var velocity = Vector2.ZERO
+var in_water = 0
 
 var sight_base_angle = 0
 var despawning = false
@@ -227,6 +228,16 @@ func set_tooltip_open(open_tooltip: bool):
 	else:
 		$ProjectileInfo/Tooltip.retract()
 
+func set_water_sprite(in_water : bool):
+	var sprite = get_node_or_null("Sprite")
+	if sprite == null:
+		sprite = get_node_or_null("AnimatedSprite")
+	if sprite == null:
+		return
+	sprite.get_material().set_shader_param("crop", 0.4 if in_water else 0.0)
+	sprite.position += (Vector2.DOWN if in_water else Vector2.UP) * 4
+	$Splash.set_emitting(in_water)
+
 func _on_sight_collide(collider_parent):
 	if collider_parent is Player:
 		following = collider_parent
@@ -273,10 +284,17 @@ func _on_campfire_exited(_a2d):
 	mov_speed_multiplier *= 2.0
 	
 func _on_water_entered(_a2d):
-	mov_speed_multiplier *= 0.3
+	in_water += 1
+	if in_water == 1:
+		set_water_sprite(true)
+		mov_speed_multiplier *= 0.3
 
 func _on_water_exited(_a2d):
-	mov_speed_multiplier /= 0.3
+	in_water -= 1
+	if in_water <= 0:
+		in_water = 0
+		set_water_sprite(false)
+		mov_speed_multiplier /= 0.3
 
 func _on_game_speed_increase(multiplier):
 	global_speed_multiplier *= multiplier

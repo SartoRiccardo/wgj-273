@@ -38,6 +38,7 @@
 [ext_resource path="res://util/RandomPitchPlayer.tscn" type="PackedScene" id=36]
 [ext_resource path="res://sound/ui/fail.wav" type="AudioStream" id=37]
 [ext_resource path="res://sound/player/throw.wav" type="AudioStream" id=38]
+[ext_resource path="res://resources/shaders/enter_water.gdshader" type="Shader" id=39]
 
 [sub_resource type="Resource" id=15]
 script = ExtResource( 4 )
@@ -54,30 +55,8 @@ script = ExtResource( 4 )
 item = 6
 points_filled = 0.5
 
-[sub_resource type="Shader" id=35]
-code = "shader_type canvas_item;
-uniform float crop : hint_range(0.0, 1.0, 0.05);
-uniform int rows;
-
-void fragment() {
-	vec4 color = texture(TEXTURE, UV);
-	float row_height = 1.0/float(rows);
-	int row = int(UV.y / row_height);
-	if(row >= rows) row = rows-1;
-	
-	float px_alpha = 1.0;
-	if(row_height*float(row)+(1.0-crop)*row_height < UV.y &&
-			UV.y < row_height*float(row+1))
-		px_alpha = 0.0;
-	COLOR = vec4(color.rgb, color.a*px_alpha);
-//	if(row == 0) COLOR = vec4(1,0,0,1);
-//	if(row == 1) COLOR = vec4(0,1,0,1);
-//	if(row == 2) COLOR = vec4(0,0,1,1);
-//	COLOR = vec4(UV, 0, 1);
-}"
-
 [sub_resource type="ShaderMaterial" id=36]
-shader = SubResource( 35 )
+shader = ExtResource( 39 )
 shader_param/crop = 0.0
 shader_param/rows = 3
 
@@ -275,7 +254,6 @@ lifetime = 0.6
 process_material = ExtResource( 28 )
 
 [node name="Areas" type="Node2D" parent="."]
-visible = false
 position = Vector2( 0, -8 )
 
 [node name="WaterDetect" type="Area2D" parent="Areas"]

@@ -8,7 +8,7 @@ curve = SubResource( 35 )
 
 [resource]
 emission_shape = 2
-emission_box_extents = Vector3( 6, 1, 1 )
+emission_box_extents = Vector3( 15, 1, 1 )
 flag_disable_z = true
 direction = Vector3( 0, -1, 0 )
 gravity = Vector3( 0, 98, 0 )
